@@ -2,10 +2,10 @@
 // **** To build this mex function use: mex main_ekf.cpp ****
 // **********************************************************
 
-#include "src/EKF.h"
-#include "src/SensorMeasurements.h"
-#include "src/AircraftState.h"
-#include "src/RailLocation.h"
+#include "EKF.h"
+#include "SensorMeasurements.h"
+#include "AircraftState.h"
+#include "RailLocation.h"
 
 #define S_FUNCTION_LEVEL 2
 #define S_FUNCTION_NAME  main_ekf

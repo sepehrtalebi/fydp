@@ -3,7 +3,7 @@ project(FYDP)
 
 set(CMAKE_CXX_STANDARD 14)
 
-include_directories(./src)
+include_directories(./include)
 
 add_executable(FYDP tests.cpp
         # main_ekf.cpp

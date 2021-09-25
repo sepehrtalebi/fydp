@@ -139,11 +139,11 @@
 /* %%%-SFUNWIZ_defines_Changes_END --- EDIT HERE TO _BEGIN */
 /*<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<*/
 #include "simstruc.h"
-#include "src/AircraftState.h"
-#include "src/RailLocation.h"
-#include "src/SensorMeasurements.h"
-#include "src/Vector3.h"
-#include "src/EKF.h"
+#include "AircraftState.h"
+#include "RailLocation.h"
+#include "SensorMeasurements.h"
+#include "Vector3.h"
+#include "EKF.h"
 
 /*
  * Code Generation Environment flag (simulation or standalone target).
