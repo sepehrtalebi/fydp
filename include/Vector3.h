@@ -2,19 +2,29 @@
 
 #include "Vector.h"
 
-class Vector3 : public Vector<3> {
+template<typename T>
+class Vector3 : public Vector<T, 3> {
 public:
-    double &x = data[0];
-    double &y = data[1];
-    double &z = data[2];
+    T &x = this->data[0];
+    T &y = this->data[1];
+    T &z = this->data[2];
 public:
     Vector3() = default;
 
-    Vector3(double x, double y, double z);
+    Vector3(T x, T y, T z) {
+        this->x = x;
+        this->y = y;
+        this->z = z;
+    }
 
-    Vector3(const Vector3 &other);
+    Vector3(const Vector3<T> &other) : Vector3(other.x, other.y, other.z) {}
 
-    explicit Vector3(Vector<3> vec);
+    explicit Vector3(Vector<T, 3> vec) : Vector3(vec[0], vec[1], vec[2]) {}
 
-    Vector3 cross(const Vector3 &other) const;
+    Vector3<T> cross(const Vector3<T> &other) const {
+        return Vector3{y * other.z - z * other.y,
+                       z * other.x - x * other.z,
+                       x * other.y - y * other.x
+        };
+    }
 };

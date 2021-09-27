@@ -3,105 +3,100 @@
 #include <array>
 #include "Vector.h"
 
-template<int n, int m>
+template<typename T, int n, int m>
 class Matrix {
 protected:
-    std::array<Vector<m>, n> data{};
+    std::array<Vector<T, m>, n> data{};
 public:
     Matrix() = default;
 
-    static Matrix<n, m> identity() {
-        Matrix<n, m> output{};
+    static Matrix<T, n, m> identity() {
+        Matrix<T, n, m> output{};
         for (int i = 0; i < n && i < m; i++) output[i][i] = 1;
         return output;
     }
 
-    static Matrix<n, m> zeros() {
+    static Matrix<T, n, m> zeros() {
         return {};
     }
 
-    Matrix<m, n> transpose() const {
-        Matrix<m, n> transpose;
-        for (int i = 0; i < n; i++) for (int j = 0; j < m; j++) transpose[j][i] = this->data[i][j];
+    Matrix<T, m, n> transpose() const {
+        Matrix<T, m, n> transpose;
+        for (int i = 0; i < n; i++) for (int j = 0; j < m; j++) transpose[j][i] = data[i][j];
         return transpose;
     }
 
-    Matrix<m, n> inv() const {
+    Matrix<T, m, n> inv() const {
         // TODO
         return transpose();
     }
 
-    Vector<n * m> flatten() const {
-        Vector<n * m> flat_mat;
-        for (int i = 0; i < n; i++) for (int j = 0; j < m; j++) flat_mat[i * m + j] = this->data[i][j];
+    Vector<T, n * m> flatten() const {
+        Vector<T, n * m> flat_mat;
+        for (int i = 0; i < n; i++) for (int j = 0; j < m; j++) flat_mat[i * m + j] = data[i][j];
         return flat_mat;
     }
 
-    Matrix<n, m> operator+(const Matrix<n, m> &other) const {
-        Matrix<n, m> sum;
-        for (int i = 0; i < n; i++) for (int j = 0; j < m; j++) sum[i][j] = this->data[i][j] + other[i][j];
+    Matrix<T, n, m> operator+(const Matrix<T, n, m> &other) const {
+        Matrix<T, n, m> sum;
+        for (int i = 0; i < n; i++) for (int j = 0; j < m; j++) sum[i][j] = data[i][j] + other[i][j];
         return sum;
     }
 
-    void operator+=(const Matrix<n, m> &other) {
-        for (int i = 0; i < n; i++) for (int j = 0; j < m; j++) this->data[i][j] += other[i][j];
+    void operator+=(const Matrix<T, n, m> &other) {
+        for (int i = 0; i < n; i++) for (int j = 0; j < m; j++) data[i][j] += other[i][j];
     }
 
-    Matrix<n, m> operator-(const Matrix<n, m> &other) const {
-        Matrix<n, m> sum;
-        for (int i = 0; i < n; i++) for (int j = 0; j < m; j++) sum[i][j] = this->data[i][j] - other[i][j];
-        return sum;
+    Matrix<T, n, m> operator-(const Matrix<T, n, m> &other) const {
+        Matrix<T, n, m> difference;
+        for (int i = 0; i < n; i++) for (int j = 0; j < m; j++) difference[i][j] = data[i][j] - other[i][j];
+        return difference;
     }
 
-    void operator-=(const Matrix<n, m> &other) {
-        for (int i = 0; i < n; i++) for (int j = 0; j < m; j++) this->data[i][j] -= other[i][j];
+    void operator-=(const Matrix<T, n, m> &other) {
+        for (int i = 0; i < n; i++) for (int j = 0; j < m; j++) data[i][j] -= other[i][j];
     }
 
-    Matrix<n, m> operator*(const double &scalar) const {
-        Matrix<n, m> product;
-        for (int i = 0; i < n; i++) for (int j = 0; j < m; j++) product[i][j] *= scalar;
+    Matrix<T, n, m> operator*(const T &scalar) const {
+        Matrix<T, n, m> product;
+        for (int i = 0; i < n; i++) for (int j = 0; j < m; j++) product[i][j] = data[i][j] * scalar;
         return product;
     }
 
-    void operator*=(const double &scalar) {
-        for (int i = 0; i < n; i++) for (int j = 0; j < m; j++) this->data[i][j] *= scalar;
+    void operator*=(const T &scalar) {
+        for (int i = 0; i < n; i++) for (int j = 0; j < m; j++) data[i][j] *= scalar;
     }
 
-    Matrix<n, m> operator/(const double &scalar) const {
-        Matrix<n, m> product;
-        for (int i = 0; i < n; i++) for (int j = 0; j < m; j++) product[i][j] /= scalar;
-        return product;
+    Matrix<T, n, m> operator/(const T &scalar) const {
+        Matrix<T, n, m> quotient;
+        for (int i = 0; i < n; i++) for (int j = 0; j < m; j++) quotient[i][j] = data[i][j] / scalar;
+        return quotient;
     }
 
-    void operator/=(const double &scalar) {
-        for (int i = 0; i < n; i++) for (int j = 0; j < m; j++) this->data[i][j] /= scalar;
+    void operator/=(const T &scalar) {
+        for (int i = 0; i < n; i++) for (int j = 0; j < m; j++) data[i][j] /= scalar;
     }
 
     template<int p>
-    Matrix<n, p> operator*(const Matrix<m, p> &other) const {
-        Matrix<n, p> product;
-        for (int i = 0; i < n; i++)
-            for (int j = 0; j < p; j++) {
-                product[i][j] = 0;
-                for (int k = 0; k < m; k++) product[i][j] += this->data[i][k] * other[k][j];
-            }
+    Matrix<T, n, p> operator*(const Matrix<T, m, p> &other) const {
+        Matrix<T, n, p> product = Matrix<T, n, p>::zeros();
+        for (int i = 0; i < n; i++) for (int j = 0; j < p; j++)
+            for (int k = 0; k < m; k++) product[i][j] += data[i][k] * other[k][j];
         return product;
     }
 
-    Vector<n> operator*(const Vector<m> &vec) const {
-        Vector<n> product;
-        for (int i = 0; i < n; i++) {
-            product[i] = 0;
-            for (int j = 0; j < m; j++) product[i] += this->data[i][j] * vec[j];
-        }
+    Vector<T, n> operator*(const Vector<T, m> &vec) const {
+        Vector<T, n> product{};
+        for (int i = 0; i < n; i++) for (int j = 0; j < m; j++)
+            product[i] += data[i][j] * vec[j];
         return product;
     }
 
-    Vector<m> &operator[](int index) {
+    Vector<T, m> &operator[](int index) {
         return this->data[index];
     }
 
-    Vector<m> operator[](int index) const {
+    Vector<T, m> operator[](int index) const {
         return this->data[index];
     }
 };

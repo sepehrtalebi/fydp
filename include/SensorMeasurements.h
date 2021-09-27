@@ -17,14 +17,18 @@ struct SensorMeasurements {
     double RailPixelWidth;
     double RailPixelX;
     double RailPixelY;
-    double FoundRail;
-    Vector<2> PixelVelocity;
-    Vector3 IMUAcceleration;
-    Vector3 IMUAngularVelocity;
+    bool FoundRail;
+    Vector<double, 2> PixelVelocity;
+    Vector3<double> IMUAcceleration;
+    Vector3<double> IMUAngularVelocity;
     double Latitude;
     double Longitude;
     double GPSAltitude;
-    double SatelliteCount;
+    uint8_t SatelliteCount;
 
-    Vector<18> getZ() const;
+    static SensorMeasurements parseZ(const Vector<double, 16> &doubleZ, const Vector<uint8_t, 1> &uint8Z,
+                                     const Vector<bool, 1> &boolZ);
+
+    // may be unnecessary and replaced with more specific functions in the future
+    Vector<double, 18> getZ() const;
 };

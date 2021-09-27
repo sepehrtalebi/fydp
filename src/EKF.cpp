@@ -2,78 +2,88 @@
 #include "Quaternion.h"
 
 EKF::EKF() {
-    this->x[q0] = 1;
-    this->P[px][px] = this->P[py][py] = 0;
+    x[q0] = 1;
+    P[px][px] = P[py][py] = 0;
 }
 
-void EKF::update(const SensorMeasurements &sensorMeasurements, const Vector3& forces, const Vector3& torques, double dt) {
+void EKF::updateWrapper(const double *doubleSensorMeasurements, const uint8_t *uint8SensorMeasurements,
+                        const bool *boolSensorMeasurements, const double *forces, const double *torques, double dt) {
+    Vector<double, 16> doubleZ;
+    for (int i = 0; i < 16; i++) doubleZ[i] = doubleSensorMeasurements[i];
+    Vector<uint8_t, 1> uint8Z{uint8SensorMeasurements[0]};
+    Vector<bool, 1> boolZ{boolSensorMeasurements[0]};
+    Vector3<double> forcesVec{forces[0], forces[1], forces[2]};
+    Vector3<double> torquesVec{torques[0], torques[1], torques[2]};
+    SensorMeasurements sensorMeasurements = SensorMeasurements::parseZ(doubleZ, uint8Z, boolZ);
+    update(sensorMeasurements, forcesVec, torquesVec, dt);
+}
+
+void EKF::update(const SensorMeasurements &sensorMeasurements, const Vector3<double>& forces, const Vector3<double>& torques, double dt) {
     // prediction step
-    Matrix<n, n> f_jac = f_jacobian(forces, torques, dt);
+    Matrix<double, n, n> f_jac = f_jacobian(forces, torques, dt);
 
-    Vector<n> new_x = this->f(forces, torques, dt);
-    for (int i = 0; i < n; i++) this->x[i] = new_x[i];
+    Vector<double, n> new_x = f(forces, torques, dt);
+    for (int i = 0; i < n; i++) x[i] = new_x[i];
 
-    Matrix<n, n> new_P = f_jac * this->P * f_jac.transpose() + this->Q;
-    for (int i = 0; i < n; i++) for (int j = 0; j < n; j++) this->P[i] = new_P[i];
+    Matrix<double, n, n> new_P = f_jac * P * f_jac.transpose() + Q;
+    for (int i = 0; i < n; i++) for (int j = 0; j < n; j++) P[i][j] = new_P[i][j];
 
     // update step
-    Vector<p> z = sensorMeasurements.getZ();
-    Vector<p> h = this->h(forces, torques, dt);
-    Matrix<p, n> h_jac = this->h_jacobian(forces, torques, dt);
-    Matrix<n, p> h_jac_transpose = h_jac.transpose();
+    Vector<double, p> z = sensorMeasurements.getZ();
+    Vector<double, p> h_mat = h(forces, torques, dt);
+    Matrix<double, p, n> h_jac = h_jacobian(forces, torques, dt);
+    Matrix<double, n, p> h_jac_transpose = h_jac.transpose();
 
-    Vector<p> y = z - h;
+    Vector<double, p> y = z - h_mat;
     // multiplication order doesn't matter, both require n*p*(n+p) multiplications regardless of order
-    Matrix<p, p> S = h_jac * this->P * h_jac_transpose + this->R;
-    Matrix<n, p> K = this->P * h_jac_transpose * S.inv();
+    Matrix<double, p, p> S = h_jac * P * h_jac_transpose + R;
+    Matrix<double, n, p> K = P * h_jac_transpose * S.inv();
 
-    this->x += K * y;
-    this->P -= K * h_jac * this->P;
+    x += K * y;
+    P -= K * h_jac * P;
 }
 
-void EKF::getOutput(AircraftState *aircraftState, RailLocation *railLocation) const {
-    Quaternion quat{this->x[q0], this->x[q1], this->x[q2], this->x[q3]};
-    Vector3 eulerAngles = quat.toEulerAngles();
-
-    for (int i = 0; i < 3; i++) {
-        aircraftState->Position[i] = this->x[px + 1];
-        aircraftState->EulerAngles[i] = eulerAngles[i];
-        aircraftState->BodyVelocity[i] = this->x[vx + i];
-        aircraftState->BodyAngularVelocity[i] = this->x[wx + i];
-        aircraftState->BodyAngularAcceleration[i] = this->x[ang_ax + i];
-        aircraftState->BodyAcceleration[i] = this->x[ang_ax + i];
-    }
-    aircraftState->DCM = quat.toDCM();
-    railLocation->RailOffset = Vector<2>{this->x[rail_x], this->x[rail_y]};
-    railLocation->RailHeading = this->x[rail_h];
+void EKF::getOutputWrapper(double *doubleAircraftState) const {
+    Vector<double, 19> aircraftState = getOutput().getX();
+    for (int i = 0; i < 19; i++) doubleAircraftState[i] = aircraftState[i];
 }
 
-Vector<EKF::n> EKF::f(const Vector3 &f, const Vector3 &T, double dt) const {
-    Quaternion quat = Quaternion{x[q0], x[q1], x[q2], x[q3]};
+AircraftState EKF::getOutput() const {
+    return AircraftState{Vector3<double>{x[px], x[py], x[pz]},
+                         Quaternion<double>{x[q0], x[q1], x[q2], x[q3]},
+                         Vector3<double>{x[vx], x[vy], x[vz]},
+                         Vector3<double>{x[wx], x[wy], x[wz]},
+                         Vector3<double>{x[ang_ax], x[ang_ay], x[ang_az]},
+                         Vector3<double>{x[ax], x[ay], x[az]}};
+}
 
-    Vector<n> x_new = x;
+Vector<double, EKF::n> EKF::f(const Vector3<double> &f, const Vector3<double> &T, double dt) const {
+    Quaternion<double> quat = Quaternion<double>{x[q0], x[q1], x[q2], x[q3]};
 
-    Vector3 v = Vector3{x[vx], x[vy], x[vz]};
-    Vector3 v_abs = quat.unrotate(v);
+    Vector<double, n> x_new = x;
 
-    Vector3 w = Vector3{x[wx], x[wy], x[wz]};
-    Vector3 w_abs = quat.unrotate(w);
+    Vector3<double> v = Vector3<double>{x[vx], x[vy], x[vz]};
+    Vector3<double> v_abs = quat.unrotate(v);
 
-    Quaternion quat_new = Quaternion{quat + quat.E().transpose() * w_abs * (dt / 2)};
+    Vector3<double> w = Vector3<double>{x[wx], x[wy], x[wz]};
+    Vector3<double> w_abs = quat.unrotate(w);
+
+    Quaternion<double> quat_new = Quaternion<double>{quat + quat.E().transpose() * w_abs * (dt / 2)};
     quat_new.normalize();
 
-    Vector3 ang_a_new = Vector3{inertia_inv * T};
+    Vector3<double> ang_a_new = Vector3<double>{inertia_inv * T};
 
-    Vector3 mag = Vector3{x[magx], x[magy], x[magz]};
-    Vector3 mag_b = Vector3{x[mag_bx], x[mag_by], x[mag_bz]};
-    Vector3 mag_new = Vector3{quat_new.rotate(quat.unrotate(Vector3{mag - mag_b})) + mag_b};
+    Vector3<double> mag = Vector3<double>{x[magx], x[magy], x[magz]};
+    Vector3<double> mag_b = Vector3<double>{x[mag_bx], x[mag_by], x[mag_bz]};
+    Vector3<double> mag_new = Vector3<double>{quat_new.rotate(quat.unrotate(
+            Vector3<double>{mag - mag_b})) + mag_b};
 
     for (int i = 0; i < 3; i++) {
         x_new[px + i] += v_abs[i] * dt;
         x_new[q0 + i] = quat_new[i];
         x_new[vx + i] += x[ax + i] * dt;
         x_new[wx + i] += x[ang_ax + i] * dt;
-        x_new[ax + i] = f[i] / this->m;
+        x_new[ax + i] = f[i] / m;
         x_new[ang_ax + i] = ang_a_new[i];
         x_new[magx + i] = mag_new[i];
     }
@@ -82,13 +92,13 @@ Vector<EKF::n> EKF::f(const Vector3 &f, const Vector3 &T, double dt) const {
     return x_new;
 }
 
-Matrix<EKF::n, EKF::n> EKF::f_jacobian(const Vector3 &f, const Vector3 &T, double dt) const {
+Matrix<double, EKF::n, EKF::n> EKF::f_jacobian(const Vector3<double> &f, const Vector3<double> &T, double dt) const {
     // the ith row and jth column represents the derivative of
     // the ith output state with respect to the jth input state
-    Matrix<n, n> f_jac = Matrix<n, n>::zeros();
+    Matrix<double, n, n> f_jac = Matrix<double, n, n>::zeros();
 
-    Quaternion quat = Quaternion{x[q0], x[q1], x[q2], x[q3]};
-    Matrix<3, 3> DCM_inv_dt = quat.cong().toDCM() * dt;
+    Quaternion<double> quat = Quaternion<double>{x[q0], x[q1], x[q2], x[q3]};
+    Matrix<double, 3, 3> DCM_inv_dt = quat.cong().toDCM() * dt;
 
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) f_jac[px + i][vx + j] = DCM_inv_dt[i][j];
@@ -99,22 +109,22 @@ Matrix<EKF::n, EKF::n> EKF::f_jacobian(const Vector3 &f, const Vector3 &T, doubl
     return f_jac;
 }
 
-Vector<EKF::p> EKF::h(const Vector3 &f, const Vector3 &T, double dt) const {
+Vector<double, EKF::p> EKF::h(const Vector3<double> &f, const Vector3<double> &T, double dt) const {
     // TODO
-    return SensorMeasurements{P_atm - rho_air * g * (-this->x[pz]),
-                              0, 0, 0, 0, 0,
-                              Vector<2>{0, 0},
-                              Vector3{f / m},
-                              Vector3{this->x[wx], this->x[wy], this->x[wz]},
-                              0, 0, -this->x[pz], 8}
+    return SensorMeasurements{P_atm - rho_air * g * (-x[pz]),
+                              0, 0, 0, 0, false,
+                              Vector<double, 2>{0, 0},
+                              Vector3<double>{f / m},
+                              Vector3<double>{x[wx], x[wy], x[wz]},
+                              0, 0, -x[pz], 8}
                               .getZ();
 }
 
 
-Matrix<EKF::p, EKF::n> EKF::h_jacobian(const Vector3 &f, const Vector3 &T, double dt) const {
+Matrix<double, EKF::p, EKF::n> EKF::h_jacobian(const Vector3<double> &f, const Vector3<double> &T, double dt) const {
     // the ith row and jth column represents the derivative of
     // the ith output measurement with respect to the jth input state
-    Matrix<p, n> h_jac = Matrix<p, n>::zeros();
+    Matrix<double, p, n> h_jac = Matrix<double, p, n>::zeros();
     // TODO
     h_jac[SensorMeasurements::P][px] = rho_air * g;
 

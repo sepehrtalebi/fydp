@@ -4,95 +4,95 @@
 #include <initializer_list>
 #include <cmath>
 
-template<int n>
+template<typename T, int n>
 class Vector {
-protected:
-    std::array<double, n> data{};
+public:
+    std::array<T, n> data{};
 public:
     Vector() = default;
 
-    Vector(std::initializer_list<double> elements) {
+    Vector(std::initializer_list<T> elements) {
         // Function caller must ensure the number of arguments matches the template argument
         // Excess arguments will be ignored
         int i = 0;
-        for (std::initializer_list<double>::iterator it = elements.begin(); i < n && it != elements.end(); it++)
+        for (auto it = elements.begin(); i < n && it != elements.end(); it++)
             data[i++] = *it;
     }
 
-    Vector(const Vector<n> &other) {
-        for (int i = 0; i < n; i++) this->data[i] = other.data[i];
+    Vector(const Vector<T, n> &other) {
+        for (int i = 0; i < n; i++) data[i] = other[i];
     }
 
-    double magnitude() const {
-        double sum = 0;
+    T magnitude() const {
+        T sum = 0;
         for (int i = 0; i < n; i++) sum += data[i] * data[i];
         return sqrt(sum);
     }
 
     void normalize() {
-        double size = this->magnitude();
-        for (int i = 0; i < n; i++) this->data[i] /= size;
+        T size = this->magnitude();
+        for (int i = 0; i < n; i++) data[i] /= size;
     }
 
-    double dot(const Vector<n> &other) const {
-        double sum = 0;
-        for (int i = 0; i < n; i++) sum += this->data[i] * other.data[i];
+    T dot(const Vector<T, n> &other) const {
+        T sum = 0;
+        for (int i = 0; i < n; i++) sum += data[i] * other[i];
         return sum;
     }
 
     template<int m>
-    Vector<n + m> concatenate(const Vector<m> &other) const {
-        Vector<n + m> concat;
-        for (int i = 0; i < n; i++) concat[i] = this->data[i];
+    Vector<T, n + m> concatenate(const Vector<T, m> &other) const {
+        Vector<T, n + m> concat;
+        for (int i = 0; i < n; i++) concat[i] = data[i];
         for (int i = n; i < n + m; i++) concat[i] = other[i];
         return concat;
     }
 
-    Vector<n> operator+(const Vector<n> &other) const {
-        Vector<n> sum;
-        for (int i = 0; i < n; i++) sum[i] = this->data[i] + other.data[i];
+    Vector<T, n> operator+(const Vector<T, n> &other) const {
+        Vector<T, n> sum;
+        for (int i = 0; i < n; i++) sum[i] = data[i] + other[i];
         return sum;
     }
 
-    void operator+=(const Vector<n> &other) {
-        for (int i = 0; i < n; i++) this->data[i] += other.data[i];
+    void operator+=(const Vector<T, n> &other) {
+        for (int i = 0; i < n; i++) data[i] += other[i];
     }
 
-    Vector<n> operator-(const Vector<n> &other) const {
-        Vector<n> sum;
-        for (int i = 0; i < n; i++) sum[i] = this->data[i] - other.data[i];
+    Vector<T, n> operator-(const Vector<T, n> &other) const {
+        Vector<T, n> sum;
+        for (int i = 0; i < n; i++) sum[i] = data[i] - other[i];
         return sum;
     }
 
-    void operator-=(const Vector<n> &other) {
-        for (int i = 0; i < n; i++) this->data[i] -= other.data[i];
+    void operator-=(const Vector<T, n> &other) {
+        for (int i = 0; i < n; i++) data[i] -= other[i];
     }
 
-    Vector<n> operator*(const double &scalar) const {
-        Vector<n> product;
-        for (int i = 0; i < n; i++) product[i] = scalar * this->data[i];
+    Vector<T, n> operator*(const T &scalar) const {
+        Vector<T, n> product;
+        for (int i = 0; i < n; i++) product[i] = scalar * data[i];
         return product;
     }
 
-    void operator*=(const double &scalar) {
-        for (int i = 0; i < n; i++) this->data[i] *= scalar;
+    void operator*=(const T &scalar) {
+        for (int i = 0; i < n; i++) data[i] *= scalar;
     }
 
-    Vector<n> operator/(const double &scalar) const {
-        Vector<n> product;
-        for (int i = 0; i < n; i++) product[i] = this->data[i] / scalar;
+    Vector<T, n> operator/(const T &scalar) const {
+        Vector<T, n> product;
+        for (int i = 0; i < n; i++) product[i] = data[i] / scalar;
         return product;
     }
 
-    void operator/=(const double &scalar) {
-        for (int i = 0; i < n; i++) this->data[i] /= scalar;
+    void operator/=(const T &scalar) {
+        for (int i = 0; i < n; i++) data[i] /= scalar;
     }
 
-    double &operator[](int index) {
+    T &operator[](int index) {
         return this->data[index];
     }
 
-    double operator[](int index) const {
+    T operator[](int index) const {
         return this->data[index];
     }
 };

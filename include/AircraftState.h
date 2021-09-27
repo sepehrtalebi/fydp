@@ -1,14 +1,15 @@
 #pragma once
 
 #include "Vector3.h"
-#include "Matrix.h"
+#include "Quaternion.h"
 
 struct AircraftState {
-    Vector3 Position;
-    Vector3 EulerAngles;
-    Matrix<3, 3> DCM;
-    Vector3 BodyVelocity;
-    Vector3 BodyAngularVelocity;
-    Vector3 BodyAngularAcceleration;
-    Vector3 BodyAcceleration;
+    Vector3<double> Position;
+    Quaternion<double> Orientation;
+    Vector3<double> BodyVelocity;
+    Vector3<double> BodyAngularVelocity;
+    Vector3<double> BodyAngularAcceleration;
+    Vector3<double> BodyAcceleration;
+
+    Vector<double, 19> getX() const;
 };

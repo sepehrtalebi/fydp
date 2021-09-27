@@ -6,10 +6,9 @@ set(CMAKE_CXX_STANDARD 14)
 include_directories(./include)
 
 add_executable(FYDP tests.cpp
-        # main_ekf.cpp
-        src/Vector3.cpp
-        src/Quaternion.cpp
         src/EKF.cpp
-        test/TestVector.cpp
         src/SensorMeasurements.cpp
+        src/AircraftState.cpp
+        test/TestVector.cpp
+        test/TestMatrix.cpp
         )
