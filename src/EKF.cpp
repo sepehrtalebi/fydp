@@ -7,15 +7,20 @@ EKF::EKF() {
 }
 
 void EKF::updateWrapper(const double *doubleSensorMeasurements, const uint8_t *uint8SensorMeasurements,
-                        const bool *boolSensorMeasurements, const double *forces, const double *torques, double dt) {
+                        const unsigned char *boolSensorMeasurements, const double *forces, const double *torques, double dt) {
     Vector<double, 16> doubleZ;
     for (int i = 0; i < 16; i++) doubleZ[i] = doubleSensorMeasurements[i];
     Vector<uint8_t, 1> uint8Z{uint8SensorMeasurements[0]};
-    Vector<bool, 1> boolZ{boolSensorMeasurements[0]};
+    Vector<bool, 1> boolZ{(bool) boolSensorMeasurements[0]};
     Vector3<double> forcesVec{forces[0], forces[1], forces[2]};
     Vector3<double> torquesVec{torques[0], torques[1], torques[2]};
     SensorMeasurements sensorMeasurements = SensorMeasurements::parseZ(doubleZ, uint8Z, boolZ);
     update(sensorMeasurements, forcesVec, torquesVec, dt);
+}
+
+void EKF::getOutputWrapper(double *doubleAircraftState) const {
+    Vector<double, 19> aircraftState = getOutput().getX();
+    for (int i = 0; i < 19; i++) doubleAircraftState[i] = aircraftState[i];
 }
 
 void EKF::update(const SensorMeasurements &sensorMeasurements, const Vector3<double>& forces, const Vector3<double>& torques, double dt) {
@@ -41,11 +46,6 @@ void EKF::update(const SensorMeasurements &sensorMeasurements, const Vector3<dou
 
     x += K * y;
     P -= K * h_jac * P;
-}
-
-void EKF::getOutputWrapper(double *doubleAircraftState) const {
-    Vector<double, 19> aircraftState = getOutput().getX();
-    for (int i = 0; i < 19; i++) doubleAircraftState[i] = aircraftState[i];
 }
 
 AircraftState EKF::getOutput() const {

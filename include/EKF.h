@@ -38,11 +38,11 @@ public:
     EKF();
 
     void updateWrapper(const double *doubleSensorMeasurements, const uint8_t *uint8SensorMeasurements,
-                       const bool *boolSensorMeasurements, const double *forces, const double *torques, double dt);
-
-    void update(const SensorMeasurements &sensorMeasurements, const Vector3<double>& forces, const Vector3<double>& torques, double dt);
+                       const unsigned char *boolSensorMeasurements, const double *forces, const double *torques, double dt);
 
     void getOutputWrapper(double *doubleAircraftState) const;
+
+    void update(const SensorMeasurements &sensorMeasurements, const Vector3<double>& forces, const Vector3<double>& torques, double dt);
 
     AircraftState getOutput() const;
 
