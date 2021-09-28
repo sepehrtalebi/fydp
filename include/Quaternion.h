@@ -78,11 +78,6 @@ public:
         return matrix;
     }
 
-    Vector3<T> toEulerAngles() const {
-        // TODO
-        return Vector3<T>{};
-    }
-
     Matrix<T, 3, 3> toDCM() const {
         // https://www.vectornav.com/resources/inertial-navigation-primer/math-fundamentals/math-attitudetran
         Matrix<T, 3, 3> DCM;
