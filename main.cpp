@@ -12,8 +12,8 @@
 
 void main_kf_Start_wrapper(void **pW) {
     /* Start_BEGIN */
-    EKF *ekf = new EKF{};
-    pW[0] = ekf;
+    KF *kf = new EKF{};
+    pW[0] = kf;
     /* Start_END */
 }
 
@@ -25,16 +25,16 @@ void main_kf_Outputs_wrapper(const real_T *forces,
                              real_T *aircraftState,
                              void **pW) {
     /* Output_BEGIN */
-    EKF *ekf = static_cast<EKF *>(pW[0]);
-    ekf->updateWrapper(doubleSensorMeasurements, uint8SensorMeasurements, boolSensorMeasurements,
-                       forces, torques, 0.01);
-    ekf->getOutputWrapper(aircraftState);
+    KF *kf = static_cast<KF *>(pW[0]);
+    kf->updateWrapper(doubleSensorMeasurements, uint8SensorMeasurements, boolSensorMeasurements,
+                      forces, torques, 0.01);
+    kf->getOutputWrapper(aircraftState);
     /* Output_END */
 }
 
 void main_kf_Terminate_wrapper(void **pW) {
     /* Terminate_BEGIN */
-    EKF *ekf = static_cast<EKF *>(pW[0]);
-    delete ekf;
+    KF *kf = static_cast<KF *>(pW[0]);
+    delete kf;
     /* Terminate_END */
 }
