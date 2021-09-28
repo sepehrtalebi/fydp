@@ -84,8 +84,22 @@ public:
     }
 
     Matrix<T, 3, 3> toDCM() const {
-        // TODO
-        return Matrix<T, 3, 3>::identity();
+        // https://www.vectornav.com/resources/inertial-navigation-primer/math-fundamentals/math-attitudetran
+        Matrix<T, 3, 3> DCM;
+        T q0q0 = q0 * q0;
+        T q1q1 = q1 * q1;
+        T q2q2 = q2 * q2;
+        T q3q3 = q3 * q3;
+        DCM[0][0] = q3q3 + q0q0 - q1q1 - q2q2;
+        DCM[1][1] = q3q3 - q0q0 + q1q1 - q2q2;
+        DCM[2][2] = q3q3 - q0q0 - q1q1 + q2q2;
+        DCM[0][1] = 2 * (q0 * q1 + q2 * q3);
+        DCM[0][2] = 2 * (q0 * q2 - q1 * q3);
+        DCM[1][2] = 2 * (q1 * q2 + q0 * q3);
+        DCM[1][0] = -DCM[0][1];
+        DCM[2][0] = -DCM[0][2];
+        DCM[2][1] = -DCM[1][2];
+        return DCM;
     }
 
     // OPERATOR OVERLOADING:
