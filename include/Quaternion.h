@@ -21,7 +21,7 @@ public:
     explicit Quaternion(Vector<T, 4> vec) : Quaternion(vec[0], vec[1], vec[2], vec[3]) {}
 
     Quaternion cong() const {
-        return Quaternion{q0, q1, q2, q3};
+        return Quaternion{q0, -q1, -q2, -q3};
     }
 
     Vector3<T> rotate(const Vector3<T> &vec) const {
