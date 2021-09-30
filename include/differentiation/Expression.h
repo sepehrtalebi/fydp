@@ -3,10 +3,15 @@
 #include <string>
 #include <map>
 
-template<typename T>
 class Expression {
 public:
-    virtual T evaluate(std::map<std::string, T> variables) = 0;
+    virtual ~Expression() = default;
 
-    virtual Expression<T> diff(const std::string &identifier) = 0;
+    virtual double evaluate(const std::map<std::string, double> &variables) const = 0;
+
+    virtual Expression* diff(const std::string &id) const = 0;
+
+    virtual std::string toStr() const = 0;
+
+    virtual Expression* copy() const = 0;
 };

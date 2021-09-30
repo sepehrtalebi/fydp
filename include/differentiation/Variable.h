@@ -1,22 +1,22 @@
 #pragma once
 
+#include <utility>
 #include "Expression.h"
 #include "Constant.h"
 
-template<typename T>
-class Variable : public Expression<T> {
+class Variable : public Expression {
 private:
-    std::string id;
+    std::string identifier;
 public:
-    explicit Variable(const std::string &identifier) {
-        this->id = identifier;
-    }
+    explicit Variable(std::string id) : identifier(std::move(id)) {}
 
-    T evaluate(std::map<std::string, T> variables) {
-        return variables[id];
-    }
+    ~Variable() override = default;
 
-    Expression<T> diff(const std::string &identifier) {
-        return Constant<T>{this->id == identifier ? 1 : 0};
-    }
+    double evaluate(const std::map<std::string, double> &variables) const override;
+
+    Expression* diff(const std::string &id) const override;
+
+    std::string toStr() const override;
+
+    Expression* copy() const override;
 };

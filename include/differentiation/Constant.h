@@ -2,21 +2,20 @@
 
 #include "Expression.h"
 
-template<typename T>
-class Constant : public Expression<T> {
+class Constant : public Expression {
 private:
-    T value;
+    double value;
 
 public:
-    explicit Constant(const T &value) {
-        this->value = value;
-    }
+    explicit Constant(const double &value) : value(value) {}
 
-    T evaluate(std::map<std::string, T> /** variables **/) {
-        return value;
-    }
+    ~Constant() override = default;
 
-    Expression<T> diff(const std::string & /** identifier **/) {
-        return Constant<T>{0};
-    }
+    double evaluate(const std::map<std::string, double> &variables) const override;
+
+    Expression* diff(const std::string &identifier) const override;
+
+    std::string toStr() const override;
+
+    Expression* copy() const override;
 };

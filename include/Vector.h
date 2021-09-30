@@ -24,7 +24,7 @@ public:
     }
 
     T magnitude() const {
-        T sum = 0;
+        T sum{};
         for (int i = 0; i < n; i++) sum += data[i] * data[i];
         return sqrt(sum);
     }
@@ -35,7 +35,7 @@ public:
     }
 
     T dot(const Vector<T, n> &other) const {
-        T sum = 0;
+        T sum{};
         for (int i = 0; i < n; i++) sum += data[i] * other[i];
         return sum;
     }

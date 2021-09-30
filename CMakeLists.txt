@@ -11,6 +11,10 @@ add_executable(FYDP tests.cpp
         src/EKF.cpp
         src/SensorMeasurements.cpp
         src/AircraftState.cpp
+        src/differentiation/ExpressionPointer.cpp
+        src/differentiation/Constant.cpp
+        src/differentiation/Variable.cpp
+        src/differentiation/Sum.cpp
         test/TestVector.cpp
         test/TestMatrix.cpp
         test/TestDifferentiation.cpp
