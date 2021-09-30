@@ -4,6 +4,7 @@ project(FYDP)
 set(CMAKE_CXX_STANDARD 14)
 
 include_directories(./include)
+include_directories(./include/differentiation)
 
 add_executable(FYDP tests.cpp
         src/KF.cpp
@@ -12,4 +13,5 @@ add_executable(FYDP tests.cpp
         src/AircraftState.cpp
         test/TestVector.cpp
         test/TestMatrix.cpp
+        test/TestDifferentiation.cpp
         )
