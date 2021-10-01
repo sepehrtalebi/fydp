@@ -7,11 +7,12 @@
 #include <string>
 #include <utility>
 
-class Variable : public Expression {
+class Quotient : public Expression {
 private:
-    std::string identifier;
+    std::shared_ptr<Expression> num;
+    std::shared_ptr<Expression> den;
 public:
-    explicit Variable(std::string id) : identifier(std::move(id)) {}
+    Quotient(std::shared_ptr<Expression> num, std::shared_ptr<Expression> den) : num(std::move(num)), den(std::move(den)) {}
 
     double evaluate(const std::map<std::string, double> &variables) const override;
 

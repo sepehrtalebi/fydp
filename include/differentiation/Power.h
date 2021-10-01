@@ -7,11 +7,12 @@
 #include <string>
 #include <utility>
 
-class Variable : public Expression {
+class Power : public Expression {
 private:
-    std::string identifier;
+    std::shared_ptr<Expression> base;
+    std::shared_ptr<Expression> power;
 public:
-    explicit Variable(std::string id) : identifier(std::move(id)) {}
+    Power(std::shared_ptr<Expression> base, std::shared_ptr<Expression> power) : base(std::move(base)), power(std::move(power)) {}
 
     double evaluate(const std::map<std::string, double> &variables) const override;
 

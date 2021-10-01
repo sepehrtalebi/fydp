@@ -7,11 +7,12 @@
 #include <string>
 #include <utility>
 
-class Variable : public Expression {
+class Difference : public Expression {
 private:
-    std::string identifier;
+    std::shared_ptr<Expression> left;
+    std::shared_ptr<Expression> right;
 public:
-    explicit Variable(std::string id) : identifier(std::move(id)) {}
+    Difference(std::shared_ptr<Expression> left, std::shared_ptr<Expression> right) : left(std::move(left)), right(std::move(right)) {}
 
     double evaluate(const std::map<std::string, double> &variables) const override;
 

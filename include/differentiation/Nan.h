@@ -6,16 +6,13 @@
 #include <memory>
 #include <string>
 
-class Constant : public Expression {
-private:
-    double value;
-
+class Nan : public Expression {
 public:
-    explicit Constant(const double &value) : value(value) {}
-
     double evaluate(const std::map<std::string, double> &variables) const override;
 
     std::shared_ptr<Expression> diff(const std::string &identifier) const override;
 
     std::string toStr() const override;
+
+    bool isNan() const override;
 };

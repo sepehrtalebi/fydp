@@ -1,22 +1,22 @@
 #pragma once
 
 #include "Expression.h"
-#include "ExpressionPointer.h"
+
+#include <map>
+#include <memory>
+#include <string>
+#include <utility>
 
 class Sum : public Expression {
 private:
-    Expression *left;
-    Expression *right;
+    std::shared_ptr<Expression> left;
+    std::shared_ptr<Expression> right;
 public:
-    Sum(Expression *left, Expression *right) : left(left), right(right) {}
-
-    ~Sum() override;
+    Sum(std::shared_ptr<Expression> left, std::shared_ptr<Expression> right) : left(std::move(left)), right(std::move(right)) {}
 
     double evaluate(const std::map<std::string, double> &variables) const override;
 
-    Expression *diff(const std::string &id) const override;
+    std::shared_ptr<Expression> diff(const std::string &id) const override;
 
     std::string toStr() const override;
-
-    Expression *copy() const override;
 };
