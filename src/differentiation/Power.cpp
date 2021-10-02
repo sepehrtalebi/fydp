@@ -19,7 +19,7 @@ std::shared_ptr<Expression> Power::subs(const std::map<std::string, std::shared_
 }
 
 std::string Power::toStr() const {
-    return "(" + power->toStr() + " ^ " + power->toStr() + ")";
+    return "(" + base->toStr() + " ^ " + power->toStr() + ")";
 }
 
 std::shared_ptr<Expression> pow(const std::shared_ptr<Expression> &base, const std::shared_ptr<Expression> &power) {
@@ -43,5 +43,5 @@ std::shared_ptr<Expression> pow(const double &num, const std::shared_ptr<Express
 }
 
 std::shared_ptr<Expression> sqrt(const std::shared_ptr<Expression> &expr) {
-    return pow(expr, std::make_shared<Constant>(1 / 2));
+    return pow(expr, std::make_shared<Constant>(1.0 / 2.0));
 }
