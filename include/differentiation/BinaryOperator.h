@@ -35,6 +35,8 @@ protected:
 
     virtual bool isCommutative() const;
 
+    // This function only guarantees the left distributive property. The right distributive property is implied given
+    // distributivity and commutativity.
     virtual bool isDistributiveOn(const std::string &type) const;
 };
 
