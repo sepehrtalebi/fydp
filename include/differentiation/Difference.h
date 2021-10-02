@@ -22,3 +22,17 @@ public:
 
     std::string toStr() const override;
 };
+
+std::shared_ptr<Expression> operator-(const std::shared_ptr<Expression> &expr1, const std::shared_ptr<Expression> &expr2);
+
+std::shared_ptr<Expression> operator-(const std::shared_ptr<Expression> &expr);
+
+std::shared_ptr<Expression> operator-(const std::shared_ptr<Expression> &expr, const double &num);
+
+std::shared_ptr<Expression> operator-(const double &num, const std::shared_ptr<Expression> &expr);
+
+void operator-=(std::shared_ptr<Expression> &expr1, const std::shared_ptr<Expression> &expr2);
+
+void operator-=(std::shared_ptr<Expression> &expr, const double &num);
+
+void operator-=(const double &num, std::shared_ptr<Expression> &expr);

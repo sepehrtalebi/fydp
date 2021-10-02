@@ -22,3 +22,11 @@ public:
 
     std::string toStr() const override;
 };
+
+std::shared_ptr<Expression> pow(const std::shared_ptr<Expression> &expr1, const std::shared_ptr<Expression> &expr2);
+
+std::shared_ptr<Expression> pow(const std::shared_ptr<Expression> &expr, double &num);
+
+std::shared_ptr<Expression> pow(const double &num, const std::shared_ptr<Expression> &expr);
+
+std::shared_ptr<Expression> sqrt(const std::shared_ptr<Expression> &expr);
