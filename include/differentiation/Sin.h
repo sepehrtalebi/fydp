@@ -1,27 +1,24 @@
 #pragma once
 
-#include "Expression.h"
+#include "UnaryOperator.h"
 
 #include <map>
 #include <memory>
 #include <string>
 #include <utility>
 
-class Sin : public Expression {
-private:
-    std::shared_ptr<Expression> value;
+class Sin : public UnaryOperator {
 public:
-    Sin(std::shared_ptr<Expression> value) : value(std::move(value)) {}
+    explicit Sin(const std::shared_ptr<Expression> &operand) : UnaryOperator(operand) {}
 
-    double evaluate(const std::map<std::string, double> &variables) const override;
+protected:
+    double call(const double &operand) const override;
 
-    std::shared_ptr<Expression> diff(const std::string &id) const override;
+    std::shared_ptr<Expression> call(const std::shared_ptr<Expression> &operand) const override;
 
-    std::shared_ptr<Expression> subs(const std::map<std::string, std::shared_ptr<Expression>> &subs) const override;
+    std::shared_ptr<Expression> derivative(const std::shared_ptr<Expression> &expr) const override;
 
-    std::shared_ptr<Expression> simplify() const override;
-
-    std::string toStr() const override;
+    std::string toStrWrapper(const std::string &operandString) const override;
 };
 
 std::shared_ptr<Expression> sin(const std::shared_ptr<Expression> &expr);

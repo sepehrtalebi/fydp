@@ -17,6 +17,7 @@ add_executable(FYDP tests.cpp
         src/differentiation/Nan.cpp
         src/differentiation/Constant.cpp
         src/differentiation/Variable.cpp
+        src/differentiation/UnaryOperator.cpp
         src/differentiation/Sum.cpp
         src/differentiation/Difference.cpp
         src/differentiation/Product.cpp
