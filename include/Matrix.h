@@ -81,14 +81,14 @@ public:
     Matrix<T, n, p> operator*(const Matrix<T, m, p> &other) const {
         Matrix<T, n, p> product = Matrix<T, n, p>::zeros();
         for (int i = 0; i < n; i++) for (int j = 0; j < p; j++)
-            for (int k = 0; k < m; k++) product[i][j] = product[i][j] + (data[i][k] * other[k][j]);
+            for (int k = 0; k < m; k++) product[i][j] += data[i][k] * other[k][j];
         return product;
     }
 
     Vector<T, n> operator*(const Vector<T, m> &vec) const {
         Vector<T, n> product{};
         for (int i = 0; i < n; i++) for (int j = 0; j < m; j++)
-            product[i] = product[i] + (data[i][j] * vec[j]);
+            product[i] += data[i][j] * vec[j];
         return product;
     }
 

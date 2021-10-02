@@ -25,8 +25,8 @@ public:
 
     T magnitude() const {
         T sum{};
-        for (int i = 0; i < n; i++) sum = sum + (data[i] * data[i]);
-        return sum; //sqrt(sum);
+        for (int i = 0; i < n; i++) sum += data[i] * data[i];
+        return sqrt(sum);
     }
 
     void normalize() {
