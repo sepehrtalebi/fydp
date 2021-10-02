@@ -1,4 +1,5 @@
 #include "Power.h"
+#include "Zero.h"
 #include "One.h"
 #include "Nan.h"
 #include "Constant.h"
@@ -26,25 +27,25 @@ std::string Power::type() const {
 }
 
 ExprPtr pow(const ExprPtr &base, const ExprPtr &power) {
-    if (!base || !power) return std::make_shared<Nan>();
+    if (!base || !power) return Nan::INSTANCE;
 
-    if (base->isNan()) return base;
-    if (power->isNan()) return power;
-    if (base->isZero() && power->isZero()) return std::make_shared<One>();
-    if (base->isZero() || base->isOne()) return base;
-    if (power->isOne()) return base;
-    if (power->isZero()) return std::make_shared<One>();
+    if (base == Nan::INSTANCE) return base;
+    if (power == Nan::INSTANCE) return power;
+    if (base == Zero::INSTANCE && power == Zero::INSTANCE) return One::INSTANCE;
+    if (base == Zero::INSTANCE || base == One::INSTANCE) return base;
+    if (power == One::INSTANCE) return base;
+    if (power == Zero::INSTANCE) return One::INSTANCE;
     return std::make_shared<Power>(base, power);
 }
 
 ExprPtr pow(const ExprPtr &expr, const double &num) {
-    return pow(expr, std::make_shared<Constant>(num));
+    return pow(expr, Constant::make(num));
 }
 
 ExprPtr pow(const double &num, const ExprPtr &expr) {
-    return pow(std::make_shared<Constant>(num), expr);
+    return pow(Constant::make(num), expr);
 }
 
 ExprPtr sqrt(const ExprPtr &expr) {
-    return pow(expr, std::make_shared<Constant>(1.0 / 2.0));
+    return pow(expr, Constant::make(1. / 2.));
 }

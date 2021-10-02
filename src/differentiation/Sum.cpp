@@ -1,5 +1,6 @@
 #include "Sum.h"
 #include "Zero.h"
+#include "Nan.h"
 #include "Constant.h"
 #include "Variable.h"
 
@@ -42,23 +43,23 @@ bool Sum::isCommutative() const {
 }
 
 ExprPtr operator+(const ExprPtr &expr1, const ExprPtr &expr2) {
-    if (!expr1 && !expr2) return std::make_shared<Zero>();
+    if (!expr1 && !expr2) return Zero::INSTANCE;
     if (!expr1) return expr2;
     if (!expr2) return expr1;
 
-    if (expr1->isNan()) return expr1;
-    if (expr2->isNan()) return expr2;
-    if (expr1->isZero()) return expr2;
-    if (expr2->isZero()) return expr1;
+    if (expr1 == Nan::INSTANCE) return expr1;
+    if (expr2 == Nan::INSTANCE) return expr2;
+    if (expr1 == Zero::INSTANCE) return expr2;
+    if (expr2 == Zero::INSTANCE) return expr1;
     return std::make_shared<Sum>(expr1, expr2);
 }
 
 ExprPtr operator+(const ExprPtr &expr, const double &num) {
-    return expr + std::make_shared<Constant>(num);
+    return expr + Constant::make(num);
 }
 
 ExprPtr operator+(const double &num, const ExprPtr &expr) {
-    return expr + std::make_shared<Constant>(num);
+    return expr + Constant::make(num);
 }
 
 void operator+=(ExprPtr &expr1, const ExprPtr &expr2) {

@@ -10,8 +10,6 @@ ExprPtr BinaryOperator::subs(const std::map<std::string, ExprPtr> &subs) const {
 }
 
 ExprPtr BinaryOperator::simplify() const {
-    typedef std::shared_ptr<Constant> ConstPtr;
-
     ExprPtr simplified_first = first->simplify();
     ExprPtr simplified_second = second->simplify();
 
@@ -19,7 +17,7 @@ ExprPtr BinaryOperator::simplify() const {
     ConstPtr first_const = std::dynamic_pointer_cast<Constant>(simplified_first);
     ConstPtr second_const = std::dynamic_pointer_cast<Constant>(simplified_second);
     if (first_const && second_const) {
-        return std::make_shared<Constant>(call(first_const->getValue(), second_const->getValue()));
+        return Constant::make(call(first_const->getValue(), second_const->getValue()));
     }
 
     if (isAssociative()) {
@@ -39,7 +37,7 @@ ExprPtr BinaryOperator::simplify() const {
         if (first_const && second_bin_op) {
             ConstPtr second_first_const = std::dynamic_pointer_cast<Constant>(second_bin_op->first);
             if (second_first_const) {
-                ConstPtr combined_const = std::make_shared<Constant>(call(first_const->getValue(), second_first_const->getValue()));
+                ConstPtr combined_const = Constant::make(call(first_const->getValue(), second_first_const->getValue()));
                 return call(combined_const, second_bin_op->second);
             }
         }
@@ -48,7 +46,7 @@ ExprPtr BinaryOperator::simplify() const {
         else if (second_const && first_bin_op) {
             ConstPtr first_second_const = std::dynamic_pointer_cast<Constant>(first_bin_op->second);
             if (first_second_const) {
-                ConstPtr combined_const = std::make_shared<Constant>(call(first_second_const->getValue(), second_const->getValue()));
+                ConstPtr combined_const = Constant::make(call(first_second_const->getValue(), second_const->getValue()));
                 return call(first_bin_op->first, combined_const);
             }
 
@@ -56,7 +54,7 @@ ExprPtr BinaryOperator::simplify() const {
                 // Handle cases of the form ((const @ expr) @ const)
                 ConstPtr first_first_const = std::dynamic_pointer_cast<Constant>(first_bin_op->first);
                 if (first_first_const) {
-                    ConstPtr combined_const = std::make_shared<Constant>(call(first_first_const->getValue(), second_const->getValue()));
+                    ConstPtr combined_const = Constant::make(call(first_first_const->getValue(), second_const->getValue()));
                     return call(combined_const, first_bin_op->second);
                 }
             }
@@ -67,7 +65,7 @@ ExprPtr BinaryOperator::simplify() const {
             ConstPtr first_second_const = std::dynamic_pointer_cast<Constant>(first_bin_op->second);
             ConstPtr second_first_const = std::dynamic_pointer_cast<Constant>(second_bin_op->first);
             if (first_second_const && second_first_const) {
-                ConstPtr combined_const = std::make_shared<Constant>(
+                ConstPtr combined_const = Constant::make(
                         call(first_second_const->getValue(), second_first_const->getValue()));
                 // bracket choice is arbitrary
                 return call(first_bin_op->first, call(combined_const, second_bin_op->second));
@@ -77,7 +75,7 @@ ExprPtr BinaryOperator::simplify() const {
                 // Handle cases of the form ((const @ expr) @ (const @ expr))
                 ConstPtr first_first_const = std::dynamic_pointer_cast<Constant>(first_bin_op->first);
                 if (first_first_const && second_first_const) {
-                    ConstPtr combined_const = std::make_shared<Constant>(
+                    ConstPtr combined_const = Constant::make(
                             call(first_first_const->getValue(), second_first_const->getValue()));
                     return call(combined_const, call(first_bin_op->second, second_bin_op->second));
                 }

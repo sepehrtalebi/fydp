@@ -17,7 +17,7 @@ ExprPtr UnaryOperator::simplify() const {
     // try evaluating constants
     std::shared_ptr<Constant> operand_const = std::dynamic_pointer_cast<Constant>(operand);
     if (operand_const) {
-        return std::make_shared<Constant>(call(operand_const->getValue()));
+        return Constant::make(call(operand_const->getValue()));
     }
     return call(operand->simplify());
 }

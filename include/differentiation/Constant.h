@@ -6,12 +6,15 @@
 #include <memory>
 #include <string>
 
-class Constant : public Expression {
-private:
-    double value;
+class Constant;
 
+typedef std::shared_ptr<Constant> ConstPtr;
+
+class Constant : public Expression {
 public:
-    explicit Constant(const double &value) : value(value) {}
+    Constant() = delete;
+
+    static ConstPtr make(const double &value);
 
     double evaluate(const std::map<std::string, double> &variables) const override;
 
@@ -24,4 +27,10 @@ public:
     std::string toStr() const override;
 
     double getValue() const;
+
+protected:
+    explicit Constant(const double &value) : value(value) {}
+
+private:
+    double value;
 };

@@ -1,14 +1,19 @@
 #pragma once
 
-#include "Expression.h"
+#include "Constant.h"
 
 #include <map>
 #include <memory>
 #include <string>
+#include <limits>
 
-class Nan : public Expression {
+class Nan : public Constant {
 public:
-    double evaluate(const std::map<std::string, double> &variables) const override;
+    static const ConstPtr INSTANCE;
+
+    Nan(const Nan &) = delete;
+
+    void operator=(const Nan &) = delete;
 
     ExprPtr diff(const std::string &identifier) const override;
 
@@ -18,5 +23,6 @@ public:
 
     std::string toStr() const override;
 
-    bool isNan() const override;
+private:
+    Nan() noexcept : Constant(std::numeric_limits<double>::quiet_NaN()) {}
 };

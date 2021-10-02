@@ -22,12 +22,6 @@ public:
     virtual ExprPtr simplify() const = 0;
 
     virtual std::string toStr() const = 0;
-
-    virtual bool isZero() const;
-
-    virtual bool isOne() const;
-
-    virtual bool isNan() const;
 };
 
 // We need to #include all direct sub-classes because they overload operators for ExprPtr

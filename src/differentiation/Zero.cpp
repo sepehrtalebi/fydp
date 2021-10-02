@@ -1,25 +1,15 @@
 #include "Zero.h"
 
-double Zero::evaluate(const std::map<std::string, double> &/** variables **/) const {
-    return 0;
-}
-
-ExprPtr Zero::diff(const std::string & /** identifier **/) const {
-    return std::make_shared<Zero>();
-}
+const ConstPtr Zero::INSTANCE = std::shared_ptr<Zero>(new Zero()); // NOLINT(cert-err58-cpp)
 
 ExprPtr Zero::subs(const std::map<std::string, ExprPtr> & /** subs **/) const {
-    return std::make_shared<Zero>();
+    return Zero::INSTANCE;
 }
 
 ExprPtr Zero::simplify() const {
-    return std::make_shared<Zero>();
+    return Zero::INSTANCE;
 }
 
 std::string Zero::toStr() const {
     return "0";
-}
-
-bool Zero::isZero() const {
-    return true;
 }

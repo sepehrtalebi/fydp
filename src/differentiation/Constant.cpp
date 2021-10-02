@@ -1,20 +1,31 @@
 #include "Constant.h"
 #include "Zero.h"
+#include "One.h"
+#include "Nan.h"
+
+#include <cmath>
+
+ConstPtr Constant::make(const double &value) {
+    if (value == 0.) return Zero::INSTANCE;
+    if (value == 1.) return One::INSTANCE;
+    if (std::isnan(value)) return Nan::INSTANCE;
+    return std::shared_ptr<Constant>(new Constant(value));
+}
 
 double Constant::evaluate(const std::map<std::string, double> &/** variables **/) const {
     return value;
 }
 
 ExprPtr Constant::diff(const std::string & /** identifier **/) const {
-    return std::make_shared<Zero>();
+    return Zero::INSTANCE;
 }
 
 ExprPtr Constant::subs(const std::map<std::string, ExprPtr> & /** subs **/) const {
-    return std::make_shared<Constant>(value);
+    return make(value);
 }
 
 ExprPtr Constant::simplify() const {
-    return std::make_shared<Constant>(value);
+    return make(value);
 }
 
 std::string Constant::toStr() const {

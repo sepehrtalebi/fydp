@@ -21,7 +21,7 @@ std::string Sin::toStrWrapper(const std::string &operandString) const {
 }
 
 ExprPtr sin(const ExprPtr &expr) {
-    if (!expr) return std::make_shared<Nan>();
-    if (expr->isZero()) return std::make_shared<Zero>();
+    if (!expr) return Nan::INSTANCE;
+    if (expr == Zero::INSTANCE) return Zero::INSTANCE;
     return std::make_shared<Sin>(expr);
 }

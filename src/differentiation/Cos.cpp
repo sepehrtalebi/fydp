@@ -1,4 +1,5 @@
 #include "Cos.h"
+#include "Zero.h"
 #include "One.h"
 #include "Nan.h"
 
@@ -21,7 +22,7 @@ std::string Cos::toStrWrapper(const std::string &operandString) const {
 }
 
 ExprPtr cos(const ExprPtr &expr) {
-    if (!expr) return std::make_shared<Nan>();
-    if (expr->isZero()) return std::make_shared<One>();
+    if (!expr) return Nan::INSTANCE;
+    if (expr == Zero::INSTANCE) return One::INSTANCE;
     return std::make_shared<Cos>(expr);
 }

@@ -1,5 +1,7 @@
 #include "Product.h"
+#include "Zero.h"
 #include "One.h"
+#include "Nan.h"
 #include "Constant.h"
 #include "Variable.h"
 
@@ -46,25 +48,25 @@ bool Product::isDistributiveOn(const std::string &type) const {
 }
 
 std::shared_ptr <Expression> operator*(const std::shared_ptr <Expression> &expr1, const std::shared_ptr <Expression> &expr2) {
-    if (!expr1 && !expr2) return std::make_shared<One>();
+    if (!expr1 && !expr2) return One::INSTANCE;
     if (!expr1) return expr2;
     if (!expr2) return expr1;
 
-    if (expr1->isNan()) return expr1;
-    if (expr2->isNan()) return expr2;
-    if (expr1->isZero()) return expr1;
-    if (expr2->isZero()) return expr2;
-    if (expr1->isOne()) return expr2;
-    if (expr2->isOne()) return expr1;
+    if (expr1 == Nan::INSTANCE) return expr1;
+    if (expr2 == Nan::INSTANCE) return expr2;
+    if (expr1 == Zero::INSTANCE) return expr1;
+    if (expr2 == Zero::INSTANCE) return expr2;
+    if (expr1 == One::INSTANCE) return expr2;
+    if (expr2 == One::INSTANCE) return expr1;
     return std::make_shared<Product>(expr1, expr2);
 }
 
 std::shared_ptr <Expression> operator*(const std::shared_ptr <Expression> &expr, const double &num) {
-    return std::make_shared<Constant>(num) * expr;
+    return Constant::make(num) * expr;
 }
 
 std::shared_ptr <Expression> operator*(const double &num, const std::shared_ptr <Expression> &expr) {
-    return std::make_shared<Constant>(num) * expr;
+    return Constant::make(num) * expr;
 }
 
 void operator*=(std::shared_ptr <Expression> &expr1, const std::shared_ptr <Expression> &expr2) {

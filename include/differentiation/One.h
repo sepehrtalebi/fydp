@@ -1,16 +1,18 @@
 #pragma once
 
-#include "Expression.h"
+#include "Constant.h"
 
 #include <map>
 #include <memory>
 #include <string>
 
-class One : public Expression {
+class One : public Constant {
 public:
-    double evaluate(const std::map<std::string, double> &variables) const override;
+    static const ConstPtr INSTANCE;
 
-    ExprPtr diff(const std::string &identifier) const override;
+    One(const One &) = delete;
+
+    void operator=(const One &) = delete;
 
     ExprPtr subs(const std::map<std::string, ExprPtr> &subs) const override;
 
@@ -18,5 +20,6 @@ public:
 
     std::string toStr() const override;
 
-    bool isOne() const override;
+private:
+    One() noexcept : Constant(1) {}
 };

@@ -7,8 +7,8 @@ double Variable::evaluate(const std::map<std::string, double> &variables) const 
 }
 
 ExprPtr Variable::diff(const std::string &id) const {
-    if (identifier == id) return std::make_shared<One>();
-    return std::make_shared<Zero>();
+    if (identifier == id) return One::INSTANCE;
+    return Zero::INSTANCE;
 }
 
 ExprPtr Variable::subs(const std::map<std::string, ExprPtr> & subs) const {

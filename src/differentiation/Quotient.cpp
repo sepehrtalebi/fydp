@@ -1,4 +1,5 @@
 #include "Quotient.h"
+#include "Zero.h"
 #include "One.h"
 #include "Nan.h"
 #include "Constant.h"
@@ -12,7 +13,7 @@ ExprPtr Quotient::simplify() const {
     std::shared_ptr<Variable> first_var = std::dynamic_pointer_cast<Variable>(first);
     std::shared_ptr<Variable> second_var = std::dynamic_pointer_cast<Variable>(second);
     if (first_var && second_var && first_var->getIdentifier() == second_var->getIdentifier()) {
-        return std::make_shared<One>();
+        return One::INSTANCE;
     }
 
     return BinaryOperator::simplify();
@@ -34,26 +35,26 @@ std::string Quotient::type() const {
     return "/";
 }
 
-ExprPtr operator/(const ExprPtr &expr1, const ExprPtr &expr2) {
-    if (!expr1 && !expr2) return std::make_shared<One>();
-    if (!expr1) return expr2;
-    if (!expr2) return expr1;
+ExprPtr operator/(const ExprPtr &num, const ExprPtr &den) {
+    if (!num && !den) return One::INSTANCE;
+    if (!num) return den;
+    if (!den) return num;
 
-    if (expr1->isNan()) return expr1;
-    if (expr2->isNan()) return expr2;
-    if (expr2->isZero()) return std::make_shared<Nan>();
-    if (expr2->isOne()) return expr1;
-    if (expr1->isZero()) return expr1;
-    // no special case needed if expr1->isOne()
-    return std::make_shared<Quotient>(expr1, expr2);
+    if (num == Nan::INSTANCE) return num;
+    if (den == Nan::INSTANCE) return den;
+    if (den == Zero::INSTANCE) return Nan::INSTANCE;
+    if (den == One::INSTANCE) return num;
+    if (num == Zero::INSTANCE) return num;
+    // no special case needed if num->isOne()
+    return std::make_shared<Quotient>(num, den);
 }
 
 ExprPtr operator/(const ExprPtr &expr, const double &num) {
-    return expr / std::make_shared<Constant>(num);
+    return expr / Constant::make(num);
 }
 
 ExprPtr operator/(const double &num, const ExprPtr &expr) {
-    return std::make_shared<Constant>(num) / expr;
+    return Constant::make(num) / expr;
 }
 
 void operator/=(ExprPtr &expr1, const ExprPtr &expr2) {

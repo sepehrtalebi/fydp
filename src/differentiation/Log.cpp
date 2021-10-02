@@ -1,5 +1,6 @@
 #include "Log.h"
 #include "Zero.h"
+#include "One.h"
 #include "Nan.h"
 
 #include <cmath>
@@ -21,7 +22,7 @@ std::string Log::toStrWrapper(const std::string &operandString) const {
 }
 
 ExprPtr log(const ExprPtr &expr) {
-    if (!expr || expr->isZero()) return std::make_shared<Nan>();
-    if (expr->isOne()) return std::make_shared<Zero>();
+    if (!expr || expr == Zero::INSTANCE) return Nan::INSTANCE;
+    if (expr == One::INSTANCE) return Zero::INSTANCE;
     return std::make_shared<Log>(expr);
 }
