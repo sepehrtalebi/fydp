@@ -12,6 +12,10 @@ std::shared_ptr<Expression> Zero::subs(const std::map<std::string, std::shared_p
     return std::make_shared<Zero>();
 }
 
+std::shared_ptr<Expression> Zero::simplify() const {
+    return std::make_shared<Zero>();
+}
+
 std::string Zero::toStr() const {
     return "0";
 }

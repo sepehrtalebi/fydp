@@ -15,6 +15,8 @@ public:
 
     virtual std::shared_ptr<Expression> subs(const std::map<std::string, std::shared_ptr<Expression>> &subs) const = 0;
 
+    virtual std::shared_ptr<Expression> simplify() const = 0;
+
     virtual std::string toStr() const = 0;
 
     virtual bool isZero() const;

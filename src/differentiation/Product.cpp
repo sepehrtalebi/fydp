@@ -15,6 +15,16 @@ std::shared_ptr<Expression> Product::subs(const std::map<std::string, std::share
     return left->subs(subs) * right->subs(subs);
 }
 
+std::shared_ptr<Expression> Product::simplify() const {
+    // try combining constants
+    std::shared_ptr<Constant> left_const = std::dynamic_pointer_cast<Constant>(left);
+    std::shared_ptr<Constant> right_const = std::dynamic_pointer_cast<Constant>(right);
+    if (left_const && right_const) {
+        return std::make_shared<Constant>(left_const->getValue() * right_const->getValue());
+    }
+    return left->simplify() * right->simplify();
+}
+
 std::string Product::toStr() const {
     return "(" + left->toStr() + " * " + right->toStr() + ")";
 }
@@ -34,7 +44,7 @@ std::shared_ptr <Expression> operator*(const std::shared_ptr <Expression> &expr1
 }
 
 std::shared_ptr <Expression> operator*(const std::shared_ptr <Expression> &expr, const double &num) {
-    return expr * std::make_shared<Constant>(num);
+    return std::make_shared<Constant>(num) * expr;
 }
 
 std::shared_ptr <Expression> operator*(const double &num, const std::shared_ptr <Expression> &expr) {
@@ -46,7 +56,7 @@ void operator*=(std::shared_ptr <Expression> &expr1, const std::shared_ptr <Expr
 }
 
 void operator*=(std::shared_ptr <Expression> &expr, const double &num) {
-    expr = expr * num;
+    expr = num * expr;
 }
 
 void operator*=(const double &num, std::shared_ptr <Expression> &expr) {

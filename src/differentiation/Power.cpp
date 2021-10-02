@@ -18,6 +18,16 @@ std::shared_ptr<Expression> Power::subs(const std::map<std::string, std::shared_
     return std::make_shared<Power>(base->subs(subs), power->subs(subs));
 }
 
+std::shared_ptr<Expression> Power::simplify() const {
+    // try combining constants
+    std::shared_ptr<Constant> base_const = std::dynamic_pointer_cast<Constant>(base);
+    std::shared_ptr<Constant> power_const = std::dynamic_pointer_cast<Constant>(power);
+    if (base_const && power_const) {
+        return std::make_shared<Constant>(pow(base_const->getValue(), power_const->getValue()));
+    }
+    return pow(base->simplify(), power->simplify());
+}
+
 std::string Power::toStr() const {
     return "(" + base->toStr() + " ^ " + power->toStr() + ")";
 }

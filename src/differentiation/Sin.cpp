@@ -2,6 +2,7 @@
 #include "Zero.h"
 #include "Nan.h"
 #include "Sum.h"
+#include "Constant.h"
 
 #include <cmath>
 
@@ -15,6 +16,15 @@ std::shared_ptr<Expression> Sin::diff(const std::string &id) const {
 
 std::shared_ptr<Expression> Sin::subs(const std::map<std::string, std::shared_ptr<Expression>> & subs) const {
     return sin(value->subs(subs));
+}
+
+std::shared_ptr<Expression> Sin::simplify() const {
+    // try evaluating constants
+    std::shared_ptr<Constant> value_const = std::dynamic_pointer_cast<Constant>(value);
+    if (value_const) {
+        return std::make_shared<Constant>(sin(value_const->getValue()));
+    }
+    return sin(value->simplify());
 }
 
 std::string Sin::toStr() const {

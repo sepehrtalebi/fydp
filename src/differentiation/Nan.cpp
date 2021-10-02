@@ -14,6 +14,10 @@ std::shared_ptr<Expression> Nan::subs(const std::map<std::string, std::shared_pt
     return std::make_shared<Nan>();
 }
 
+std::shared_ptr<Expression> Nan::simplify() const {
+    return std::make_shared<Nan>();
+}
+
 std::string Nan::toStr() const {
     return "Nan";
 }

@@ -16,6 +16,16 @@ std::shared_ptr<Expression> Quotient::subs(const std::map<std::string, std::shar
     return num->subs(subs) / den->subs(subs);
 }
 
+std::shared_ptr<Expression> Quotient::simplify() const {
+    // try combining constants
+    std::shared_ptr<Constant> num_const = std::dynamic_pointer_cast<Constant>(num);
+    std::shared_ptr<Constant> den_const = std::dynamic_pointer_cast<Constant>(den);
+    if (num_const && den_const) {
+        return std::make_shared<Constant>(num_const->getValue() / den_const->getValue());
+    }
+    return num->simplify() / den->simplify();
+}
+
 std::string Quotient::toStr() const {
     return "(" + num->toStr() + " / " + den->toStr() + ")";
 }

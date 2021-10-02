@@ -1,6 +1,7 @@
 #include "Difference.h"
 #include "Zero.h"
 #include "Constant.h"
+#include "Variable.h"
 
 double Difference::evaluate(const std::map<std::string, double> &variables) const {
     return left->evaluate(variables) - right->evaluate(variables);
@@ -12,6 +13,24 @@ std::shared_ptr<Expression> Difference::diff(const std::string &id) const {
 
 std::shared_ptr<Expression> Difference::subs(const std::map <std::string, std::shared_ptr<Expression>> &subs) const {
     return left->subs(subs) - right->subs(subs);
+}
+
+std::shared_ptr<Expression> Difference::simplify() const {
+    // try combining variables with the same identifier
+    std::shared_ptr<Variable> left_var = std::dynamic_pointer_cast<Variable>(left);
+    std::shared_ptr<Variable> right_var = std::dynamic_pointer_cast<Variable>(right);
+    if (left_var && right_var && left_var->getIdentifier() == right_var->getIdentifier()) {
+        return std::make_shared<Zero>();
+    }
+
+    // try combining constants
+    std::shared_ptr<Constant> left_const = std::dynamic_pointer_cast<Constant>(left);
+    std::shared_ptr<Constant> right_const = std::dynamic_pointer_cast<Constant>(right);
+    if (left_const && right_const) {
+        return std::make_shared<Constant>(left_const->getValue() - right_const->getValue());
+    }
+
+    return left->simplify() - right->simplify();
 }
 
 std::string Difference::toStr() const {

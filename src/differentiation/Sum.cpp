@@ -1,6 +1,7 @@
 #include "Sum.h"
 #include "Zero.h"
 #include "Constant.h"
+#include "Variable.h"
 
 double Sum::evaluate(const std::map<std::string, double> &variables) const {
     return left->evaluate(variables) + right->evaluate(variables);
@@ -12,6 +13,24 @@ std::shared_ptr<Expression> Sum::diff(const std::string &id) const {
 
 std::shared_ptr<Expression> Sum::subs(const std::map <std::string, std::shared_ptr<Expression>> &subs) const {
     return left->subs(subs) + right->subs(subs);
+}
+
+std::shared_ptr<Expression> Sum::simplify() const {
+    // try combining variables with the same identifier
+    std::shared_ptr<Variable> left_var = std::dynamic_pointer_cast<Variable>(left);
+    std::shared_ptr<Variable> right_var = std::dynamic_pointer_cast<Variable>(right);
+    if (left_var && right_var && left_var->getIdentifier() == right_var->getIdentifier()) {
+        return 2 * left_var;
+    }
+
+    // try combining constants
+    std::shared_ptr<Constant> left_const = std::dynamic_pointer_cast<Constant>(left);
+    std::shared_ptr<Constant> right_const = std::dynamic_pointer_cast<Constant>(right);
+    if (left_const && right_const) {
+        return std::make_shared<Constant>(left_const->getValue() + right_const->getValue());
+    }
+
+    return left->simplify() + right->simplify();
 }
 
 std::string Sum::toStr() const {
@@ -35,7 +54,7 @@ std::shared_ptr<Expression> operator+(const std::shared_ptr<Expression> &expr, c
 }
 
 std::shared_ptr<Expression> operator+(const double &num, const std::shared_ptr<Expression> &expr) {
-    return std::make_shared<Constant>(num) + expr;
+    return expr + std::make_shared<Constant>(num);
 }
 
 void operator+=(std::shared_ptr<Expression> &expr1, const std::shared_ptr<Expression> &expr2) {
@@ -48,5 +67,5 @@ void operator+=(std::shared_ptr<Expression> &expr, const double &num) {
 
 
 void operator+=(const double &num, std::shared_ptr<Expression> &expr) {
-    expr = num + expr;
+    expr = expr + num;
 }

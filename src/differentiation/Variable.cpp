@@ -17,6 +17,14 @@ std::shared_ptr<Expression> Variable::subs(const std::map<std::string, std::shar
     return it->second;
 }
 
+std::shared_ptr<Expression> Variable::simplify() const {
+    return std::make_shared<Variable>(identifier);
+}
+
 std::string Variable::toStr() const {
+    return identifier;
+}
+
+std::string Variable::getIdentifier() const {
     return identifier;
 }

@@ -13,6 +13,10 @@ std::shared_ptr<Expression> One::subs(const std::map<std::string, std::shared_pt
     return std::make_shared<One>();
 }
 
+std::shared_ptr<Expression> One::simplify() const {
+    return std::make_shared<One>();
+}
+
 std::string One::toStr() const {
     return "1";
 }

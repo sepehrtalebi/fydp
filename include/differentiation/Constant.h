@@ -19,5 +19,9 @@ public:
 
     std::shared_ptr<Expression> subs(const std::map<std::string, std::shared_ptr<Expression>> &subs) const override;
 
+    std::shared_ptr<Expression> simplify() const override;
+
     std::string toStr() const override;
+
+    double getValue() const;
 };

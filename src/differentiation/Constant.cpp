@@ -13,6 +13,14 @@ std::shared_ptr<Expression> Constant::subs(const std::map<std::string, std::shar
     return std::make_shared<Constant>(value);
 }
 
+std::shared_ptr<Expression> Constant::simplify() const {
+    return std::make_shared<Constant>(value);
+}
+
 std::string Constant::toStr() const {
     return std::to_string(value);
+}
+
+double Constant::getValue() const {
+    return value;
 }
