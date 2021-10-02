@@ -23,6 +23,8 @@ add_executable(FYDP tests.cpp
         src/differentiation/Quotient.cpp
         src/differentiation/Power.cpp
         src/differentiation/Log.cpp
+        src/differentiation/Sin.cpp
+        src/differentiation/Cos.cpp
         test/TestVector.cpp
         test/TestMatrix.cpp
         test/TestDifferentiation.cpp

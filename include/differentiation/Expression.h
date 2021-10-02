@@ -31,3 +31,5 @@ public:
 #include "Quotient.h"
 #include "Power.h"
 #include "Log.h"
+#include "Sin.h"
+#include "Cos.h"
