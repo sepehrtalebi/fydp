@@ -47,3 +47,27 @@ std::shared_ptr<Expression> operator-(const std::shared_ptr<Expression>& expr, c
 std::shared_ptr<Expression> operator*(const std::shared_ptr<Expression>& expr, const double& num);
 
 std::shared_ptr<Expression> operator/(const std::shared_ptr<Expression>& expr, const double& num);
+
+void operator+=(std::shared_ptr<Expression> &expr1, const std::shared_ptr<Expression> &expr2);
+
+void operator-=(std::shared_ptr<Expression> &expr1, const std::shared_ptr<Expression> &expr2);
+
+void operator*=(std::shared_ptr<Expression> &expr1, const std::shared_ptr<Expression> &expr2);
+
+void operator/=(std::shared_ptr<Expression> &expr1, const std::shared_ptr<Expression> &expr2);
+
+void operator+=(std::shared_ptr<Expression> &expr, const double &num);
+
+void operator-=(std::shared_ptr<Expression> &expr, const double &num);
+
+void operator*=(std::shared_ptr<Expression> &expr, const double &num);
+
+void operator/=(std::shared_ptr<Expression> &expr, const double &num);
+
+void operator+=(const double &num, std::shared_ptr<Expression> &expr);
+
+void operator-=(const double &num, std::shared_ptr<Expression> &expr);
+
+void operator*=(const double &num, std::shared_ptr<Expression> &expr);
+
+void operator/=(const double &num, std::shared_ptr<Expression> &expr);

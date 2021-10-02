@@ -79,7 +79,6 @@ std::shared_ptr<Expression> operator/(const std::shared_ptr<Expression>& expr1, 
     return std::make_shared<Quotient>(expr1, expr2);
 }
 
-
 std::shared_ptr<Expression> operator+(const double& num, const std::shared_ptr<Expression>& expr) {
     return std::make_shared<Constant>(num) + expr;
 }
@@ -110,4 +109,52 @@ std::shared_ptr<Expression> operator*(const std::shared_ptr<Expression>& expr, c
 
 std::shared_ptr<Expression> operator/(const std::shared_ptr<Expression>& expr, const double& num) {
     return expr / std::make_shared<Constant>(num);
+}
+
+void operator+=(std::shared_ptr<Expression> &expr1, const std::shared_ptr<Expression> &expr2) {
+    expr1 = expr1 + expr2;
+}
+
+void operator-=(std::shared_ptr<Expression> &expr1, const std::shared_ptr<Expression> &expr2) {
+    expr1 = expr1 - expr2;
+}
+
+void operator*=(std::shared_ptr<Expression> &expr1, const std::shared_ptr<Expression> &expr2) {
+    expr1 = expr1 * expr2;
+}
+
+void operator/=(std::shared_ptr<Expression> &expr1, const std::shared_ptr<Expression> &expr2) {
+    expr1 = expr1 / expr2;
+}
+
+void operator+=(std::shared_ptr<Expression> &expr, const double &num) {
+    expr = expr + num;
+}
+
+void operator-=(std::shared_ptr<Expression> &expr, const double &num) {
+    expr = expr - num;
+}
+
+void operator*=(std::shared_ptr<Expression> &expr, const double &num) {
+    expr = expr * num;
+}
+
+void operator/=(std::shared_ptr<Expression> &expr, const double &num) {
+    expr = expr / num;
+}
+
+void operator+=(const double &num, std::shared_ptr<Expression> &expr) {
+    expr = num + expr;
+}
+
+void operator-=(const double &num, std::shared_ptr<Expression> &expr) {
+    expr = num - expr;
+}
+
+void operator*=(const double &num, std::shared_ptr<Expression> &expr) {
+    expr = num * expr;
+}
+
+void operator/=(const double &num, std::shared_ptr<Expression> &expr) {
+    expr = num / expr;
 }
