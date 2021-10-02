@@ -11,7 +11,7 @@ class Log : public Expression {
 private:
     std::shared_ptr<Expression> value;
 public:
-    Log(const std::shared_ptr<Expression> &value) : value(value) {}
+    Log(std::shared_ptr<Expression> value) : value(std::move(value)) {}
 
     double evaluate(const std::map<std::string, double> &variables) const override;
 

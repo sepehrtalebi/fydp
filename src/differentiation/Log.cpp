@@ -14,7 +14,7 @@ std::shared_ptr<Expression> Log::diff(const std::string &id) const {
 }
 
 std::shared_ptr<Expression> Log::subs(const std::map<std::string, std::shared_ptr<Expression>> & subs) const {
-    return std::make_shared<Log>(value->subs(subs));
+    return log(value->subs(subs));
 }
 
 std::string Log::toStr() const {
