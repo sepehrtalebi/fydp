@@ -9,6 +9,10 @@ std::shared_ptr<Expression> Constant::diff(const std::string & /** identifier **
     return std::make_shared<Zero>();
 }
 
+std::shared_ptr<Expression> Constant::subs(const std::map<std::string, std::shared_ptr<Expression>> & /** subs **/) const {
+    return std::make_shared<Constant>(value);
+}
+
 std::string Constant::toStr() const {
     return std::to_string(value);
 }

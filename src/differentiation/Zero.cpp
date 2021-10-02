@@ -8,6 +8,10 @@ std::shared_ptr<Expression> Zero::diff(const std::string & /** identifier **/) c
     return std::make_shared<Zero>();
 }
 
+std::shared_ptr<Expression> Zero::subs(const std::map<std::string, std::shared_ptr<Expression>> & /** subs **/) const {
+    return std::make_shared<Zero>();
+}
+
 std::string Zero::toStr() const {
     return "0";
 }

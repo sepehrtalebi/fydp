@@ -11,6 +11,12 @@ std::shared_ptr<Expression> Variable::diff(const std::string &id) const {
     return std::make_shared<Zero>();
 }
 
+std::shared_ptr<Expression> Variable::subs(const std::map<std::string, std::shared_ptr<Expression>> & subs) const {
+    auto it = subs.find(identifier);
+    if (it == subs.end()) return std::make_shared<Variable>(identifier);
+    return it->second;
+}
+
 std::string Variable::toStr() const {
     return identifier;
 }
