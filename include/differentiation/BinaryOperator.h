@@ -19,6 +19,8 @@ public:
 
     ExprPtr simplify() const override;
 
+    int nodeCount() const override;
+
 protected:
     ExprPtr first;
     ExprPtr second;

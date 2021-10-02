@@ -22,6 +22,8 @@ public:
     virtual ExprPtr simplify() const = 0;
 
     virtual std::string toStr() const = 0;
+
+    virtual int nodeCount() const;
 };
 
 // We need to #include all direct sub-classes because they overload operators for ExprPtr

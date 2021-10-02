@@ -87,6 +87,10 @@ ExprPtr BinaryOperator::simplify() const {
     return call(simplified_first, simplified_second);
 }
 
+int BinaryOperator::nodeCount() const {
+    return 1 + first->nodeCount() + second->nodeCount();
+}
+
 bool BinaryOperator::isAssociative() const {
     return false;
 }

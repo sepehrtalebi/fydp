@@ -23,6 +23,8 @@ public:
 
     std::string toStr() const override;
 
+    int nodeCount() const override;
+
 protected:
     virtual double call(const double &operand) const = 0;
 
