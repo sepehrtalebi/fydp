@@ -2,34 +2,27 @@
 #include "One.h"
 #include "Nan.h"
 #include "Constant.h"
-#include "Sum.h"
 
 #include <cmath>
 
-double Power::evaluate(const std::map<std::string, double> &variables) const {
-    return pow(base->evaluate(variables), power->evaluate(variables));
-}
-
 ExprPtr Power::diff(const std::string &id) const {
-    return pow(base, power) * (power->diff(id) * log(base) + base->diff(id) * (power / base));
-}
-
-ExprPtr Power::subs(const std::map<std::string, ExprPtr> & subs) const {
-    return std::make_shared<Power>(base->subs(subs), power->subs(subs));
-}
-
-ExprPtr Power::simplify() const {
-    // try combining constants
-    std::shared_ptr<Constant> base_const = std::dynamic_pointer_cast<Constant>(base);
-    std::shared_ptr<Constant> power_const = std::dynamic_pointer_cast<Constant>(power);
-    if (base_const && power_const) {
-        return std::make_shared<Constant>(pow(base_const->getValue(), power_const->getValue()));
-    }
-    return pow(base->simplify(), power->simplify());
+    return pow(first, second) * (second->diff(id) * log(first) + first->diff(id) * (second / first));
 }
 
 std::string Power::toStr() const {
-    return "(" + base->toStr() + " ^ " + power->toStr() + ")";
+    return "(" + first->toStr() + " ^ " + second->toStr() + ")";
+}
+
+double Power::call(const double &first, const double &second) const {
+    return pow(first, second);
+}
+
+ExprPtr Power::call(const ExprPtr &first, const ExprPtr &second) const {
+    return pow(first, second);
+}
+
+std::string Power::type() const {
+    return "pow";
 }
 
 ExprPtr pow(const ExprPtr &base, const ExprPtr &power) {

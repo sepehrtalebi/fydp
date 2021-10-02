@@ -1,32 +1,48 @@
 #include "Product.h"
-#include "Sum.h"
 #include "One.h"
 #include "Constant.h"
-
-double Product::evaluate(const std::map<std::string, double> &variables) const {
-    return left->evaluate(variables) * right->evaluate(variables);
-}
+#include "Variable.h"
 
 ExprPtr Product::diff(const std::string &id) const {
-    return left->diff(id) * right + right->diff(id) * left;
-}
-
-ExprPtr Product::subs(const std::map<std::string, ExprPtr> & subs) const {
-    return left->subs(subs) * right->subs(subs);
+    return first->diff(id) * second + second->diff(id) * first;
 }
 
 ExprPtr Product::simplify() const {
-    // try combining constants
-    std::shared_ptr<Constant> left_const = std::dynamic_pointer_cast<Constant>(left);
-    std::shared_ptr<Constant> right_const = std::dynamic_pointer_cast<Constant>(right);
-    if (left_const && right_const) {
-        return std::make_shared<Constant>(left_const->getValue() * right_const->getValue());
+    std::shared_ptr<Variable> first_var = std::dynamic_pointer_cast<Variable>(first);
+    std::shared_ptr<Variable> second_var = std::dynamic_pointer_cast<Variable>(second);
+    if (first_var && second_var && first_var->getIdentifier() == second_var->getIdentifier()) {
+        return pow(first_var, 2);
     }
-    return left->simplify() * right->simplify();
+
+    return BinaryOperator::simplify();
 }
 
 std::string Product::toStr() const {
-    return "(" + left->toStr() + " * " + right->toStr() + ")";
+    return "(" + first->toStr() + " * " + second->toStr() + ")";
+}
+
+double Product::call(const double &first, const double &second) const {
+    return first * second;
+}
+
+ExprPtr Product::call(const ExprPtr &first, const ExprPtr &second) const {
+    return first * second;
+}
+
+std::string Product::type() const {
+    return "*";
+}
+
+bool Product::isAssociative() const {
+    return true;
+}
+
+bool Product::isCommutative() const {
+    return true;
+}
+
+bool Product::isDistributiveOn(const std::string &type) const {
+    return type == "+" || type == "-";
 }
 
 std::shared_ptr <Expression> operator*(const std::shared_ptr <Expression> &expr1, const std::shared_ptr <Expression> &expr2) {

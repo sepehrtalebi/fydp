@@ -3,38 +3,42 @@
 #include "Constant.h"
 #include "Variable.h"
 
-double Sum::evaluate(const std::map<std::string, double> &variables) const {
-    return left->evaluate(variables) + right->evaluate(variables);
-}
-
 ExprPtr Sum::diff(const std::string &id) const {
-    return left->diff(id) + right->diff(id);
-}
-
-ExprPtr Sum::subs(const std::map <std::string, ExprPtr> &subs) const {
-    return left->subs(subs) + right->subs(subs);
+    return first->diff(id) + second->diff(id);
 }
 
 ExprPtr Sum::simplify() const {
-    // try combining variables with the same identifier
-    std::shared_ptr<Variable> left_var = std::dynamic_pointer_cast<Variable>(left);
-    std::shared_ptr<Variable> right_var = std::dynamic_pointer_cast<Variable>(right);
-    if (left_var && right_var && left_var->getIdentifier() == right_var->getIdentifier()) {
-        return 2 * left_var;
+    std::shared_ptr<Variable> first_var = std::dynamic_pointer_cast<Variable>(first);
+    std::shared_ptr<Variable> second_var = std::dynamic_pointer_cast<Variable>(second);
+    if (first_var && second_var && first_var->getIdentifier() == second_var->getIdentifier()) {
+        return 2 * first_var;
     }
 
-    // try combining constants
-    std::shared_ptr<Constant> left_const = std::dynamic_pointer_cast<Constant>(left);
-    std::shared_ptr<Constant> right_const = std::dynamic_pointer_cast<Constant>(right);
-    if (left_const && right_const) {
-        return std::make_shared<Constant>(left_const->getValue() + right_const->getValue());
-    }
-
-    return left->simplify() + right->simplify();
+    return BinaryOperator::simplify();
 }
 
 std::string Sum::toStr() const {
-    return "(" + left->toStr() + " + " + right->toStr() + ")";
+    return "(" + first->toStr() + " + " + second->toStr() + ")";
+}
+
+double Sum::call(const double &first, const double &second) const {
+    return first + second;
+}
+
+ExprPtr Sum::call(const ExprPtr &first, const ExprPtr &second) const {
+    return first + second;
+}
+
+std::string Sum::type() const {
+    return "+";
+}
+
+bool Sum::isAssociative() const {
+    return true;
+}
+
+bool Sum::isCommutative() const {
+    return true;
 }
 
 ExprPtr operator+(const ExprPtr &expr1, const ExprPtr &expr2) {
@@ -64,7 +68,6 @@ void operator+=(ExprPtr &expr1, const ExprPtr &expr2) {
 void operator+=(ExprPtr &expr, const double &num) {
     expr = expr + num;
 }
-
 
 void operator+=(const double &num, ExprPtr &expr) {
     expr = expr + num;

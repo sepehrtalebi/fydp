@@ -1,33 +1,37 @@
 #include "Quotient.h"
-#include "Difference.h"
 #include "One.h"
 #include "Nan.h"
 #include "Constant.h"
-
-double Quotient::evaluate(const std::map<std::string, double> &variables) const {
-    return num->evaluate(variables) / den->evaluate(variables);
-}
+#include "Variable.h"
 
 ExprPtr Quotient::diff(const std::string &id) const {
-    return (num->diff(id) * den - den->diff(id) * num) / (den * den);
-}
-
-ExprPtr Quotient::subs(const std::map<std::string, ExprPtr> & subs) const {
-    return num->subs(subs) / den->subs(subs);
+    return (first->diff(id) * second - second->diff(id) * first) / (second * second);
 }
 
 ExprPtr Quotient::simplify() const {
-    // try combining constants
-    std::shared_ptr<Constant> num_const = std::dynamic_pointer_cast<Constant>(num);
-    std::shared_ptr<Constant> den_const = std::dynamic_pointer_cast<Constant>(den);
-    if (num_const && den_const) {
-        return std::make_shared<Constant>(num_const->getValue() / den_const->getValue());
+    std::shared_ptr<Variable> first_var = std::dynamic_pointer_cast<Variable>(first);
+    std::shared_ptr<Variable> second_var = std::dynamic_pointer_cast<Variable>(second);
+    if (first_var && second_var && first_var->getIdentifier() == second_var->getIdentifier()) {
+        return std::make_shared<One>();
     }
-    return num->simplify() / den->simplify();
+
+    return BinaryOperator::simplify();
 }
 
 std::string Quotient::toStr() const {
-    return "(" + num->toStr() + " / " + den->toStr() + ")";
+    return "(" + first->toStr() + " / " + second->toStr() + ")";
+}
+
+double Quotient::call(const double &first, const double &second) const {
+    return first / second;
+}
+
+ExprPtr Quotient::call(const ExprPtr &first, const ExprPtr &second) const {
+    return first / second;
+}
+
+std::string Quotient::type() const {
+    return "/";
 }
 
 ExprPtr operator/(const ExprPtr &expr1, const ExprPtr &expr2) {

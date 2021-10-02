@@ -1,28 +1,28 @@
 #pragma once
 
-#include "Expression.h"
+#include "BinaryOperator.h"
 
 #include <map>
 #include <memory>
 #include <string>
 #include <utility>
 
-class Difference : public Expression {
-private:
-    ExprPtr left;
-    ExprPtr right;
+class Difference : public BinaryOperator {
 public:
-    Difference(ExprPtr left, ExprPtr right) : left(std::move(left)), right(std::move(right)) {}
-
-    double evaluate(const std::map<std::string, double> &variables) const override;
+    Difference(ExprPtr first, ExprPtr second) : BinaryOperator(std::move(first), std::move(second)) {}
 
     ExprPtr diff(const std::string &id) const override;
-
-    ExprPtr subs(const std::map<std::string, ExprPtr> &subs) const override;
 
     ExprPtr simplify() const override;
 
     std::string toStr() const override;
+
+protected:
+    double call(const double &first, const double &second) const override;
+
+    ExprPtr call(const ExprPtr &first, const ExprPtr &second) const override;
+
+    std::string type() const override;
 };
 
 ExprPtr operator-(const ExprPtr &expr1, const ExprPtr &expr2);

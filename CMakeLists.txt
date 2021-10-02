@@ -17,15 +17,16 @@ add_executable(FYDP tests.cpp
         src/differentiation/Nan.cpp
         src/differentiation/Constant.cpp
         src/differentiation/Variable.cpp
+        src/differentiation/BinaryOperator.cpp
         src/differentiation/UnaryOperator.cpp
         src/differentiation/Sum.cpp
         src/differentiation/Difference.cpp
         src/differentiation/Product.cpp
         src/differentiation/Quotient.cpp
         src/differentiation/Power.cpp
-        src/differentiation/Log.cpp
         src/differentiation/Sin.cpp
         src/differentiation/Cos.cpp
+        src/differentiation/Log.cpp
         test/TestVector.cpp
         test/TestMatrix.cpp
         test/TestDifferentiation.cpp

@@ -33,8 +33,4 @@ public:
 // We need to #include all direct sub-classes because they overload operators for ExprPtr
 // The direct sub-classes are in turn responsible for #include-ing their subclasses
 #include "UnaryOperator.h"
-#include "Sum.h"
-#include "Difference.h"
-#include "Product.h"
-#include "Quotient.h"
-#include "Power.h"
+#include "BinaryOperator.h"
