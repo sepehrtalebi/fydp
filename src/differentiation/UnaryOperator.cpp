@@ -5,15 +5,15 @@ double UnaryOperator::evaluate(const std::map<std::string, double> &variables) c
     return call(operand->evaluate(variables));
 }
 
-std::shared_ptr<Expression> UnaryOperator::diff(const std::string &id) const {
+ExprPtr UnaryOperator::diff(const std::string &id) const {
     return derivative(operand) * operand->diff(id);
 }
 
-std::shared_ptr<Expression> UnaryOperator::subs(const std::map<std::string, std::shared_ptr<Expression>> & subs) const {
+ExprPtr UnaryOperator::subs(const std::map<std::string, ExprPtr> & subs) const {
     return call(operand->subs(subs));
 }
 
-std::shared_ptr<Expression> UnaryOperator::simplify() const {
+ExprPtr UnaryOperator::simplify() const {
     // try evaluating constants
     std::shared_ptr<Constant> operand_const = std::dynamic_pointer_cast<Constant>(operand);
     if (operand_const) {

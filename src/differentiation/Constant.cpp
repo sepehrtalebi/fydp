@@ -5,15 +5,15 @@ double Constant::evaluate(const std::map<std::string, double> &/** variables **/
     return value;
 }
 
-std::shared_ptr<Expression> Constant::diff(const std::string & /** identifier **/) const {
+ExprPtr Constant::diff(const std::string & /** identifier **/) const {
     return std::make_shared<Zero>();
 }
 
-std::shared_ptr<Expression> Constant::subs(const std::map<std::string, std::shared_ptr<Expression>> & /** subs **/) const {
+ExprPtr Constant::subs(const std::map<std::string, ExprPtr> & /** subs **/) const {
     return std::make_shared<Constant>(value);
 }
 
-std::shared_ptr<Expression> Constant::simplify() const {
+ExprPtr Constant::simplify() const {
     return std::make_shared<Constant>(value);
 }
 

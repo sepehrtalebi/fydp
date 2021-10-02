@@ -7,15 +7,15 @@ double Difference::evaluate(const std::map<std::string, double> &variables) cons
     return left->evaluate(variables) - right->evaluate(variables);
 }
 
-std::shared_ptr<Expression> Difference::diff(const std::string &id) const {
+ExprPtr Difference::diff(const std::string &id) const {
     return left->diff(id) - right->diff(id);
 }
 
-std::shared_ptr<Expression> Difference::subs(const std::map <std::string, std::shared_ptr<Expression>> &subs) const {
+ExprPtr Difference::subs(const std::map <std::string, ExprPtr> &subs) const {
     return left->subs(subs) - right->subs(subs);
 }
 
-std::shared_ptr<Expression> Difference::simplify() const {
+ExprPtr Difference::simplify() const {
     // try combining variables with the same identifier
     std::shared_ptr<Variable> left_var = std::dynamic_pointer_cast<Variable>(left);
     std::shared_ptr<Variable> right_var = std::dynamic_pointer_cast<Variable>(right);
@@ -37,7 +37,7 @@ std::string Difference::toStr() const {
     return "(" + left->toStr() + " - " + right->toStr() + ")";
 }
 
-std::shared_ptr<Expression> operator-(const std::shared_ptr<Expression> &expr1, const std::shared_ptr<Expression> &expr2) {
+ExprPtr operator-(const ExprPtr &expr1, const ExprPtr &expr2) {
     if (!expr1 && !expr2) return std::make_shared<Zero>();
     if (!expr1) return std::make_shared<Product>(std::make_shared<Constant>(-1), expr2);
     if (!expr2) return expr1;
@@ -49,29 +49,29 @@ std::shared_ptr<Expression> operator-(const std::shared_ptr<Expression> &expr1, 
     return std::make_shared<Difference>(expr1, expr2);
 }
 
-std::shared_ptr<Expression> operator-(const std::shared_ptr<Expression> &expr) {
+ExprPtr operator-(const ExprPtr &expr) {
     if (!expr) return std::make_shared<Zero>();
 
     if (expr->isNan() || expr->isZero()) return expr;
     return std::make_shared<Product>(std::make_shared<Constant>(-1), expr);
 }
 
-std::shared_ptr<Expression> operator-(const double &num, const std::shared_ptr<Expression> &expr) {
+ExprPtr operator-(const double &num, const ExprPtr &expr) {
     return std::make_shared<Constant>(num) - expr;
 }
 
-std::shared_ptr<Expression> operator-(const std::shared_ptr<Expression> &expr, const double &num) {
+ExprPtr operator-(const ExprPtr &expr, const double &num) {
     return expr - std::make_shared<Constant>(num);
 }
 
-void operator-=(std::shared_ptr<Expression> &expr1, const std::shared_ptr<Expression> &expr2) {
+void operator-=(ExprPtr &expr1, const ExprPtr &expr2) {
     expr1 = expr1 - expr2;
 }
 
-void operator-=(std::shared_ptr<Expression> &expr, const double &num) {
+void operator-=(ExprPtr &expr, const double &num) {
     expr = expr - num;
 }
 
-void operator-=(const double &num, std::shared_ptr<Expression> &expr) {
+void operator-=(const double &num, ExprPtr &expr) {
     expr = num - expr;
 }

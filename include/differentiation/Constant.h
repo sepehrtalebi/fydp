@@ -15,11 +15,11 @@ public:
 
     double evaluate(const std::map<std::string, double> &variables) const override;
 
-    std::shared_ptr<Expression> diff(const std::string &identifier) const override;
+    ExprPtr diff(const std::string &identifier) const override;
 
-    std::shared_ptr<Expression> subs(const std::map<std::string, std::shared_ptr<Expression>> &subs) const override;
+    ExprPtr subs(const std::map<std::string, ExprPtr> &subs) const override;
 
-    std::shared_ptr<Expression> simplify() const override;
+    ExprPtr simplify() const override;
 
     std::string toStr() const override;
 

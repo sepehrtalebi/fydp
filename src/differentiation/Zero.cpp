@@ -4,15 +4,15 @@ double Zero::evaluate(const std::map<std::string, double> &/** variables **/) co
     return 0;
 }
 
-std::shared_ptr<Expression> Zero::diff(const std::string & /** identifier **/) const {
+ExprPtr Zero::diff(const std::string & /** identifier **/) const {
     return std::make_shared<Zero>();
 }
 
-std::shared_ptr<Expression> Zero::subs(const std::map<std::string, std::shared_ptr<Expression>> & /** subs **/) const {
+ExprPtr Zero::subs(const std::map<std::string, ExprPtr> & /** subs **/) const {
     return std::make_shared<Zero>();
 }
 
-std::shared_ptr<Expression> Zero::simplify() const {
+ExprPtr Zero::simplify() const {
     return std::make_shared<Zero>();
 }
 

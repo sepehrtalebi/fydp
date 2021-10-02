@@ -9,32 +9,32 @@
 
 class Difference : public Expression {
 private:
-    std::shared_ptr<Expression> left;
-    std::shared_ptr<Expression> right;
+    ExprPtr left;
+    ExprPtr right;
 public:
-    Difference(std::shared_ptr<Expression> left, std::shared_ptr<Expression> right) : left(std::move(left)), right(std::move(right)) {}
+    Difference(ExprPtr left, ExprPtr right) : left(std::move(left)), right(std::move(right)) {}
 
     double evaluate(const std::map<std::string, double> &variables) const override;
 
-    std::shared_ptr<Expression> diff(const std::string &id) const override;
+    ExprPtr diff(const std::string &id) const override;
 
-    std::shared_ptr<Expression> subs(const std::map<std::string, std::shared_ptr<Expression>> &subs) const override;
+    ExprPtr subs(const std::map<std::string, ExprPtr> &subs) const override;
 
-    std::shared_ptr<Expression> simplify() const override;
+    ExprPtr simplify() const override;
 
     std::string toStr() const override;
 };
 
-std::shared_ptr<Expression> operator-(const std::shared_ptr<Expression> &expr1, const std::shared_ptr<Expression> &expr2);
+ExprPtr operator-(const ExprPtr &expr1, const ExprPtr &expr2);
 
-std::shared_ptr<Expression> operator-(const std::shared_ptr<Expression> &expr);
+ExprPtr operator-(const ExprPtr &expr);
 
-std::shared_ptr<Expression> operator-(const std::shared_ptr<Expression> &expr, const double &num);
+ExprPtr operator-(const ExprPtr &expr, const double &num);
 
-std::shared_ptr<Expression> operator-(const double &num, const std::shared_ptr<Expression> &expr);
+ExprPtr operator-(const double &num, const ExprPtr &expr);
 
-void operator-=(std::shared_ptr<Expression> &expr1, const std::shared_ptr<Expression> &expr2);
+void operator-=(ExprPtr &expr1, const ExprPtr &expr2);
 
-void operator-=(std::shared_ptr<Expression> &expr, const double &num);
+void operator-=(ExprPtr &expr, const double &num);
 
-void operator-=(const double &num, std::shared_ptr<Expression> &expr);
+void operator-=(const double &num, ExprPtr &expr);

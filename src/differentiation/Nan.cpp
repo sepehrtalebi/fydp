@@ -6,15 +6,15 @@ double Nan::evaluate(const std::map<std::string, double> &/** variables **/) con
     return std::nan("1");
 }
 
-std::shared_ptr<Expression> Nan::diff(const std::string & /** identifier **/) const {
+ExprPtr Nan::diff(const std::string & /** identifier **/) const {
     return std::make_shared<Nan>();
 }
 
-std::shared_ptr<Expression> Nan::subs(const std::map<std::string, std::shared_ptr<Expression>> & /** subs **/) const {
+ExprPtr Nan::subs(const std::map<std::string, ExprPtr> & /** subs **/) const {
     return std::make_shared<Nan>();
 }
 
-std::shared_ptr<Expression> Nan::simplify() const {
+ExprPtr Nan::simplify() const {
     return std::make_shared<Nan>();
 }
 

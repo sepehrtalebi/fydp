@@ -9,16 +9,16 @@
 
 class Cos : public UnaryOperator {
 public:
-    explicit Cos(const std::shared_ptr<Expression> &operand) : UnaryOperator(operand) {}
+    explicit Cos(const ExprPtr &operand) : UnaryOperator(operand) {}
 
 protected:
     double call(const double &operand) const override;
 
-    std::shared_ptr<Expression> call(const std::shared_ptr<Expression> &operand) const override;
+    ExprPtr call(const ExprPtr &operand) const override;
 
-    std::shared_ptr<Expression> derivative(const std::shared_ptr<Expression> &expr) const override;
+    ExprPtr derivative(const ExprPtr &expr) const override;
 
     std::string toStrWrapper(const std::string &operandString) const override;
 };
 
-std::shared_ptr<Expression> cos(const std::shared_ptr<Expression> &expr);
+ExprPtr cos(const ExprPtr &expr);

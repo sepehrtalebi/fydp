@@ -8,15 +8,15 @@ double Quotient::evaluate(const std::map<std::string, double> &variables) const 
     return num->evaluate(variables) / den->evaluate(variables);
 }
 
-std::shared_ptr<Expression> Quotient::diff(const std::string &id) const {
+ExprPtr Quotient::diff(const std::string &id) const {
     return (num->diff(id) * den - den->diff(id) * num) / (den * den);
 }
 
-std::shared_ptr<Expression> Quotient::subs(const std::map<std::string, std::shared_ptr<Expression>> & subs) const {
+ExprPtr Quotient::subs(const std::map<std::string, ExprPtr> & subs) const {
     return num->subs(subs) / den->subs(subs);
 }
 
-std::shared_ptr<Expression> Quotient::simplify() const {
+ExprPtr Quotient::simplify() const {
     // try combining constants
     std::shared_ptr<Constant> num_const = std::dynamic_pointer_cast<Constant>(num);
     std::shared_ptr<Constant> den_const = std::dynamic_pointer_cast<Constant>(den);
@@ -30,7 +30,7 @@ std::string Quotient::toStr() const {
     return "(" + num->toStr() + " / " + den->toStr() + ")";
 }
 
-std::shared_ptr<Expression> operator/(const std::shared_ptr<Expression> &expr1, const std::shared_ptr<Expression> &expr2) {
+ExprPtr operator/(const ExprPtr &expr1, const ExprPtr &expr2) {
     if (!expr1 && !expr2) return std::make_shared<One>();
     if (!expr1) return expr2;
     if (!expr2) return expr1;
@@ -44,22 +44,22 @@ std::shared_ptr<Expression> operator/(const std::shared_ptr<Expression> &expr1, 
     return std::make_shared<Quotient>(expr1, expr2);
 }
 
-std::shared_ptr<Expression> operator/(const std::shared_ptr<Expression> &expr, const double &num) {
+ExprPtr operator/(const ExprPtr &expr, const double &num) {
     return expr / std::make_shared<Constant>(num);
 }
 
-std::shared_ptr<Expression> operator/(const double &num, const std::shared_ptr<Expression> &expr) {
+ExprPtr operator/(const double &num, const ExprPtr &expr) {
     return std::make_shared<Constant>(num) / expr;
 }
 
-void operator/=(std::shared_ptr<Expression> &expr1, const std::shared_ptr<Expression> &expr2) {
+void operator/=(ExprPtr &expr1, const ExprPtr &expr2) {
     expr1 = expr1 / expr2;
 }
 
-void operator/=(std::shared_ptr<Expression> &expr, const double &num) {
+void operator/=(ExprPtr &expr, const double &num) {
     expr = expr / num;
 }
 
-void operator/=(const double &num, std::shared_ptr<Expression> &expr) {
+void operator/=(const double &num, ExprPtr &expr) {
     expr = num / expr;
 }

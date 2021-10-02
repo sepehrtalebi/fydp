@@ -9,26 +9,26 @@
 
 class Power : public Expression {
 private:
-    std::shared_ptr<Expression> base;
-    std::shared_ptr<Expression> power;
+    ExprPtr base;
+    ExprPtr power;
 public:
-    Power(std::shared_ptr<Expression> base, std::shared_ptr<Expression> power) : base(std::move(base)), power(std::move(power)) {}
+    Power(ExprPtr base, ExprPtr power) : base(std::move(base)), power(std::move(power)) {}
 
     double evaluate(const std::map<std::string, double> &variables) const override;
 
-    std::shared_ptr<Expression> diff(const std::string &id) const override;
+    ExprPtr diff(const std::string &id) const override;
 
-    std::shared_ptr<Expression> subs(const std::map<std::string, std::shared_ptr<Expression>> &subs) const override;
+    ExprPtr subs(const std::map<std::string, ExprPtr> &subs) const override;
 
-    std::shared_ptr<Expression> simplify() const override;
+    ExprPtr simplify() const override;
 
     std::string toStr() const override;
 };
 
-std::shared_ptr<Expression> pow(const std::shared_ptr<Expression> &expr1, const std::shared_ptr<Expression> &expr2);
+ExprPtr pow(const ExprPtr &expr1, const ExprPtr &expr2);
 
-std::shared_ptr<Expression> pow(const std::shared_ptr<Expression> &expr, const double &num);
+ExprPtr pow(const ExprPtr &expr, const double &num);
 
-std::shared_ptr<Expression> pow(const double &num, const std::shared_ptr<Expression> &expr);
+ExprPtr pow(const double &num, const ExprPtr &expr);
 
-std::shared_ptr<Expression> sqrt(const std::shared_ptr<Expression> &expr);
+ExprPtr sqrt(const ExprPtr &expr);

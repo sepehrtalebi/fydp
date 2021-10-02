@@ -10,15 +10,15 @@ double Power::evaluate(const std::map<std::string, double> &variables) const {
     return pow(base->evaluate(variables), power->evaluate(variables));
 }
 
-std::shared_ptr<Expression> Power::diff(const std::string &id) const {
+ExprPtr Power::diff(const std::string &id) const {
     return pow(base, power) * (power->diff(id) * log(base) + base->diff(id) * (power / base));
 }
 
-std::shared_ptr<Expression> Power::subs(const std::map<std::string, std::shared_ptr<Expression>> & subs) const {
+ExprPtr Power::subs(const std::map<std::string, ExprPtr> & subs) const {
     return std::make_shared<Power>(base->subs(subs), power->subs(subs));
 }
 
-std::shared_ptr<Expression> Power::simplify() const {
+ExprPtr Power::simplify() const {
     // try combining constants
     std::shared_ptr<Constant> base_const = std::dynamic_pointer_cast<Constant>(base);
     std::shared_ptr<Constant> power_const = std::dynamic_pointer_cast<Constant>(power);
@@ -32,7 +32,7 @@ std::string Power::toStr() const {
     return "(" + base->toStr() + " ^ " + power->toStr() + ")";
 }
 
-std::shared_ptr<Expression> pow(const std::shared_ptr<Expression> &base, const std::shared_ptr<Expression> &power) {
+ExprPtr pow(const ExprPtr &base, const ExprPtr &power) {
     if (!base || !power) return std::make_shared<Nan>();
 
     if (base->isNan()) return base;
@@ -44,14 +44,14 @@ std::shared_ptr<Expression> pow(const std::shared_ptr<Expression> &base, const s
     return std::make_shared<Power>(base, power);
 }
 
-std::shared_ptr<Expression> pow(const std::shared_ptr<Expression> &expr, const double &num) {
+ExprPtr pow(const ExprPtr &expr, const double &num) {
     return pow(expr, std::make_shared<Constant>(num));
 }
 
-std::shared_ptr<Expression> pow(const double &num, const std::shared_ptr<Expression> &expr) {
+ExprPtr pow(const double &num, const ExprPtr &expr) {
     return pow(std::make_shared<Constant>(num), expr);
 }
 
-std::shared_ptr<Expression> sqrt(const std::shared_ptr<Expression> &expr) {
+ExprPtr sqrt(const ExprPtr &expr) {
     return pow(expr, std::make_shared<Constant>(1.0 / 2.0));
 }

@@ -9,16 +9,16 @@
 
 class Log : public UnaryOperator {
 public:
-    explicit Log(const std::shared_ptr<Expression> &operand) : UnaryOperator(operand) {}
+    explicit Log(const ExprPtr &operand) : UnaryOperator(operand) {}
 
 protected:
     double call(const double &operand) const override;
 
-    std::shared_ptr<Expression> call(const std::shared_ptr<Expression> &operand) const override;
+    ExprPtr call(const ExprPtr &operand) const override;
 
-    std::shared_ptr<Expression> derivative(const std::shared_ptr<Expression> &expr) const override;
+    ExprPtr derivative(const ExprPtr &expr) const override;
 
     std::string toStrWrapper(const std::string &operandString) const override;
 };
 
-std::shared_ptr<Expression> log(const std::shared_ptr<Expression> &expr);
+ExprPtr log(const ExprPtr &expr);

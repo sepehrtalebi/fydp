@@ -5,15 +5,15 @@ double One::evaluate(const std::map<std::string, double> &/** variables **/) con
     return 1;
 }
 
-std::shared_ptr<Expression> One::diff(const std::string & /** identifier **/) const {
+ExprPtr One::diff(const std::string & /** identifier **/) const {
     return std::make_shared<Zero>();
 }
 
-std::shared_ptr<Expression> One::subs(const std::map<std::string, std::shared_ptr<Expression>> & /** subs **/) const {
+ExprPtr One::subs(const std::map<std::string, ExprPtr> & /** subs **/) const {
     return std::make_shared<One>();
 }
 
-std::shared_ptr<Expression> One::simplify() const {
+ExprPtr One::simplify() const {
     return std::make_shared<One>();
 }
 

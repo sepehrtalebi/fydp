@@ -8,11 +8,11 @@ double Cos::call(const double &operand) const {
     return cos(operand);
 }
 
-std::shared_ptr<Expression> Cos::call(const std::shared_ptr<Expression> &operand) const {
+ExprPtr Cos::call(const ExprPtr &operand) const {
     return cos(operand);
 }
 
-std::shared_ptr<Expression> Cos::derivative(const std::shared_ptr<Expression> &expr) const {
+ExprPtr Cos::derivative(const ExprPtr &expr) const {
     return -sin(expr);
 }
 
@@ -20,7 +20,7 @@ std::string Cos::toStrWrapper(const std::string &operandString) const {
     return "cos(" + operandString + ")";
 }
 
-std::shared_ptr<Expression> cos(const std::shared_ptr<Expression> &expr) {
+ExprPtr cos(const ExprPtr &expr) {
     if (!expr) return std::make_shared<Nan>();
     if (expr->isZero()) return std::make_shared<One>();
     return std::make_shared<Cos>(expr);
