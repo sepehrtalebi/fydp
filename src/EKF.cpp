@@ -70,7 +70,7 @@ Matrix<double, EKF::n, EKF::n> EKF::f_jacobian(const Vector3<double> &f, const V
         f_jac[q0 + i][wx + j] = w_to_quat_jac[i][j];
 
     // TODO: magnetic field derivatives
-
+    // (mag_new - mag) / dt = ((quat + quat.E().transpose() * quat.cong().toDCM() * (dt / 2)).toDCM() * quat.cong().toDCM() - I) / dt * (mag - mag_b)
     return f_jac;
 }
 
