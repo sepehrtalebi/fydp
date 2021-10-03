@@ -119,7 +119,7 @@ public:
     }
 
     void operator/=(const Quaternion<T> &other) {
-        Quaternion<T> quotient = (*this) / other;
+        Quaternion<T> quotient = (*this) / other.cong();
         q0 = quotient.q0;
         q1 = quotient.q1;
         q2 = quotient.q2;
