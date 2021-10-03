@@ -3,6 +3,7 @@
 #include <array>
 #include "Vector.h"
 #include "Matrix.h"
+#include <functional>
 
 template<typename T, int n, int m, int p>
 class Matrix3D {
@@ -20,6 +21,13 @@ public:
         for (int i = 0; i < n; i++) for (int j = 0; j < m; j++) for (int k = 0; k < p; k++)
             flat_mat[i * m * p + j * p + k] = data[i][j][k];
         return flat_mat;
+    }
+
+    template<typename R>
+    Matrix3D<R, n, m, p> applyFunc(const std::function<R(T)> &func) const {
+        Matrix3D<R, n, m, p> result;
+        for (int i = 0; i < n; i++) result[i] = data[i].applyFunc(func);
+        return result;
     }
 
     Matrix3D<T, n, m, p> operator+(const Matrix3D<T, n, m, p> &other) const {
@@ -67,14 +75,6 @@ public:
     void operator/=(const T &scalar) {
         for (int i = 0; i < n; i++) for (int j = 0; j < m; j++) for (int k = 0; k < p; k++)
             data[i][j][k] /= scalar;
-    }
-
-    template<int q>
-    Matrix3D<T, n, m, q> operator*(const Matrix3D<T, p, q> &other) const {
-        Matrix3D<T, n, m, q> product{};
-        for (int i = 0; i < n; i++) for (int j = 0; j < m; j++) for (int k = 0; k < q; k++)
-                for (int f = 0; f < p; f++) product[i][j][k] += data[i][j][f] * other[f][k];
-        return product;
     }
 
     Matrix<T, n, m> operator*(const Vector<T, p> &vec) const {

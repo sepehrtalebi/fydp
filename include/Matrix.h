@@ -37,6 +37,13 @@ public:
         return flat_mat;
     }
 
+    template<typename R>
+    Matrix<R, n, m> applyFunc(const std::function<R(T)> &func) {
+        Matrix<R, n, m> result;
+        for (int i = 0; i < n; i++) result[i] = data[i].applyFunc(func);
+        return result;
+    }
+
     Matrix<T, n, m> operator+(const Matrix<T, n, m> &other) const {
         Matrix<T, n, m> sum;
         for (int i = 0; i < n; i++) for (int j = 0; j < m; j++) sum[i][j] = data[i][j] + other[i][j];

@@ -3,6 +3,7 @@
 #include <array>
 #include <initializer_list>
 #include <cmath>
+#include <functional>
 
 template<typename T, int n>
 class Vector {
@@ -46,6 +47,13 @@ public:
         for (int i = 0; i < n; i++) concat[i] = data[i];
         for (int i = n; i < n + m; i++) concat[i] = other[i];
         return concat;
+    }
+
+    template<typename R>
+    Vector<R, n> applyFunc(const std::function<R(T)> &func) {
+        Vector<R, n> result;
+        for (int i = 0; i < n; i++) result[i] = func(data[i]);
+        return result;
     }
 
     Vector<T, n> operator+(const Vector<T, n> &other) const {
