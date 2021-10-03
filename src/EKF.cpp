@@ -51,7 +51,6 @@ Matrix<double, EKF::n, EKF::n> EKF::f_jacobian(const Vector3<double> &f, const V
         for (int j = 0; j < 3; j++) f_jac[px + i][vx + j] = DCM_inv_dt[i][j];
         f_jac[vx + i][ax + i] = dt;
         f_jac[wx + i][ang_ax + i] = dt;
-        // TODO: quaternion derivatives and magnetic field derivatives
     }
 
     const std::map<std::string, double> subs = {{"q0", x[q0]},
@@ -64,6 +63,14 @@ Matrix<double, EKF::n, EKF::n> EKF::f_jacobian(const Vector3<double> &f, const V
         mat[i][j][k] = quat_quat_jac[i][j][k]->evaluate(subs);
     Matrix<double, 4, 4> quat_quat_jac_val = mat * Vector3<double>{x[wx], x[wy], x[wz]} * (dt / 2);
     for (int i = 0; i < 4; i++) for(int j = 0; j < 4; j++) f_jac[q0 + i][q0 + j] = quat_quat_jac_val[i][j];
+
+    // Matrix that is multiplied by w to given the rate of change of quat
+    Matrix<double, 4, 3> w_to_quat_jac = quat.E().transpose() * DCM_inv_dt / 2;
+    for (int i = 0; i < 4; i++) for (int j = 0; j < 3; j++)
+        f_jac[q0 + i][wx + j] = w_to_quat_jac[i][j];
+
+    // TODO: magnetic field derivatives
+
     return f_jac;
 }
 
