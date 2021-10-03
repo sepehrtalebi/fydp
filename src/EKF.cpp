@@ -1,5 +1,18 @@
 #include "EKF.h"
 #include "Quaternion.h"
+#include "Variable.h"
+#include <map>
+#include <string>
+
+EKF::EKF() {
+    Quaternion<ExprPtr> quat{std::make_shared<Variable>("q0"),
+                             std::make_shared<Variable>("q1"),
+                             std::make_shared<Variable>("q2"),
+                             std::make_shared<Variable>("q3")};
+    Matrix<ExprPtr, 4, 3> mat = quat.E().transpose() * quat.cong().toDCM();
+    for (int i = 0; i < 4; i++) for (int j = 0; j < 4; j++) for (int k = 0; k < 3; k++)
+        quat_quat_jac[i][j][k] = mat[j][k]->diff(std::static_pointer_cast<Variable>(quat[i])->getIdentifier())->simplify();
+}
 
 void EKF::update(const SensorMeasurements &sensorMeasurements, const Vector3<double>& forces, const Vector3<double>& torques, double dt) {
     // prediction step
@@ -40,6 +53,17 @@ Matrix<double, EKF::n, EKF::n> EKF::f_jacobian(const Vector3<double> &f, const V
         f_jac[wx + i][ang_ax + i] = dt;
         // TODO: quaternion derivatives and magnetic field derivatives
     }
+
+    const std::map<std::string, double> subs = {{"q0", x[q0]},
+                                                {"q1", x[q1]},
+                                                {"q2", x[q2]},
+                                                {"q3", x[q3]}};
+    // TODO: get lambda working
+    Matrix3D<double, 4, 4, 3> mat; // = quat_quat_jac.applyFunc<double>([&subs] (const ExprPtr &expr) { return expr->evaluate(subs); });
+    for (int i = 0; i < 4; i++) for (int j = 0; j < 4; j++) for (int k = 0; k < 3; k++)
+        mat[i][j][k] = quat_quat_jac[i][j][k]->evaluate(subs);
+    Matrix<double, 4, 4> quat_quat_jac_val = mat * Vector3<double>{x[wx], x[wy], x[wz]} * (dt / 2);
+    for (int i = 0; i < 4; i++) for(int j = 0; j < 4; j++) f_jac[q0 + i][q0 + j] = quat_quat_jac_val[i][j];
     return f_jac;
 }
 
