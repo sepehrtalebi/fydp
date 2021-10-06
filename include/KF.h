@@ -5,6 +5,7 @@
 #include "Vector3.h"
 #include "SensorMeasurements.h"
 #include "AircraftState.h"
+#include "ControlInputs.h"
 
 class KF {
 public:
@@ -13,6 +14,8 @@ public:
     constexpr static const double g = 9.81; // gravitational acceleration
     constexpr static const double P_atm = 101325; // Pa
     constexpr static const double rho_air = 1.225; // kg/m^3
+    constexpr static const double m = 1; // kg
+    static const Matrix<double, 3, 3> inertia_inv; // 1/(kg * m^2)
     enum {
         px, py, pz,  // position in earth frame
         q0, q1, q2, q3,  // rotation from earth frame to body frame
@@ -29,8 +32,6 @@ public:
 protected:
     Vector<double, n> x{};
     Matrix<double, n, n> P = Matrix<double, n, n>::identity();
-    const double m = 1; // kg
-    const Matrix<double, 3, 3> inertia_inv = Matrix<double, 3, 3>::identity(); // 1/(kg * m^2)
     const Matrix<double, n, n> Q = Matrix<double, n, n>::identity();
     const Matrix<double, p, p> R = Matrix<double, p, p>::identity();
 
@@ -38,19 +39,19 @@ public:
     KF();
 
     void updateWrapper(const double *doubleSensorMeasurements, const uint8_t *uint8SensorMeasurements,
-                       const unsigned char *boolSensorMeasurements, const double *forces, const double *torques, double dt);
+                       const unsigned char *boolSensorMeasurements, const double *control_inputs, double dt);
 
     void getOutputWrapper(double *doubleAircraftState) const;
 
     virtual void update(const SensorMeasurements &sensorMeasurements,
-                        const Vector3<double>& forces, const Vector3<double>& torques, double dt) = 0;
+                        const ControlInputs &control_inputs, double dt) = 0;
 
     AircraftState getOutput() const;
 
 protected:
-    Vector<double, n> f(const Vector3<double>& f, const Vector3<double>& T, double dt) const;
+    static Vector<double, n> f(const Vector<double, n> &x, const ControlInputs &control_inputs, double dt);
 
-    Vector<double, p> h(const Vector3<double>& f, const Vector3<double>& T, double dt) const;
+    static Vector<double, p> h(const Vector<double, n> &x, const ControlInputs &control_inputs, double dt);
 };
 
 
