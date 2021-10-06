@@ -1,24 +1,31 @@
 #include "EKF.h"
 #include "Quaternion.h"
 #include "Variable.h"
+#include "AppliedLoads.h"
 #include <map>
 #include <string>
 
-EKF::EKF() {
+Matrix3D<ExprPtr, 4, 4, 3> get_quat_quat_jac_expr() {
+    Matrix3D<ExprPtr, 4, 4, 3> expr;
+
     Quaternion<ExprPtr> quat{std::make_shared<Variable>("q0"),
                              std::make_shared<Variable>("q1"),
                              std::make_shared<Variable>("q2"),
                              std::make_shared<Variable>("q3")};
     Matrix<ExprPtr, 4, 3> mat = quat.E().transpose() * quat.cong().toDCM();
     for (int i = 0; i < 4; i++) for (int j = 0; j < 4; j++) for (int k = 0; k < 3; k++)
-        quat_to_quat_jac_expr[i][j][k] = mat[j][k]->diff(std::static_pointer_cast<Variable>(quat[i])->getIdentifier())->simplify();
+        expr[i][j][k] = mat[j][k]->diff(std::static_pointer_cast<Variable>(quat[i])->getIdentifier())->simplify();
+
+    return expr;
 }
 
-void EKF::update(const SensorMeasurements &sensorMeasurements, const Vector3<double>& forces, const Vector3<double>& torques, double dt) {
-    // prediction step
-    Matrix<double, n, n> f_jac = f_jacobian(forces, torques, dt);
+const Matrix3D<ExprPtr, 4, 4, 3> EKF::quat_to_quat_jac_expr = get_quat_quat_jac_expr();
 
-    Vector<double, n> new_x = f(forces, torques, dt);
+void EKF::update(const SensorMeasurements &sensorMeasurements, const ControlInputs& control_inputs, double dt) {
+    // prediction step
+    Matrix<double, n, n> f_jac = f_jacobian(x, control_inputs, dt);
+
+    Vector<double, n> new_x = f(x, control_inputs, dt);
     for (int i = 0; i < n; i++) x[i] = new_x[i];
 
     Matrix<double, n, n> new_P = f_jac * P * f_jac.transpose() + Q;
@@ -26,8 +33,8 @@ void EKF::update(const SensorMeasurements &sensorMeasurements, const Vector3<dou
 
     // update step
     Vector<double, p> z = sensorMeasurements.getZ();
-    Vector<double, p> h_mat = h(forces, torques, dt);
-    Matrix<double, p, n> h_jac = h_jacobian(forces, torques, dt);
+    Vector<double, p> h_mat = h(x, control_inputs, dt);
+    Matrix<double, p, n> h_jac = h_jacobian(x, control_inputs, dt);
     Matrix<double, n, p> h_jac_transpose = h_jac.transpose();
     Vector<double, p> y = z - h_mat;
     // multiplication order doesn't matter, both require n*p*(n+p) multiplications regardless of order
@@ -38,7 +45,9 @@ void EKF::update(const SensorMeasurements &sensorMeasurements, const Vector3<dou
     P -= K * h_jac * P;
 }
 
-Matrix<double, EKF::n, EKF::n> EKF::f_jacobian(const Vector3<double> &f, const Vector3<double> &T, double dt) const {
+Matrix<double, EKF::n, EKF::n> EKF::f_jacobian(const Vector<double, n> &x, const ControlInputs &control_inputs, double dt) {
+    // TODO: take into account the effect of getAppliedLoads on the jacobian
+
     // the ith row and jth column represents the derivative of
     // the ith output state with respect to the jth input state
     Matrix<double, n, n> f_jac = Matrix<double, n, n>::zeros();
@@ -91,7 +100,7 @@ Matrix<double, EKF::n, EKF::n> EKF::f_jacobian(const Vector3<double> &f, const V
     return f_jac;
 }
 
-Matrix<double, EKF::p, EKF::n> EKF::h_jacobian(const Vector3<double> &f, const Vector3<double> &T, double dt) const {
+Matrix<double, EKF::p, EKF::n> EKF::h_jacobian(const Vector<double, n> &x, const ControlInputs &control_inputs, double dt) {
     // the ith row and jth column represents the derivative of
     // the ith output measurement with respect to the jth input state
     Matrix<double, p, n> h_jac = Matrix<double, p, n>::zeros();

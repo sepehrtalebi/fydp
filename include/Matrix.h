@@ -12,6 +12,21 @@ protected:
 public:
     Matrix() = default;
 
+    Matrix(std::initializer_list<T> elements) {
+        // Function caller must ensure the number of arguments matches the template arguments
+        // Excess arguments will be ignored
+        int i = 0;
+        int j = 0;
+        for (auto it = elements.begin(); i < n && it != elements.end(); it++) {
+            data[i][j] = *it;
+            j++;
+            if (j == m) {
+                j = 0;
+                i++;
+            }
+        }
+    }
+
     static Matrix<T, n, m> identity() {
         Matrix<T, n, m> output{};
         for (int i = 0; i < n && i < m; i++) output[i][i] = 1;
