@@ -1,5 +1,8 @@
 #include "KF.h"
 #include "Quaternion.h"
+#include "AppliedLoads.h"
+
+const Matrix<double, 3, 3> KF::inertia_inv = Matrix<double, 3, 3>{1, 0, 0, 0, 1, 0, 0, 0, 1}; // NOLINT(cert-err58-cpp)
 
 KF::KF() {
     x[q0] = 1;
@@ -7,15 +10,14 @@ KF::KF() {
 }
 
 void KF::updateWrapper(const double *doubleSensorMeasurements, const uint8_t *uint8SensorMeasurements,
-                        const unsigned char *boolSensorMeasurements, const double *forces, const double *torques, double dt) {
+                        const unsigned char *boolSensorMeasurements, const double *control_inputs, double dt) {
     Vector<double, 16> doubleZ;
     for (int i = 0; i < 16; i++) doubleZ[i] = doubleSensorMeasurements[i];
     Vector<uint8_t, 1> uint8Z{uint8SensorMeasurements[0]};
     Vector<bool, 1> boolZ{(bool) boolSensorMeasurements[0]};
-    Vector3<double> forcesVec{forces[0], forces[1], forces[2]};
-    Vector3<double> torquesVec{torques[0], torques[1], torques[2]};
+    Vector<double, 4> control_inputsVec{control_inputs[0], control_inputs[1], control_inputs[2], control_inputs[3]};
     SensorMeasurements sensorMeasurements = SensorMeasurements::parseZ(doubleZ, uint8Z, boolZ);
-    update(sensorMeasurements, forcesVec, torquesVec, dt);
+    update(sensorMeasurements, ControlInputs::parseU(control_inputsVec), dt);
 }
 
 void KF::getOutputWrapper(double *doubleAircraftState) const {
@@ -32,7 +34,9 @@ AircraftState KF::getOutput() const {
                          Vector3<double>{x[ax], x[ay], x[az]}};
 }
 
-Vector<double, KF::n> KF::f(const Vector3<double> &f, const Vector3<double> &T, double dt) const {
+Vector<double, KF::n> KF::f(const Vector<double, n> &x, const ControlInputs &control_inputs, double dt) {
+    Wrench<double> wrench = getAppliedLoads(x, control_inputs);
+
     Quaternion<double> quat = Quaternion<double>{x[q0], x[q1], x[q2], x[q3]};
 
     Vector<double, n> x_new = x;
@@ -46,7 +50,7 @@ Vector<double, KF::n> KF::f(const Vector3<double> &f, const Vector3<double> &T, 
     Quaternion<double> quat_new = Quaternion<double>{quat + quat.E().transpose() * w_abs * (dt / 2)};
     quat_new.normalize();
 
-    Vector3<double> ang_a_new = Vector3<double>{inertia_inv * T};
+    Vector3<double> ang_a_new = Vector3<double>{inertia_inv * wrench.torque};
 
     Vector3<double> mag = Vector3<double>{x[magx], x[magy], x[magz]};
     Vector3<double> mag_b = Vector3<double>{x[mag_bx], x[mag_by], x[mag_bz]};
@@ -58,7 +62,7 @@ Vector<double, KF::n> KF::f(const Vector3<double> &f, const Vector3<double> &T, 
         x_new[q0 + i] = quat_new[i];
         x_new[vx + i] += x[ax + i] * dt;
         x_new[wx + i] += x[ang_ax + i] * dt;
-        x_new[ax + i] = f[i] / m;
+        x_new[ax + i] = wrench.force[i] / m;
         x_new[ang_ax + i] = ang_a_new[i];
         x_new[magx + i] = mag_new[i];
     }
@@ -67,12 +71,13 @@ Vector<double, KF::n> KF::f(const Vector3<double> &f, const Vector3<double> &T, 
     return x_new;
 }
 
-Vector<double, KF::p> KF::h(const Vector3<double> &f, const Vector3<double> &T, double dt) const {
+Vector<double, KF::p> KF::h(const Vector<double, n> &x, const ControlInputs &control_inputs, double dt) {
+    Wrench<double> wrench = getAppliedLoads(x, control_inputs);
     // TODO
     return SensorMeasurements{P_atm - rho_air * g * (-x[pz]),
                               0, 0, 0, 0, false,
                               Vector<double, 2>{0, 0},
-                              Vector3<double>{f / m},
+                              Vector3<double>{wrench.force / m},
                               Vector3<double>{x[wx], x[wy], x[wz]},
                               0, 0, -x[pz], 8}
                               .getZ();

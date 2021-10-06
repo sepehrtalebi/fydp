@@ -6,14 +6,13 @@
 
 class EKF : public KF {
 public:
-    EKF();
-
     void update(const SensorMeasurements &sensorMeasurements,
-                const Vector3<double>& forces, const Vector3<double>& torques, double dt) override;
+                const ControlInputs &control_inputs, double dt) override;
+
 private:
-    const Matrix3D<ExprPtr, 4, 4, 3> quat_to_quat_jac_expr;
+    static const Matrix3D<ExprPtr, 4, 4, 3> quat_to_quat_jac_expr;
 
-    Matrix<double, n, n> f_jacobian(const Vector3<double>& f, const Vector3<double>& T, double dt) const;
+    static Matrix<double, n, n> f_jacobian(const Vector<double, n> &x, const ControlInputs &control_inputs, double dt);
 
-    Matrix<double, p, n> h_jacobian(const Vector3<double>& f, const Vector3<double>& T, double dt) const;
+    static Matrix<double, p, n> h_jacobian(const Vector<double, n> &x, const ControlInputs &control_inputs, double dt);
 };
