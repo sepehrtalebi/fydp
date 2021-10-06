@@ -11,7 +11,7 @@ public:
     void update(const SensorMeasurements &sensorMeasurements,
                 const Vector3<double>& forces, const Vector3<double>& torques, double dt) override;
 private:
-    const Matrix3D<ExprPtr, 4, 4, 3> quat_quat_jac;
+    const Matrix3D<ExprPtr, 4, 4, 3> quat_to_quat_jac_expr;
 
     Matrix<double, n, n> f_jacobian(const Vector3<double>& f, const Vector3<double>& T, double dt) const;
 

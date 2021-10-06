@@ -11,7 +11,7 @@ EKF::EKF() {
                              std::make_shared<Variable>("q3")};
     Matrix<ExprPtr, 4, 3> mat = quat.E().transpose() * quat.cong().toDCM();
     for (int i = 0; i < 4; i++) for (int j = 0; j < 4; j++) for (int k = 0; k < 3; k++)
-        quat_quat_jac[i][j][k] = mat[j][k]->diff(std::static_pointer_cast<Variable>(quat[i])->getIdentifier())->simplify();
+        quat_to_quat_jac_expr[i][j][k] = mat[j][k]->diff(std::static_pointer_cast<Variable>(quat[i])->getIdentifier())->simplify();
 }
 
 void EKF::update(const SensorMeasurements &sensorMeasurements, const Vector3<double>& forces, const Vector3<double>& torques, double dt) {
@@ -44,32 +44,50 @@ Matrix<double, EKF::n, EKF::n> EKF::f_jacobian(const Vector3<double> &f, const V
     // the ith output state with respect to the jth input state
     Matrix<double, n, n> f_jac = Matrix<double, n, n>::zeros();
 
+    // setup some basic variables for use later
     Quaternion<double> quat = Quaternion<double>{x[q0], x[q1], x[q2], x[q3]};
-    Matrix<double, 3, 3> DCM_inv_dt = quat.cong().toDCM() * dt;
-
-    for (int i = 0; i < 3; i++) {
-        for (int j = 0; j < 3; j++) f_jac[px + i][vx + j] = DCM_inv_dt[i][j];
-        f_jac[vx + i][ax + i] = dt;
-        f_jac[wx + i][ang_ax + i] = dt;
-    }
-
+    Matrix<double, 3, 3> DCM_inv = quat.cong().toDCM();
+    Vector3<double> w_abs = quat.unrotate(Vector3<double>{x[wx], x[wy], x[wz]});
+    Quaternion<double> quat_new = Quaternion<double>{quat + quat.E().transpose() * w_abs * (dt / 2)};
     const std::map<std::string, double> subs = {{"q0", x[q0]},
                                                 {"q1", x[q1]},
                                                 {"q2", x[q2]},
                                                 {"q3", x[q3]}};
+
     // TODO: get lambda working
-    Matrix3D<double, 4, 4, 3> mat; // = quat_quat_jac.applyFunc<double>([&subs] (const ExprPtr &expr) { return expr->evaluate(subs); });
+    Matrix3D<double, 4, 4, 3> mat; // = quat_to_quat_jac_expr.applyFunc<double>([&subs] (const ExprPtr &expr) { return expr->evaluate(subs); });
     for (int i = 0; i < 4; i++) for (int j = 0; j < 4; j++) for (int k = 0; k < 3; k++)
-        mat[i][j][k] = quat_quat_jac[i][j][k]->evaluate(subs);
-    Matrix<double, 4, 4> quat_quat_jac_val = mat * Vector3<double>{x[wx], x[wy], x[wz]} * (dt / 2);
-    for (int i = 0; i < 4; i++) for(int j = 0; j < 4; j++) f_jac[q0 + i][q0 + j] = quat_quat_jac_val[i][j];
+        mat[i][j][k] = quat_to_quat_jac_expr[i][j][k]->evaluate(subs);
+    Matrix<double, 4, 4> quat_to_quat_jac = mat * Vector3<double>{x[wx], x[wy], x[wz]} * (dt / 2);
 
-    // Matrix that is multiplied by w to given the rate of change of quat
-    Matrix<double, 4, 3> w_to_quat_jac = quat.E().transpose() * DCM_inv_dt / 2;
-    for (int i = 0; i < 4; i++) for (int j = 0; j < 3; j++)
-        f_jac[q0 + i][wx + j] = w_to_quat_jac[i][j];
+    Matrix<double, 4, 3> quat_to_w_jac = quat.E().transpose() * DCM_inv * dt / 2;
 
-    // TODO: magnetic field derivatives
+    // TODO: magnetic field derivatives with respect to quaternion and angular velocity
+    /**
+     * Derivation:
+     * mag_new = quat_new.toDCM() * quat.cong().toDCM() * (mag - mag_b) + mag_b
+     * Define M = quat_new.toDCM() * quat.cong().toDCM()
+     * mag_new = M * (mag - mag_b) + mag_b
+     * (mag_new - mag) / dt = (M * (mag - mag_b) + mag_b - mag) / dt
+     * (mag_new - mag) / dt = (M - I) / dt * (mag - mag_b)
+     * Thus, mag_to_mag_jac = (M - I) / dt and mag_mag_b_jac = -mag_to_mag_jac
+     */
+    Matrix<double, 3, 3> mag_to_mag_jac = (quat_new.toDCM() * DCM_inv - Matrix<double, 3, 3>::identity()) / dt;
+
+    // fill in the separate elements into f_jac
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            f_jac[px + i][vx + j] = DCM_inv[i][j] * dt; // derivative of position with respect to velocity
+            f_jac[magx + i][magx + j] = mag_to_mag_jac[i][j]; // derivative of magnetic field with respect to itself
+            f_jac[magx + i][mag_bx + j] = -mag_to_mag_jac[i][j]; // derivative of magnetic field with respect to magnetic field bias
+        }
+        f_jac[vx + i][ax + i] = dt; // derivative of velocity with respect to acceleration
+        f_jac[wx + i][ang_ax + i] = dt; // derivative of angular velocity with respect to angular acceleration
+    }
+    for (int i = 0; i < 4; i++) {
+        for(int j = 0; j < 4; j++) f_jac[q0 + i][q0 + j] = quat_to_quat_jac[i][j]; // derivative of quaternion with respect to itself
+        for (int j = 0; j < 3; j++) f_jac[q0 + i][wx + j] = quat_to_w_jac[i][j]; // derivative of quaternion with respect to angular velocity
+    }
 
     return f_jac;
 }
