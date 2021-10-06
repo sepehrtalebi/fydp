@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.17)
 project(FYDP)
 
 set(CMAKE_CXX_STANDARD 14)
@@ -30,4 +30,6 @@ add_executable(FYDP tests.cpp
         test/TestVector.cpp
         test/TestMatrix.cpp
         test/TestDifferentiation.cpp
+        include/UKF.h
+        src/UKF.cpp
         )

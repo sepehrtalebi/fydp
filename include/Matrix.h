@@ -1,6 +1,8 @@
 #pragma once
 
 #include <array>
+#include<stdexcept>
+#include <iostream>
 #include "Vector.h"
 
 template<typename T, int n, int m>
@@ -26,15 +28,10 @@ public:
         return transpose;
     }
 
-    Matrix<T, m, n> inv() const {
-        // TODO
-        return transpose();
-    }
 
     Vector<T, n * m> flatten() const {
         Vector<T, n * m> flat_mat;
         for (int i = 0; i < n; i++) for (int j = 0; j < m; j++) flat_mat[i * m + j] = data[i][j];
-        return flat_mat;
     }
 
     template<typename R>
@@ -43,6 +40,37 @@ public:
         for (int i = 0; i < n; i++) result[i] = data[i].applyFunc(func);
         return result;
     }
+
+
+
+    Matrix<T, m, n> cholesky() const {
+        if (m != n) throw std::invalid_argument("Cannot find the Cholesky Decomposition of a non-square matrix");
+        Matrix<T, m, n> L; //Lower-triangular matrix defined by A=LL'
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j <= i; j++) {
+                float sum = 0;
+                for (int k = 0; k < j; k++)
+                    sum += L[i][k] * L[j][k];
+
+                if (i == j)
+                    L[i][j] = std::sqrt(this->data[i][i] - sum);
+                else
+                    L[i][j] = (1.0 / L[j][j] * (this->data[i][j] - sum));
+            }
+        }
+        return L;
+    }
+
+    Matrix<T, m, n> inv() const {
+        if (m != n) throw std::invalid_argument("Cannot find the inverse of a non-square matrix");
+        std::cout << "Are you sure you want to use the inverse? This is very inefficient.";
+        Matrix<T, m, n> L = cholesky();
+        Matrix<T, m, n> u;
+        //TODO: forward substitution then back substitution
+        return transpose();
+    }
+
+
 
     Matrix<T, n, m> operator+(const Matrix<T, n, m> &other) const {
         Matrix<T, n, m> sum;

@@ -29,7 +29,6 @@ void EKF::update(const SensorMeasurements &sensorMeasurements, const Vector3<dou
     Vector<double, p> h_mat = h(forces, torques, dt);
     Matrix<double, p, n> h_jac = h_jacobian(forces, torques, dt);
     Matrix<double, n, p> h_jac_transpose = h_jac.transpose();
-
     Vector<double, p> y = z - h_mat;
     // multiplication order doesn't matter, both require n*p*(n+p) multiplications regardless of order
     Matrix<double, p, p> S = h_jac * P * h_jac_transpose + R;

@@ -31,8 +31,8 @@ protected:
     Matrix<double, n, n> P = Matrix<double, n, n>::identity();
     const double m = 1; // kg
     const Matrix<double, 3, 3> inertia_inv = Matrix<double, 3, 3>::identity(); // 1/(kg * m^2)
-    const Matrix<double, n, n> Q = Matrix<double, n, n>::identity();
-    const Matrix<double, p, p> R = Matrix<double, p, p>::identity();
+    const Matrix<double, n, n> Q = Matrix<double, n, n>::identity(); //process noise
+    const Matrix<double, p, p> R = Matrix<double, p, p>::identity(); //measurement noise
 
 public:
     KF();

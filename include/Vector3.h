@@ -8,6 +8,7 @@ public:
     T &x = this->data[0];
     T &y = this->data[1];
     T &z = this->data[2];
+
 public:
     Vector3() = default;
 
