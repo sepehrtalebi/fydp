@@ -14,7 +14,7 @@ public:
     constexpr static const double P_atm = 101325; // Pa
     constexpr static const double rho_air = 1.225; // kg/m^3
     enum {
-        px, py, pz,  // position in earth  frame
+        px, py, pz,  // position in earth frame
         q0, q1, q2, q3,  // rotation from earth frame to body frame
         vx, vy, vz,  // velocity in body frame
         wx, wy, wz,  // angular velocity in body frame
