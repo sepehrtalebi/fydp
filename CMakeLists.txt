@@ -12,10 +12,10 @@ add_executable(FYDP tests.cpp
         src/SensorMeasurements.cpp
         src/AircraftState.cpp
         src/differentiation/Expression.cpp
+        src/differentiation/Constant.cpp
         src/differentiation/Zero.cpp
         src/differentiation/One.cpp
         src/differentiation/Nan.cpp
-        src/differentiation/Constant.cpp
         src/differentiation/Variable.cpp
         src/differentiation/BinaryOperator.cpp
         src/differentiation/UnaryOperator.cpp
