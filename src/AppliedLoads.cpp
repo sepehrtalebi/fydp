@@ -1,6 +1,6 @@
 #include "AppliedLoads.h"
 
-Wrench<double> getPropellerLoads(const Vector<double, KF::n> &state, const ControlInputs &control_inputs) {
+static Wrench<double> getPropellerLoads(const Vector<double, KF::n> &state, const ControlInputs &control_inputs) {
     return {};
 }
 
