@@ -57,7 +57,7 @@ public:
     static Matrix<T, n, m> outerProduct(const Vector<T, n> &first, const Vector<T, m> &second) {
         Matrix<T, n, m> outerProduct;
         for (int i = 0; i < n; i++) for (int j = 0; j < n; j++)
-            outerProduct[i][j] = first[i] + second[j];
+            outerProduct[i][j] = first[i] * second[j];
         return outerProduct;
     }
 
