@@ -66,6 +66,16 @@ public:
         for (int i = 0; i < n; i++) data[i] += other[i];
     }
 
+    Vector<T, n> operator+(const double &scalar) {
+        Vector<T, n> sum;
+        for (int i = 0; i < n; i++) sum[i] = data[i] + scalar;
+        return sum;
+    }
+
+    void operator+=(const double &scalar) {
+        for (int i = 0; i < n; i++) data[i] += scalar;
+    }
+
     Vector<T, n> operator-(const Vector<T, n> &other) const {
         Vector<T, n> sum;
         for (int i = 0; i < n; i++) sum[i] = data[i] - other[i];
@@ -74,6 +84,16 @@ public:
 
     void operator-=(const Vector<T, n> &other) {
         for (int i = 0; i < n; i++) data[i] -= other[i];
+    }
+
+    Vector<T, n> operator-(const double &scalar) {
+        Vector<T, n> sum;
+        for (int i = 0; i < n; i++) sum[i] = data[i] - scalar;
+        return sum;
+    }
+
+    void operator-=(const double &scalar) {
+        for (int i = 0; i < n; i++) data[i] -= scalar;
     }
 
     Vector<T, n> operator*(const T &scalar) const {
@@ -104,3 +124,35 @@ public:
         return this->data[index];
     }
 };
+
+template<typename T, int n>
+Vector<T, n> operator+(const double &scalar, const Vector<T, n> vec) {
+    Vector<T, n> sum;
+    for (int i = 0; i < n; i++)
+        sum[i] = scalar + vec[i]; // respect operator order in case underlying type is non-commutative
+    return sum;
+}
+
+template<typename T, int n>
+Vector<T, n> operator-(const double &scalar, const Vector<T, n> vec) {
+    Vector<T, n> sum;
+    for (int i = 0; i < n; i++)
+        sum[i] = scalar - vec[i]; // respect operator order in case underlying type is non-commutative
+    return sum;
+}
+
+template<typename T, int n>
+Vector<T, n> operator*(const double &scalar, const Vector<T, n> vec) {
+    Vector<T, n> sum;
+    for (int i = 0; i < n; i++)
+        sum[i] = scalar * vec[i]; // respect operator order in case underlying type is non-commutative
+    return sum;
+}
+
+template<typename T, int n>
+Vector<T, n> operator/(const double &scalar, const Vector<T, n> vec) {
+    Vector<T, n> sum;
+    for (int i = 0; i < n; i++)
+        sum[i] = scalar / vec[i]; // respect operator order in case underlying type is non-commutative
+    return sum;
+}
