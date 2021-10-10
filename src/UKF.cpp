@@ -1,5 +1,7 @@
 #include "UKF.h"
 
+const double UKF::gamma = std::sqrt(KF::n + UKF::lambda);
+
 UKF::UKF() {
     this->P_cholesky = P.cholesky();
     this->x[q0] = 1;

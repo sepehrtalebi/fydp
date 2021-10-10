@@ -11,8 +11,8 @@ private:
     constexpr static const double kappa = 0; //secondary scaling factor
     constexpr static const double beta = 2; //parameter to affect the weighting of the zeroth sigma point for the calculation of the covariance
     constexpr static const double lambda = alpha * alpha * (n + kappa) - n; //scaling factor for sigma points
-    double gamma = std::sqrt(n + lambda); //multiply by covariance for sigma points
-                                            // TODO: should be const and static but cant figure it out
+    static const double gamma; //multiply by covariance for sigma points
+
     void update(const SensorMeasurements &sensorMeasurements,
                 const ControlInputs &control_inputs, double dt) override;
 public:
