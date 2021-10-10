@@ -7,27 +7,65 @@ UKF::UKF() {
 }
 
 void UKF::update(const SensorMeasurements &sensorMeasurements,
-            const Vector3<double>& forces, const Vector3<double>& torques, double dt) {
-    Vector<double, UKF::n> x_new = f(forces, torques, dt);
+                 const ControlInputs &control_inputs, double dt) {
+    Vector<double, UKF::n> x_new = f(x, control_inputs, dt);
     auto new_sigma = sigma;
 
-    for (int i = 0; i < n; i++) { //i is column number, j is row number
-        new_sigma[0][i] = this->x[i];
-        for (int j = 1; j < n; j++) new_sigma[j][i] = this->x[i] + P_cholesky[j][i] * gamma;
-        for (int j = n+1; j < 2*n; j++) new_sigma[j][i] = this->x[i] - P_cholesky[j][i] * gamma;
+    for (int j = 0; j < n; j++) { //i is column number, j is row number
+        new_sigma[0][j] = this->x[j];
+        for (int i = 1; i < n; i++) new_sigma[i][j] = this->x[i] + P_cholesky[i][j] * gamma;
+        for (int i = n+1; i < 2*n; i++) new_sigma[i][j] = this->x[i] - P_cholesky[i][j] * gamma;
     }
 
-    //TODO: transform sigma through state update function. this is state sigma
-    //TODO: state weights i = 0: w = lambda / (N + lambda) i = 1 to 2N: w = 1 / (2 * (N + lambda))
-    //TODO: covariance weights i = 0: w = lambda / (N + lambda) + (1 - alpha*alpha + beta) i = 1 to 2N: w is same
-    //TODO: state estimate is state weights times state sigma
-    //TODO: state covariance is covariance weight times new sigma - state estimate dot itself
-    //TODO: transform sigma points through measurement function
-    //TODO: mean measurement vector is state weights times transformed sigma points
-    //TODO: measurement covariance is covariance weights times transformed sigma points minus mean measurement vector dot itself
-    //TODO: cross covariance is state covariance and measurement covariance
-    //TODO: Kalman gain is cross covariance times inverse of measurement covariance
-    //TODO: standard kalman gain update
+    //transform sigma through state update function. this is state sigma
+    auto state_sigma = new_sigma;
+    for (int i = 0; i < 2*n + 1; i++) state_sigma[i] = f(new_sigma[i], control_inputs, dt);
+    //state weights i = 0: w = lambda / (N + lambda) i = 1 to 2N: w = 1 / (2 * (N + lambda))
+    Vector<double, 2*n+1> state_weights;
+    state_weights[0] = lambda / (n + lambda);
+    for (int i = 1; i < 2*n + 1; i++) state_weights[i] = 1 / (2 * (n + lambda));
 
+    //covariance weights i = 0: w = lambda / (N + lambda) + (1 - alpha*alpha + beta) i = 1 to 2N: w is same
+    Vector<double, 2*n+1> covariance_weights;
+    covariance_weights[0] = lambda / (n + lambda) + (1 - alpha*alpha + beta);
+    for (int i = 1; i < 2*n + 1; i++) covariance_weights[i] = 1 / (2 * (n + lambda));
 
+    //for i=0 to 2n state estimate += state weights[i] times state sigma[i]
+    Vector<double, n> state_estimate;
+    for (int i = 0; i < 2*n + 1; i++) state_estimate +=  state_sigma[i] * state_weights[i];
+
+    //for i=0 to 2n state covariance += covariance weight[i] times state sigma[i] - state estimate dot itself
+    Matrix<double, n, n> state_covariance;
+    for (int i = 0; i < 2*n + 1; i++) state_covariance +=
+            Matrix<double, n, n>::outerProduct((state_sigma[i] - state_estimate),
+                                               (state_sigma[i] - state_estimate)) * covariance_weights[i];
+
+    //transform state sigma through measurement function
+    Matrix<double, 2*n + 1, p> measurement_sigma;
+    for (int i = 0; i < 2*n + 1; i++) measurement_sigma[i] = h(state_sigma[i], control_inputs, dt);
+
+    //mean measurement vector += state weights[i] times measurement sigma[i]
+    Vector<double, p> measurement_estimate;
+    for (int i = 0; i < 2*n + 1; i++) measurement_estimate +=  measurement_sigma[i] * state_weights[i];
+
+    //measurement covariance += covariance weights times transformed sigma points minus mean measurement vector dot itself
+    Matrix<double, p, p> measurement_covariance;
+    for (int i = 0; i < 2*n + 1; i++) measurement_covariance +=
+            Matrix<double, p, p>::outerProduct((measurement_sigma[i] - measurement_estimate),
+                                               (measurement_sigma[i] - measurement_estimate)) * covariance_weights[i];
+
+    //cross covariance is state covariance and measurement covariance
+    Matrix<double, n, p> cross_covariance;
+    for (int i = 0; i < 2*n + 1; i++) cross_covariance +=
+            Matrix<double, n, p>::outerProduct((state_sigma[i] - state_estimate),
+                                               (measurement_sigma[i] - measurement_estimate)) * covariance_weights[i];
+
+    //Kalman gain is cross covariance times inverse of measurement covariance
+    Matrix<double, n, p> K;
+    K = cross_covariance * measurement_covariance.inv();
+
+    //standard kalman gain update
+    x = state_estimate + K * (sensorMeasurements.getZ() - measurement_estimate);
+    P = state_covariance - K * measurement_covariance * K.inv();
+    //TODO: update P_cholesky
 }

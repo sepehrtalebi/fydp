@@ -25,7 +25,6 @@ public:
     Vector3<T> cross(const Vector3<T> &other) const {
         return Vector3{y * other.z - z * other.y,
                        z * other.x - x * other.z,
-                       x * other.y - y * other.x
-        };
+                       x * other.y - y * other.x};
     }
 };
