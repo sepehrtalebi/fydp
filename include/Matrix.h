@@ -88,7 +88,7 @@ public:
 
     Matrix<T, m, n> inv() const {
         if (m != n) throw std::invalid_argument("Cannot find the inverse of a non-square matrix");
-        std::cout << "Are you sure you want to use the inverse? This is very inefficient.";
+        std::cout << "Are you sure you want to use the inverse? This is very inefficient." << std::endl;
         Matrix<T, m, n> L = cholesky();
         Matrix<T, m, n> u;
         //TODO: forward substitution then back substitution
