@@ -8,6 +8,7 @@ include_directories(./include/differentiation)
 
 add_executable(FYDP tests.cpp
         src/KF.cpp
+        src/UKF.cpp
         src/EKF.cpp
         src/SensorMeasurements.cpp
         src/AircraftState.cpp
