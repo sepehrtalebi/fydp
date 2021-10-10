@@ -122,3 +122,13 @@ public:
         return this->data[index];
     }
 };
+
+// conceptually this function should be an instance method of the Vector class,
+// but that is not possible due to the resulting circular dependence between Vector and Matrix
+template<typename T, int n>
+static Matrix<T, n, n> vectorToSumMatrix(Vector<T, n> vec) {
+    Matrix<T, n, n> result;
+    for (int i = 0; i < n; i++) for (int j = 0; j < n; j++)
+        result[i][j] = vec[i] + vec[j];
+    return result;
+}
