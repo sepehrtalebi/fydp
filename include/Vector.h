@@ -98,7 +98,8 @@ public:
 
     Vector<T, n> operator*(const T &scalar) const {
         Vector<T, n> product;
-        for (int i = 0; i < n; i++) product[i] = scalar * data[i];
+        for (int i = 0; i < n; i++)
+            product[i] = data[i] * scalar; // respect operator order in case the underlying type is non-commutative
         return product;
     }
 
