@@ -13,8 +13,8 @@ void UKF::update(const SensorMeasurements &sensorMeasurements,
 
     for (int j = 0; j < n; j++) { //i is column number, j is row number
         new_sigma[0][j] = this->x[j];
-        for (int i = 1; i < n; i++) new_sigma[i][j] = this->x[i] + P_cholesky[i][j] * gamma;
-        for (int i = n+1; i < 2*n; i++) new_sigma[i][j] = this->x[i] - P_cholesky[i][j] * gamma;
+        for (int i = 1; i <= n; i++) new_sigma[i][j] = this->x[i] + P_cholesky[i][j] * gamma;
+        for (int i = n+1; i <= 2*n; i++) new_sigma[i][j] = this->x[i] - P_cholesky[i][j] * gamma;
     }
 
     //transform sigma through state update function. this is state sigma
