@@ -4,8 +4,6 @@ const double UKF::gamma = std::sqrt(KF::n + UKF::lambda);
 
 UKF::UKF() {
     this->P_cholesky = P.cholesky();
-    this->x[q0] = 1;
-    this->P[px][px] = this->P[py][py] = 0;
 }
 
 void UKF::update(const SensorMeasurements &sensorMeasurements,
