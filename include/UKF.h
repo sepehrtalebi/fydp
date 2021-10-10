@@ -1,6 +1,3 @@
-#ifndef EKF_UKF_H
-#define EKF_UKF_H
-
 #pragma once
 
 #include "KF.h"
@@ -22,4 +19,3 @@ public:
     UKF();
 };
 
-#endif //EKF_UKF_H
