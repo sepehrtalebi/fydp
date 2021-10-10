@@ -47,6 +47,7 @@ public:
     Vector<T, n * m> flatten() const {
         Vector<T, n * m> flat_mat;
         for (int i = 0; i < n; i++) for (int j = 0; j < m; j++) flat_mat[i * m + j] = data[i][j];
+        return flat_mat;
     }
 
     // conceptually this function should be an instance method of the Vector class,
