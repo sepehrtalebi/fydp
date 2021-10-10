@@ -8,6 +8,7 @@ include_directories(./include/differentiation)
 
 add_executable(FYDP tests.cpp
         src/KF.cpp
+        src/UKF.cpp
         src/EKF.cpp
         src/SensorMeasurements.cpp
         src/AircraftState.cpp
@@ -32,6 +33,4 @@ add_executable(FYDP tests.cpp
         test/TestVector.cpp
         test/TestMatrix.cpp
         test/TestDifferentiation.cpp
-        include/UKF.h
-        src/UKF.cpp
         )
