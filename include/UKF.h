@@ -10,7 +10,7 @@ private:
                                                 // the sigma points around the mean 0<=alpha<=1 usually small
     constexpr static const double kappa = 0; //secondary scaling factor
     constexpr static const double beta = 2; //parameter to affect the weighting of the zeroth sigma point for the calculation of the covariance
-    constexpr static const double lambda = alpha*alpha * (n + kappa) - n; //scaling factor for sigma points
+    constexpr static const double lambda = alpha * alpha * (n + kappa) - n; //scaling factor for sigma points
     double gamma = std::sqrt(n + lambda); //multiply by covariance for sigma points
                                             // TODO: should be const and static but cant figure it out
     void update(const SensorMeasurements &sensorMeasurements,
