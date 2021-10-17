@@ -107,6 +107,18 @@ public:
         for (int i = 0; i < n; i++) data[i] *= scalar;
     }
 
+    Vector<T, n> operator*(const Vector<T, n> &other) const {
+        // elementwise multiplication
+        Vector<T, n> product;
+        for (int i = 0; i < n; i++) product[i] = data[i] * other[i];
+        return product;
+    }
+
+    void operator*=(const Vector<T, n> &other) {
+        // elementwise multiplication
+        for (int i = 0; i < n; i++) data[i] *= other[i];
+    }
+
     Vector<T, n> operator/(const T &scalar) const {
         Vector<T, n> product;
         for (int i = 0; i < n; i++) product[i] = data[i] / scalar;
@@ -115,6 +127,18 @@ public:
 
     void operator/=(const T &scalar) {
         for (int i = 0; i < n; i++) data[i] /= scalar;
+    }
+
+    Vector<T, n> operator/(const Vector<T, n> &other) const {
+        // elementwise division
+        Vector<T, n> quotient;
+        for (int i = 0; i < n; i++) quotient[i] = data[i] / other[i];
+        return quotient;
+    }
+
+    void operator/=(const Vector<T, n> &other) {
+        // elementwise division
+        for (int i = 0; i < n; i++) data[i] /= other[i];
     }
 
     T &operator[](int index) {
