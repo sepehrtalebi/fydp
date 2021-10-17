@@ -67,7 +67,6 @@ public:
     }
 
 
-
     Matrix<T, m, n> cholesky() const {
         if (m != n) throw std::invalid_argument("Cannot find the Cholesky Decomposition of a non-square matrix");
         Matrix<T, m, n> L; //Lower-triangular matrix defined by A=LL'
@@ -86,13 +85,26 @@ public:
         return L;
     }
 
+
     Matrix<T, m, n> inv() const {
         if (m != n) throw std::invalid_argument("Cannot find the inverse of a non-square matrix");
-        std::cout << "Are you sure you want to use the inverse? This is very inefficient." << std::endl;
+//        std::cout << "Are you sure you want to use the inverse? This is very inefficient." << std::endl;
         Matrix<T, m, n> L = cholesky();
         Matrix<T, m, n> u;
-        //TODO: forward substitution then back substitution
-        return transpose();
+        Matrix<T, m, n> I = Matrix<T, m, n>::identity();
+
+        //forward substitution
+        for (int k = 0; k < n; k++) {
+            for (int i = 0; i < m; i++) {
+                T alpha = I[i][k];
+                for (int j = 0; j < i - 1; j++) {
+                    alpha -= L[i][j] * u[i][j];
+                }
+                u[i][k] = alpha / L[i][i];
+            }
+        }
+
+        return u.transpose() * u;
     }
 
 
@@ -160,3 +172,4 @@ public:
         return this->data[index];
     }
 };
+

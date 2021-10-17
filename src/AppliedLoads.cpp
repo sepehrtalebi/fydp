@@ -2,6 +2,7 @@
 #include "Constants.h"
 #include "Vector3.h"
 #include "Quaternion.h"
+#include <cmath>
 
 static double saturation(const double &value, const double &limit) {
     if (value > limit) return limit;
@@ -15,11 +16,17 @@ static double saturation(const double &value, const double &min, const double &m
     return value;
 }
 
-static Wrench<double> getPropellerLoads(double propeller_voltage) {
-    if (propeller_voltage > 12) propeller_voltage = 12; //saturation
-    else if (propeller_voltage < 0) propeller_voltage = 0; //saturation
 
-    return {{}, {}};
+static Wrench<double> getPropellerLoads(const double propeller_voltage_0, const double propeller_voltage_1,
+                                        const double propeller_ang_vel_1) {
+    auto propeller_voltage_0_sat = saturation(propeller_voltage_0, 0, 12);
+    auto propeller_voltage_1_sat = saturation(propeller_voltage_1, 0, 12);
+    double propeller_ang_vel_0 = (1 / (2 * TAU_PROPELLER + T_SAMPLE)) *
+                                 ((2 * TAU_PROPELLER - T_SAMPLE) * propeller_ang_vel_1 +
+                                  K_PROPELLER * T_SAMPLE * (propeller_voltage_1_sat + propeller_voltage_0_sat) );
+    Vector3<double> thrust = Vector3<double>{THRUST_GAIN_PROPELLER * propeller_ang_vel_0 * propeller_ang_vel_0, 0, 0};
+    Vector3<double> torque = Vector3<double>{TORQUE_GAIN_PROPELLER * propeller_ang_vel_0 * propeller_ang_vel_0, 0, 0};
+    return {thrust, Vector3<double>{L_FRONT_PROPELLER.cross(thrust) + torque}};
 }
 
 static Wrench<double> getRightAileronLoads(const double &angle, const double &velocity) {
@@ -37,7 +44,10 @@ static Wrench<double> getLeftAileronLoads(const double &angle, const double &vel
 }
 
 static Wrench<double> getElevatorLoads(const double &angle, const double &velocity) {
-    return {{}, {}};
+    auto angle_ = saturation(angle, M_PI_4);
+    auto velocity_ = velocity;
+    Vector3<double> force = Vector3<double>{0, 0, LIFT_GAIN_ELEVATOR * velocity_ * velocity_ * angle_};
+    return {force, L_ELEVATOR.cross(force)};
 }
 
 static Wrench<double> getEnvironmentalLoads(const Vector<double, KF::n> &state) {

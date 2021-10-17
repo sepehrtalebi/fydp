@@ -3,7 +3,15 @@
 const double UKF::gamma = std::sqrt(KF::n + UKF::lambda);
 
 UKF::UKF() {
-    this->P_cholesky = P.cholesky();
+    P_cholesky = P.cholesky();
+
+    //state weights i = 0: w = lambda / (N + lambda) i = 1 to 2N: w = 1 / (2 * (N + lambda))
+    state_weights[0] = lambda / (n + lambda);
+    for (int i = 1; i < 2*n + 1; i++) state_weights[i] = 1 / (2 * (n + lambda));
+
+    //covariance weights i = 0: w = lambda / (N + lambda) + (1 - alpha*alpha + beta) i = 1 to 2N: w is same
+    covariance_weights[0] = lambda / (n + lambda) + (1 - alpha*alpha + beta);
+    for (int i = 1; i < 2*n + 1; i++) covariance_weights[i] = 1 / (2 * (n + lambda));
 }
 
 void UKF::update(const SensorMeasurements &sensorMeasurements,
@@ -20,15 +28,6 @@ void UKF::update(const SensorMeasurements &sensorMeasurements,
     //transform sigma through state update function. this is state sigma
     auto state_sigma = new_sigma;
     for (int i = 0; i < 2*n + 1; i++) state_sigma[i] = f(new_sigma[i], control_inputs, dt);
-    //state weights i = 0: w = lambda / (N + lambda) i = 1 to 2N: w = 1 / (2 * (N + lambda))
-    Vector<double, 2*n+1> state_weights;
-    state_weights[0] = lambda / (n + lambda);
-    for (int i = 1; i < 2*n + 1; i++) state_weights[i] = 1 / (2 * (n + lambda));
-
-    //covariance weights i = 0: w = lambda / (N + lambda) + (1 - alpha*alpha + beta) i = 1 to 2N: w is same
-    Vector<double, 2*n+1> covariance_weights;
-    covariance_weights[0] = lambda / (n + lambda) + (1 - alpha*alpha + beta);
-    for (int i = 1; i < 2*n + 1; i++) covariance_weights[i] = 1 / (2 * (n + lambda));
 
     //for i=0 to 2n state estimate += state weights[i] times state sigma[i]
     Vector<double, n> state_estimate;
@@ -64,8 +63,13 @@ void UKF::update(const SensorMeasurements &sensorMeasurements,
     Matrix<double, n, p> K;
     K = cross_covariance * measurement_covariance.inv();
 
-    //standard kalman gain update
+    //kalman gain update
     x = state_estimate + K * (sensorMeasurements.getZ() - measurement_estimate);
     P = state_covariance - K * measurement_covariance * K.inv();
-    //TODO: update P_cholesky
+    //update P_cholesky
+    P_cholesky = P.cholesky();
 }
+
+//TODO: More efficient update using
+// https://www.researchgate.net/publication/220398698_Two_Efficient_Implementation_Forms_of_Unscented_Kalman_Filter
+// which could be 40% faster

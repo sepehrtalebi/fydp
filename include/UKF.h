@@ -12,6 +12,8 @@ private:
     constexpr static const double beta = 2; //parameter to affect the weighting of the zeroth sigma point for the calculation of the covariance
     constexpr static const double lambda = alpha * alpha * (n + kappa) - n; //scaling factor for sigma points
     static const double gamma; //multiply by covariance for sigma points
+    Vector<double, 2*n+1> state_weights;
+    Vector<double, 2*n+1> covariance_weights;
 
     void update(const SensorMeasurements &sensorMeasurements,
                 const ControlInputs &control_inputs, double dt) override;
