@@ -67,3 +67,14 @@ Wrench<double> getAppliedLoads(const Vector<double, KF::n> &state, const Control
            getElevatorLoads(control_inputs.ElevatorAngle, velocity) +
            getEnvironmentalLoads(state);
 }
+
+void getAppliedLoadsWrapper(const double *control_inputs, const double *aircraft_state, double *forces, double *torques) {
+    Vector<double, 4> control_inputsVec{control_inputs[0], control_inputs[1], control_inputs[2], control_inputs[3]};
+    Vector<double, KF::n> aircraft_state_vec;
+    for (int i = 0; i < KF::n; i++) aircraft_state_vec[i] = aircraft_state[i];
+    Wrench<double> wrench = getAppliedLoads(aircraft_state_vec, ControlInputs::parseU(control_inputsVec));
+    for (int i = 0; i < 3; i++) {
+        forces[i] = wrench.force[i];
+        torques[i] = wrench.torque[i];
+    }
+}
