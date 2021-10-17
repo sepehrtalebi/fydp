@@ -4,8 +4,8 @@
 
 static constexpr const double PI = 3.14159265358979323846;
 static constexpr const double GRAVITATIONAL_ACCELERATION = 9.81;
-static constexpr const double M = 1; // aircraft mass, kg
-static const Vector3<double> WEIGHT{0, 0, M * GRAVITATIONAL_ACCELERATION};
+static constexpr const double MASS = 1; // aircraft mass, kg
+static const Vector3<double> WEIGHT{0, 0, MASS * GRAVITATIONAL_ACCELERATION};
 
 // aileron aerodynamic constant
 static constexpr const double LIFT_GAIN_AILERON = 1;

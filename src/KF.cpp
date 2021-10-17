@@ -1,6 +1,7 @@
 #include "KF.h"
 #include "Quaternion.h"
 #include "AppliedLoads.h"
+#include "Constants.h"
 
 const Matrix<double, 3, 3> KF::inertia_inv = Matrix<double, 3, 3>{1, 0, 0, 0, 1, 0, 0, 0, 1}; // NOLINT(cert-err58-cpp)
 
@@ -62,7 +63,7 @@ Vector<double, KF::n> KF::f(const Vector<double, n> &x, const ControlInputs &con
         x_new[q0 + i] = quat_new[i];
         x_new[vx + i] += x[ax + i] * dt;
         x_new[wx + i] += x[ang_ax + i] * dt;
-        x_new[ax + i] = wrench.force[i] / m;
+        x_new[ax + i] = wrench.force[i] / MASS;
         x_new[ang_ax + i] = ang_a_new[i];
         x_new[magx + i] = mag_new[i];
     }
@@ -77,7 +78,7 @@ Vector<double, KF::p> KF::h(const Vector<double, n> &x, const ControlInputs &con
     return SensorMeasurements{P_atm - rho_air * g * (-x[pz]),
                               0, 0, 0, 0, false,
                               Vector<double, 2>{0, 0},
-                              Vector3<double>{wrench.force / m},
+                              Vector3<double>{wrench.force / MASS},
                               Vector3<double>{x[wx], x[wy], x[wz]},
                               0, 0, -x[pz], 8}
                               .getZ();

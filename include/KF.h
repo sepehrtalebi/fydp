@@ -14,7 +14,6 @@ public:
     constexpr static const double g = 9.81; // gravitational acceleration
     constexpr static const double P_atm = 101325; // Pa
     constexpr static const double rho_air = 1.225; // kg/m^3
-    constexpr static const double m = 1; // kg
     static const Matrix<double, 3, 3> inertia_inv; // 1/(kg * m^2)
     enum {
         px, py, pz,  // position in earth frame
