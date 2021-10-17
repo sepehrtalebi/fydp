@@ -16,7 +16,6 @@ static double saturation(const double &value, const double &min, const double &m
     return value;
 }
 
-
 static Wrench<double> getPropellerLoads(const double propeller_voltage_0, const double propeller_voltage_1,
                                         const double propeller_ang_vel_1) {
     auto propeller_voltage_0_sat = saturation(propeller_voltage_0, 0, 12);
@@ -30,14 +29,14 @@ static Wrench<double> getPropellerLoads(const double propeller_voltage_0, const 
 }
 
 static Wrench<double> getRightAileronLoads(const double &angle, const double &velocity) {
-    double lift = LIFT_GAIN_AILERON * saturation(angle, PI / 4) * velocity  * velocity;
+    double lift = LIFT_GAIN_AILERON * saturation(angle, M_PI_4) * velocity  * velocity;
     Vector3<double> force{0, 0, -lift};
     Vector3<double> torque = L_RIGHT_AILERON.cross(force);
     return {force, torque};
 }
 
 static Wrench<double> getLeftAileronLoads(const double &angle, const double &velocity) {
-    double lift = LIFT_GAIN_AILERON * saturation(angle, PI / 4) * velocity  * velocity;
+    double lift = LIFT_GAIN_AILERON * saturation(angle, M_PI_4) * velocity  * velocity;
     Vector3<double> force{0, 0, -lift};
     Vector3<double> torque = L_LEFT_AILERON.cross(force);
     return {force, torque};
@@ -71,7 +70,7 @@ static Wrench<double> getEnvironmentalLoads(const Vector<double, KF::n> &state) 
 
 Wrench<double> getAppliedLoads(const Vector<double, KF::n> &state, const ControlInputs &control_inputs) {
     double velocity = state[KF::vx];
-    return getPropellerLoads(control_inputs.PropellerVoltage) +
+    return getPropellerLoads(control_inputs.PropellerVoltage, 0, 0) +
            getRightAileronLoads(control_inputs.RightAileronAngle, velocity) +
            getLeftAileronLoads(control_inputs.LeftAileronAngle, velocity) +
            getElevatorLoads(control_inputs.ElevatorAngle, velocity) +
