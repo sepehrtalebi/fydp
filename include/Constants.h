@@ -3,9 +3,6 @@
 #include "Vector3.h"
 #include "Matrix.h"
 
-// mathematical constants
-static constexpr const double PI = 3.14159265358979323846;
-
 // environmental constants
 static constexpr const double GRAVITATIONAL_ACCELERATION = 9.81; // m/s^2
 static constexpr const double ATMOSPHERIC_PRESSURE = 101325; // Pa
