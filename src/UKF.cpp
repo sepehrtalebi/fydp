@@ -65,7 +65,7 @@ void UKF::update(const SensorMeasurements &sensorMeasurements,
 
     //kalman gain update
     x = state_estimate + K * (sensorMeasurements.getZ() - measurement_estimate);
-    P = state_covariance - K * measurement_covariance * K.inv();
+    P = state_covariance - K * measurement_covariance * K.transpose();
     //update P_cholesky
     P_cholesky = P.cholesky();
 }
