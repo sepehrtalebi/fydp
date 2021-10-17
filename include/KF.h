@@ -11,10 +11,6 @@ class KF {
 public:
     constexpr static const int n = 31; // number of states
     constexpr static const int p = 18; // number of sensor measurements
-    constexpr static const double g = 9.81; // gravitational acceleration
-    constexpr static const double P_atm = 101325; // Pa
-    constexpr static const double rho_air = 1.225; // kg/m^3
-    static const Matrix<double, 3, 3> inertia_inv; // 1/(kg * m^2)
     enum {
         px, py, pz,  // position in earth frame
         q0, q1, q2, q3,  // rotation from earth frame to body frame

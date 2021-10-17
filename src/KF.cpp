@@ -3,8 +3,6 @@
 #include "AppliedLoads.h"
 #include "Constants.h"
 
-const Matrix<double, 3, 3> KF::inertia_inv = Matrix<double, 3, 3>{1, 0, 0, 0, 1, 0, 0, 0, 1}; // NOLINT(cert-err58-cpp)
-
 KF::KF() {
     x[q0] = 1;
     P[px][px] = P[py][py] = 0;
@@ -51,7 +49,7 @@ Vector<double, KF::n> KF::f(const Vector<double, n> &x, const ControlInputs &con
     Quaternion<double> quat_new = Quaternion<double>{quat + quat.E().transpose() * w_abs * (dt / 2)};
     quat_new.normalize();
 
-    Vector3<double> ang_a_new = Vector3<double>{inertia_inv * wrench.torque};
+    Vector3<double> ang_a_new = Vector3<double>{INERTIA_TENSOR_INV * wrench.torque};
 
     Vector3<double> mag = Vector3<double>{x[magx], x[magy], x[magz]};
     Vector3<double> mag_b = Vector3<double>{x[mag_bx], x[mag_by], x[mag_bz]};
@@ -75,7 +73,7 @@ Vector<double, KF::n> KF::f(const Vector<double, n> &x, const ControlInputs &con
 Vector<double, KF::p> KF::h(const Vector<double, n> &x, const ControlInputs &control_inputs, double dt) {
     Wrench<double> wrench = getAppliedLoads(x, control_inputs);
     // TODO
-    return SensorMeasurements{P_atm - rho_air * g * (-x[pz]),
+    return SensorMeasurements{ATMOSPHERIC_PRESSURE - AIR_DENSITY * GRAVITATIONAL_ACCELERATION * (-x[pz]),
                               0, 0, 0, 0, false,
                               Vector<double, 2>{0, 0},
                               Vector3<double>{wrench.force / MASS},

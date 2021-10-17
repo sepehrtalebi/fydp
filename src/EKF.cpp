@@ -2,6 +2,7 @@
 #include "Quaternion.h"
 #include "Variable.h"
 #include "AppliedLoads.h"
+#include "Constants.h"
 #include <map>
 #include <string>
 
@@ -106,7 +107,7 @@ Matrix<double, EKF::p, EKF::n> EKF::h_jacobian(const Vector<double, n> &x, const
     // the ith output measurement with respect to the jth input state
     Matrix<double, p, n> h_jac = Matrix<double, p, n>::zeros();
     // TODO
-    h_jac[SensorMeasurements::P][px] = rho_air * g;
+    h_jac[SensorMeasurements::P][px] = AIR_DENSITY * GRAVITATIONAL_ACCELERATION;
 
     h_jac[SensorMeasurements::IMU_wx][wx] = 1;
     h_jac[SensorMeasurements::IMU_wy][wy] = 1;
