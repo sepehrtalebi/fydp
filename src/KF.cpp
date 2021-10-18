@@ -1,6 +1,7 @@
 #include "KF.h"
 #include "Quaternion.h"
 #include "Constants.h"
+#include "SensorModels.h"
 
 KF::KF() {
     x[q0] = 1;
@@ -74,13 +75,5 @@ Vector<double, n> KF::f(const Vector<double, n> &x, double dt) {
 }
 
 Vector<double, p> KF::h(const Vector<double, n> &x, double dt) {
-    Wrench<double> wrench = applied_loads.getAppliedLoads(x);
-    // TODO
-    return SensorMeasurements{ATMOSPHERIC_PRESSURE - AIR_DENSITY * GRAVITATIONAL_ACCELERATION * (-x[pz]),
-                              0, 0, 0, 0, false,
-                              Vector<double, 2>{0, 0},
-                              Vector3<double>{wrench.force / MASS},
-                              Vector3<double>{x[wx], x[wy], x[wz]},
-                              0, 0, -x[pz], 8}
-                              .getZ();
+    return getSensorMeasurements(x).getZ();
 }
