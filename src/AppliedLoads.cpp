@@ -39,10 +39,10 @@ double AppliedLoads::getPropellerAngVelocity() const {
 
 Wrench<double> AppliedLoads::getPropellerLoads() const {
     double propeller_ang_vel = getPropellerAngVelocity();
-    Vector3<double> thrust = Vector3<double>{THRUST_GAIN_PROPELLER * propeller_ang_vel * propeller_ang_vel, 0, 0};
-    Vector3<double> torque = Vector3<double>{TORQUE_GAIN_PROPELLER * propeller_ang_vel * propeller_ang_vel, 0, 0};
+    Vector3<double> thrust{THRUST_GAIN_PROPELLER * propeller_ang_vel * propeller_ang_vel, 0, 0};
+    Vector3<double> torque{TORQUE_GAIN_PROPELLER * propeller_ang_vel * propeller_ang_vel, 0, 0};
 
-    return {thrust, Vector3<double>{L_FRONT_PROPELLER.cross(thrust) + torque}};
+    return {thrust, L_FRONT_PROPELLER.cross(thrust) + torque};
 }
 
 Wrench<double> AppliedLoads::getRightAileronLoads(const double &velocity) const {
@@ -63,7 +63,7 @@ Wrench<double> AppliedLoads::getLeftAileronLoads(const double &velocity) const {
 Wrench<double> AppliedLoads::getElevatorLoads(const double &velocity) const {
     auto angle_ = saturation(current_control_inputs.ElevatorAngle, M_PI_4);
     auto velocity_ = velocity;
-    Vector3<double> force = Vector3<double>{0, 0, LIFT_GAIN_ELEVATOR * velocity_ * velocity_ * angle_};
+    Vector3<double> force{0, 0, LIFT_GAIN_ELEVATOR * velocity_ * velocity_ * angle_};
     return {force, L_ELEVATOR.cross(force)};
 }
 
@@ -82,8 +82,8 @@ Wrench<double> AppliedLoads::getEnvironmentalLoads(const Vector<double, n> &stat
     double rudder_lift = -LIFT_GAIN_RUDDER * sin_of_rudder_angle_of_attack * (b_vel.x * b_vel.x + b_vel.y * b_vel.y);
     Vector3<double> rudder_force{0, rudder_lift, 0};
 
-    Vector3<double> torque = Vector3<double>{L_BODY.cross(body_force) + L_RUDDER.cross(rudder_force)};
-    return {Vector3<double>{weight + body_force + rudder_force}, torque};
+    Vector3<double> torque = L_BODY.cross(body_force) + L_RUDDER.cross(rudder_force);
+    return {weight + body_force + rudder_force, torque};
 }
 
 Wrench<double> AppliedLoads::getAppliedLoads(const Vector<double, n> &state) const {

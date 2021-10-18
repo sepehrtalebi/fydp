@@ -44,21 +44,20 @@ Vector<double, n> KF::f(const Vector<double, n> &x, double dt) {
 
     Vector<double, n> x_new = x;
 
-    Vector3<double> v = Vector3<double>{x[vx], x[vy], x[vz]};
+    Vector3<double> v{x[vx], x[vy], x[vz]};
     Vector3<double> v_abs = quat.unrotate(v);
 
-    Vector3<double> w = Vector3<double>{x[wx], x[wy], x[wz]};
+    Vector3<double> w{x[wx], x[wy], x[wz]};
     Vector3<double> w_abs = quat.unrotate(w);
 
-    Quaternion<double> quat_new = Quaternion<double>{quat + quat.E().transpose() * w_abs * (dt / 2)};
+    Quaternion<double> quat_new = quat + quat.E().transpose() * w_abs * (dt / 2);
     quat_new.normalize();
 
-    Vector3<double> ang_a_new = Vector3<double>{INERTIA_TENSOR_INV * wrench.torque};
+    Vector3<double> ang_a_new = INERTIA_TENSOR_INV * wrench.torque;
 
-    Vector3<double> mag = Vector3<double>{x[magx], x[magy], x[magz]};
-    Vector3<double> mag_b = Vector3<double>{x[mag_bx], x[mag_by], x[mag_bz]};
-    Vector3<double> mag_new = Vector3<double>{quat_new.rotate(quat.unrotate(
-            Vector3<double>{mag - mag_b})) + mag_b};
+    Vector3<double> mag{x[magx], x[magy], x[magz]};
+    Vector3<double> mag_b{x[mag_bx], x[mag_by], x[mag_bz]};
+    Vector3<double> mag_new = quat_new.rotate(quat.unrotate(mag - mag_b)) + mag_b;
 
     for (int i = 0; i < 3; i++) {
         x_new[px + i] += v_abs[i] * dt;

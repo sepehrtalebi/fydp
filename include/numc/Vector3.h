@@ -20,7 +20,8 @@ public:
 
     Vector3(const Vector3<T> &other) : Vector3(other.x, other.y, other.z) {}
 
-    explicit Vector3(Vector<T, 3> vec) : Vector3(vec[0], vec[1], vec[2]) {}
+    // allow implicit conversions
+    Vector3(Vector<T, 3> vec) : Vector3(vec[0], vec[1], vec[2]) {} // NOLINT(google-explicit-constructor)
 
     Vector3<T> cross(const Vector3<T> &other) const {
         return Vector3{y * other.z - z * other.y,
