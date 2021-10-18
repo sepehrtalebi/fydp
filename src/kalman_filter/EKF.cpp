@@ -20,7 +20,7 @@ Matrix3D<ExprPtr, 4, 4, 3> get_quat_quat_jac_expr() {
     return expr;
 }
 
-const Matrix3D<ExprPtr, 4, 4, 3> EKF::quat_to_quat_jac_expr = get_quat_quat_jac_expr();
+const Matrix3D<ExprPtr, 4, 4, 3> EKF::quat_to_quat_jac_expr = get_quat_quat_jac_expr(); // NOLINT(cert-err58-cpp)
 
 void EKF::update(const SensorMeasurements &sensorMeasurements, const ControlInputs& control_inputs, double dt) {
     // call superclass update function first
