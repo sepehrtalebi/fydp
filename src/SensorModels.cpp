@@ -6,6 +6,7 @@ static void railDetection(const Vector<double, n> &state, SensorMeasurements &se
 
 SensorMeasurements getSensorMeasurements(const Vector<double, n> &state) {
     SensorMeasurements sensor_measurements;
+    railDetection(state, sensor_measurements);
 
 //    Wrench<double> wrench = applied_loads.getAppliedLoads(x);
 //    // TODO
