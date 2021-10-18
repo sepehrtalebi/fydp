@@ -58,10 +58,10 @@ Matrix<double, n, n> EKF::f_jacobian(const Vector<double, n> &x, double dt) {
     Matrix<double, n, n> f_jac = Matrix<double, n, n>::zeros();
 
     // setup some basic variables for use later
-    Quaternion<double> quat = Quaternion<double>{x[q0], x[q1], x[q2], x[q3]};
+    Quaternion<double> quat{x[q0], x[q1], x[q2], x[q3]};
     Matrix<double, 3, 3> DCM_inv = quat.cong().toDCM();
     Vector3<double> w_abs = quat.unrotate(Vector3<double>{x[wx], x[wy], x[wz]});
-    Quaternion<double> quat_new = Quaternion<double>{quat + quat.E().transpose() * w_abs * (dt / 2)};
+    Quaternion<double> quat_new = quat + quat.E().transpose() * w_abs * (dt / 2);
     const std::map<std::string, double> subs = {{"q0", x[q0]},
                                                 {"q1", x[q1]},
                                                 {"q2", x[q2]},
