@@ -55,8 +55,8 @@ Wrench<double> AppliedLoads::getLeftAileronLoads(const double &velocity) const {
 }
 
 Wrench<double> AppliedLoads::getElevatorLoads(const double &velocity) const {
-    double angle_sat = saturation(current_control_inputs.elevator_angle, M_PI_4);
-    Vector3<double> force{0, 0, LIFT_GAIN_ELEVATOR * velocity * velocity * angle_sat};
+    double lift = LIFT_GAIN_ELEVATOR * saturation(current_control_inputs.elevator_angle, M_PI_4) * velocity * velocity;
+    Vector3<double> force{0, 0, lift};
     return {force, L_ELEVATOR.cross(force)};
 }
 
