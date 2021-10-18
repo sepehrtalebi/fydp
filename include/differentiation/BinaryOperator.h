@@ -13,31 +13,31 @@ public:
 
     explicit BinaryOperator(ExprPtr first, ExprPtr second) : first(std::move(first)), second(std::move(second)) {}
 
-    double evaluate(const std::map<std::string, double> &variables) const override;
+    [[nodiscard]] double evaluate(const std::map<std::string, double> &variables) const override;
 
-    ExprPtr subs(const std::map<std::string, ExprPtr> &subs) const override;
+    [[nodiscard]] ExprPtr subs(const std::map<std::string, ExprPtr> &subs) const override;
 
-    ExprPtr simplify() const override;
+    [[nodiscard]] ExprPtr simplify() const override;
 
-    int nodeCount() const override;
+    [[nodiscard]] int nodeCount() const override;
 
 protected:
     ExprPtr first;
     ExprPtr second;
 
-    virtual double call(const double &first, const double &second) const = 0;
+    [[nodiscard]] virtual double call(const double &first, const double &second) const = 0;
 
-    virtual ExprPtr call(const ExprPtr &first, const ExprPtr &second) const = 0;
+    [[nodiscard]] virtual ExprPtr call(const ExprPtr &first, const ExprPtr &second) const = 0;
 
-    virtual std::string type() const = 0;
+    [[nodiscard]] virtual std::string type() const = 0;
 
-    virtual bool isAssociative() const;
+    [[nodiscard]] virtual bool isAssociative() const;
 
-    virtual bool isCommutative() const;
+    [[nodiscard]] virtual bool isCommutative() const;
 
     // This function only guarantees the left distributive property. The right distributive property is implied given
     // distributivity and commutativity.
-    virtual bool isDistributiveOn(const std::string &type) const;
+    [[nodiscard]] virtual bool isDistributiveOn(const std::string &type) const;
 };
 
 #include "Sum.h"

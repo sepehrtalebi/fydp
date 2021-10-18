@@ -13,17 +13,17 @@ class Expression {
     // Thus we also can't have them as elements in Vector
     // The workaround is to use ExprPtr in its place, and defined global arithmetic operators to work with it
 public:
-    virtual double evaluate(const std::map<std::string, double> &variables) const = 0;
+    [[nodiscard]] virtual double evaluate(const std::map<std::string, double> &variables) const = 0;
 
-    virtual ExprPtr diff(const std::string &id) const = 0;
+    [[nodiscard]] virtual ExprPtr diff(const std::string &id) const = 0;
 
-    virtual ExprPtr subs(const std::map<std::string, ExprPtr> &subs) const = 0;
+    [[nodiscard]] virtual ExprPtr subs(const std::map<std::string, ExprPtr> &subs) const = 0;
 
-    virtual ExprPtr simplify() const = 0;
+    [[nodiscard]] virtual ExprPtr simplify() const = 0;
 
-    virtual std::string toStr() const = 0;
+    [[nodiscard]] virtual std::string toStr() const = 0;
 
-    virtual int nodeCount() const;
+    [[nodiscard]] virtual int nodeCount() const;
 };
 
 // We need to #include all direct sub-classes because they overload operators for ExprPtr

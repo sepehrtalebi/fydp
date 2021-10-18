@@ -12,13 +12,13 @@ public:
     explicit Sin(const ExprPtr &operand) : UnaryOperator(operand) {}
 
 protected:
-    double call(const double &operand) const override;
+    [[nodiscard]] double call(const double &operand) const override;
 
-    ExprPtr call(const ExprPtr &operand) const override;
+    [[nodiscard]] ExprPtr call(const ExprPtr &operand) const override;
 
-    ExprPtr derivative(const ExprPtr &expr) const override;
+    [[nodiscard]] ExprPtr derivative(const ExprPtr &expr) const override;
 
-    std::string toStrWrapper(const std::string &operandString) const override;
+    [[nodiscard]] std::string toStrWrapper(const std::string &operandString) const override;
 };
 
 ExprPtr sin(const ExprPtr &expr);

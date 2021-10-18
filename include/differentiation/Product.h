@@ -11,24 +11,24 @@ class Product : public BinaryOperator {
 public:
     Product(ExprPtr first, ExprPtr second) : BinaryOperator(std::move(first), std::move(second)) {}
 
-    ExprPtr diff(const std::string &id) const override;
+    [[nodiscard]] ExprPtr diff(const std::string &id) const override;
 
-    ExprPtr simplify() const override;
+    [[nodiscard]] ExprPtr simplify() const override;
 
-    std::string toStr() const override;
+    [[nodiscard]] std::string toStr() const override;
 
 protected:
-    double call(const double &first, const double &second) const override;
+    [[nodiscard]] double call(const double &first, const double &second) const override;
 
-    ExprPtr call(const ExprPtr &first, const ExprPtr &second) const override;
+    [[nodiscard]] ExprPtr call(const ExprPtr &first, const ExprPtr &second) const override;
 
-    std::string type() const override;
+    [[nodiscard]] std::string type() const override;
 
-    bool isAssociative() const override;
+    [[nodiscard]] bool isAssociative() const override;
 
-    bool isCommutative() const override;
+    [[nodiscard]] bool isCommutative() const override;
 
-    bool isDistributiveOn(const std::string &type) const override;
+    [[nodiscard]] bool isDistributiveOn(const std::string &type) const override;
 };
 
 ExprPtr operator*(const ExprPtr& expr1, const ExprPtr& expr2);

@@ -15,13 +15,13 @@ public:
 
     void operator=(const Nan &) = delete;
 
-    ExprPtr diff(const std::string &identifier) const override;
+    [[nodiscard]] ExprPtr diff(const std::string &identifier) const override;
 
-    ExprPtr subs(const std::map<std::string, ExprPtr> &subs) const override;
+    [[nodiscard]] ExprPtr subs(const std::map<std::string, ExprPtr> &subs) const override;
 
-    ExprPtr simplify() const override;
+    [[nodiscard]] ExprPtr simplify() const override;
 
-    std::string toStr() const override;
+    [[nodiscard]] std::string toStr() const override;
 
 private:
     Nan() noexcept : Constant(std::numeric_limits<double>::quiet_NaN()) {}

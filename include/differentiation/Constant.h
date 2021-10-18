@@ -16,17 +16,17 @@ public:
 
     static ConstPtr make(const double &value);
 
-    double evaluate(const std::map<std::string, double> &variables) const override;
+    [[nodiscard]] double evaluate(const std::map<std::string, double> &variables) const override;
 
-    ExprPtr diff(const std::string &identifier) const override;
+    [[nodiscard]] ExprPtr diff(const std::string &identifier) const override;
 
-    ExprPtr subs(const std::map<std::string, ExprPtr> &subs) const override;
+    [[nodiscard]] ExprPtr subs(const std::map<std::string, ExprPtr> &subs) const override;
 
-    ExprPtr simplify() const override;
+    [[nodiscard]] ExprPtr simplify() const override;
 
-    std::string toStr() const override;
+    [[nodiscard]] std::string toStr() const override;
 
-    double getValue() const;
+    [[nodiscard]] double getValue() const;
 
 protected:
     explicit Constant(const double &value) : value(value) {}
