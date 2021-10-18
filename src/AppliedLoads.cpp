@@ -90,9 +90,8 @@ Wrench<double> AppliedLoads::getAppliedLoads(const Vector<double, n> &state) con
 
 void AppliedLoads::updateWrapper(const double *control_inputs, const double *aircraft_state, double *forces,
                                  double *torques) {
-    Vector<double, 4> control_inputsVec{control_inputs[0], control_inputs[1], control_inputs[2], control_inputs[3]};
-    Vector<double, n> aircraft_state_vec;
-    for (int i = 0; i < n; i++) aircraft_state_vec[i] = aircraft_state[i];
+    Vector<double, 4> control_inputsVec{control_inputs};
+    Vector<double, n> aircraft_state_vec{aircraft_state};
 
     update(ControlInputs::parseU(control_inputsVec));
     Wrench<double> wrench = getAppliedLoads(aircraft_state_vec);

@@ -20,6 +20,12 @@ public:
             data[i++] = *it;
     }
 
+    explicit Vector(const T *arr) {
+        // initializes this Vector with data from the raw C++ array
+        // this should only be used when inputting data from MATLAB
+        for (int i = 0; i < n; i++) data[i] = arr[i];
+    }
+
     Vector(const Vector<T, n> &other) {
         for (int i = 0; i < n; i++) data[i] = other[i];
     }

@@ -10,11 +10,10 @@ KF::KF() {
 
 void KF::updateWrapper(const double *doubleSensorMeasurements, const uint8_t *uint8SensorMeasurements,
                         const unsigned char *boolSensorMeasurements, const double *control_inputs, double dt) {
-    Vector<double, 16> doubleZ;
-    for (int i = 0; i < 16; i++) doubleZ[i] = doubleSensorMeasurements[i];
-    Vector<uint8_t, 1> uint8Z{uint8SensorMeasurements[0]};
+    Vector<double, 16> doubleZ{doubleSensorMeasurements};
+    Vector<uint8_t, 1> uint8Z{uint8SensorMeasurements};
     Vector<bool, 1> boolZ{(bool) boolSensorMeasurements[0]};
-    Vector<double, 4> control_inputsVec{control_inputs[0], control_inputs[1], control_inputs[2], control_inputs[3]};
+    Vector<double, 4> control_inputsVec{control_inputs};
     SensorMeasurements sensorMeasurements = SensorMeasurements::parseZ(doubleZ, uint8Z, boolZ);
     update(sensorMeasurements, ControlInputs::parseU(control_inputsVec), dt);
 }
