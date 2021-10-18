@@ -37,17 +37,17 @@ AircraftState KF::getOutput() const {
                          Vector3<double>{x[ax], x[ay], x[az]}};
 }
 
-Vector<double, n> KF::f(const Vector<double, n> &x, double dt) {
-    Wrench<double> wrench = applied_loads.getAppliedLoads(x);
+Vector<double, n> KF::f(const Vector<double, n> &state, double dt) {
+    Wrench<double> wrench = applied_loads.getAppliedLoads(state);
 
-    Quaternion<double> quat = Quaternion<double>{x[q0], x[q1], x[q2], x[q3]};
+    Quaternion<double> quat{state[q0], state[q1], state[q2], state[q3]};
 
-    Vector<double, n> x_new = x;
+    Vector<double, n> state_new = state;
 
-    Vector3<double> v{x[vx], x[vy], x[vz]};
+    Vector3<double> v{state[vx], state[vy], state[vz]};
     Vector3<double> v_abs = quat.unrotate(v);
 
-    Vector3<double> w{x[wx], x[wy], x[wz]};
+    Vector3<double> w{state[wx], state[wy], state[wz]};
     Vector3<double> w_abs = quat.unrotate(w);
 
     Quaternion<double> quat_new = quat + quat.E().transpose() * w_abs * (dt / 2);
@@ -55,22 +55,22 @@ Vector<double, n> KF::f(const Vector<double, n> &x, double dt) {
 
     Vector3<double> ang_a_new = INERTIA_TENSOR_INV * wrench.torque;
 
-    Vector3<double> mag{x[magx], x[magy], x[magz]};
-    Vector3<double> mag_b{x[mag_bx], x[mag_by], x[mag_bz]};
+    Vector3<double> mag{state[magx], state[magy], state[magz]};
+    Vector3<double> mag_b{state[mag_bx], state[mag_by], state[mag_bz]};
     Vector3<double> mag_new = quat_new.rotate(quat.unrotate(mag - mag_b)) + mag_b;
 
     for (int i = 0; i < 3; i++) {
-        x_new[px + i] += v_abs[i] * dt;
-        x_new[q0 + i] = quat_new[i];
-        x_new[vx + i] += x[ax + i] * dt;
-        x_new[wx + i] += x[ang_ax + i] * dt;
-        x_new[ax + i] = wrench.force[i] / MASS;
-        x_new[ang_ax + i] = ang_a_new[i];
-        x_new[magx + i] = mag_new[i];
+        state_new[px + i] += v_abs[i] * dt;
+        state_new[q0 + i] = quat_new[i];
+        state_new[vx + i] += state[ax + i] * dt;
+        state_new[wx + i] += state[ang_ax + i] * dt;
+        state_new[ax + i] = wrench.force[i] / MASS;
+        state_new[ang_ax + i] = ang_a_new[i];
+        state_new[magx + i] = mag_new[i];
     }
-    x_new[q3] = quat_new.q3; // not included in for loop
+    state_new[q3] = quat_new.q3; // not included in for loop
 
-    return x_new;
+    return state_new;
 }
 
 Vector<double, p> KF::h(const Vector<double, n> &x, double dt) {
