@@ -30,5 +30,5 @@ struct SensorMeasurements {
                                      const Vector<bool, 1> &boolZ);
 
     // may be unnecessary and replaced with more specific functions in the future
-    Vector<double, 18> getZ() const;
+    [[nodiscard]] Vector<double, 18> getZ() const;
 };

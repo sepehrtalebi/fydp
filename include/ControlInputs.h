@@ -11,5 +11,5 @@ struct ControlInputs {
     static ControlInputs parseU(const Vector<double, 4> &inputs);
 
     // may be unnecessary and replaced with more specific functions in the future
-    Vector<double, 4> getU() const;
+    [[nodiscard]] Vector<double, 4> getU() const;
 };
