@@ -40,18 +40,15 @@ Wrench<double> AppliedLoads::getPropellerLoads() const {
 }
 
 Wrench<double> AppliedLoads::getRightAileronLoads(const double &velocity) const {
-    double lift =
-            LIFT_GAIN_AILERON * saturation(current_control_inputs.right_aileron_angle, M_PI_4) * velocity * velocity;
+    double lift = LIFT_GAIN_AILERON * saturation(current_control_inputs.right_aileron_angle, M_PI_4) * velocity * velocity;
     Vector3<double> force{0, 0, -lift};
-    Vector3<double> torque = L_RIGHT_AILERON.cross(force);
-    return {force, torque};
+    return {force, L_RIGHT_AILERON.cross(force)};
 }
 
 Wrench<double> AppliedLoads::getLeftAileronLoads(const double &velocity) const {
     double lift = LIFT_GAIN_AILERON * saturation(current_control_inputs.left_aileron_angle, M_PI_4) * velocity * velocity;
     Vector3<double> force{0, 0, -lift};
-    Vector3<double> torque = L_LEFT_AILERON.cross(force);
-    return {force, torque};
+    return {force, L_LEFT_AILERON.cross(force)};
 }
 
 Wrench<double> AppliedLoads::getElevatorLoads(const double &velocity) const {
