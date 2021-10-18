@@ -1,5 +1,4 @@
 #include "Nan.h"
-#include "Zero.h"
 
 const ConstPtr Nan::INSTANCE = std::shared_ptr<Nan>(new Nan()); // NOLINT(cert-err58-cpp)
 
