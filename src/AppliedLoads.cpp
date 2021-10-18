@@ -4,52 +4,69 @@
 #include "Quaternion.h"
 #include <cmath>
 
-static double saturation(const double &value, const double &limit) {
+AppliedLoads::AppliedLoads() {
+    current_control_inputs = {};
+    last_control_inputs = {};
+    last_propeller_ang_vel = 0;
+}
+
+void AppliedLoads::update(const ControlInputs &control_inputs) {
+    last_propeller_ang_vel = getPropellerAngVelocity();
+    last_control_inputs = current_control_inputs;
+    current_control_inputs = control_inputs;
+}
+
+double AppliedLoads::saturation(const double &value, const double &limit) {
     if (value > limit) return limit;
     if (value < -limit) return -limit;
     return value;
 }
 
-static double saturation(const double &value, const double &min, const double &max) {
+double AppliedLoads::saturation(const double &value, const double &min, const double &max) {
     if (value > max) return max;
     if (value < min) return min;
     return value;
 }
 
-static Wrench<double> getPropellerLoads(const double propeller_voltage_0, const double propeller_voltage_1,
-                                        const double propeller_ang_vel_1) {
-    auto propeller_voltage_0_sat = saturation(propeller_voltage_0, 0, 12);
-    auto propeller_voltage_1_sat = saturation(propeller_voltage_1, 0, 12);
-    double propeller_ang_vel_0 = (1 / (2 * TAU_PROPELLER + T_SAMPLE)) *
-                                 ((2 * TAU_PROPELLER - T_SAMPLE) * propeller_ang_vel_1 +
-                                  K_PROPELLER * T_SAMPLE * (propeller_voltage_1_sat + propeller_voltage_0_sat) );
-    Vector3<double> thrust = Vector3<double>{THRUST_GAIN_PROPELLER * propeller_ang_vel_0 * propeller_ang_vel_0, 0, 0};
-    Vector3<double> torque = Vector3<double>{TORQUE_GAIN_PROPELLER * propeller_ang_vel_0 * propeller_ang_vel_0, 0, 0};
+double AppliedLoads::getPropellerAngVelocity() const {
+    double propeller_voltage_sat = saturation(current_control_inputs.PropellerVoltage, 0, 12);
+    double last_propeller_voltage_sat = saturation(last_control_inputs.PropellerVoltage, 0, 12);
+    return (1 / (2 * TAU_PROPELLER + T_SAMPLE)) *
+           ((2 * TAU_PROPELLER - T_SAMPLE) * last_propeller_ang_vel +
+            K_PROPELLER * T_SAMPLE * (last_propeller_voltage_sat + propeller_voltage_sat));
+}
+
+Wrench<double> AppliedLoads::getPropellerLoads() const {
+    double propeller_ang_vel = getPropellerAngVelocity();
+    Vector3<double> thrust = Vector3<double>{THRUST_GAIN_PROPELLER * propeller_ang_vel * propeller_ang_vel, 0, 0};
+    Vector3<double> torque = Vector3<double>{TORQUE_GAIN_PROPELLER * propeller_ang_vel * propeller_ang_vel, 0, 0};
+
     return {thrust, Vector3<double>{L_FRONT_PROPELLER.cross(thrust) + torque}};
 }
 
-static Wrench<double> getRightAileronLoads(const double &angle, const double &velocity) {
-    double lift = LIFT_GAIN_AILERON * saturation(angle, M_PI_4) * velocity  * velocity;
+Wrench<double> AppliedLoads::getRightAileronLoads(const double &velocity) const {
+    double lift =
+            LIFT_GAIN_AILERON * saturation(current_control_inputs.RightAileronAngle, M_PI_4) * velocity * velocity;
     Vector3<double> force{0, 0, -lift};
     Vector3<double> torque = L_RIGHT_AILERON.cross(force);
     return {force, torque};
 }
 
-static Wrench<double> getLeftAileronLoads(const double &angle, const double &velocity) {
-    double lift = LIFT_GAIN_AILERON * saturation(angle, M_PI_4) * velocity  * velocity;
+Wrench<double> AppliedLoads::getLeftAileronLoads(const double &velocity) const {
+    double lift = LIFT_GAIN_AILERON * saturation(current_control_inputs.LeftAileronAngle, M_PI_4) * velocity * velocity;
     Vector3<double> force{0, 0, -lift};
     Vector3<double> torque = L_LEFT_AILERON.cross(force);
     return {force, torque};
 }
 
-static Wrench<double> getElevatorLoads(const double &angle, const double &velocity) {
-    auto angle_ = saturation(angle, M_PI_4);
+Wrench<double> AppliedLoads::getElevatorLoads(const double &velocity) const {
+    auto angle_ = saturation(current_control_inputs.ElevatorAngle, M_PI_4);
     auto velocity_ = velocity;
     Vector3<double> force = Vector3<double>{0, 0, LIFT_GAIN_ELEVATOR * velocity_ * velocity_ * angle_};
     return {force, L_ELEVATOR.cross(force)};
 }
 
-static Wrench<double> getEnvironmentalLoads(const Vector<double, KF::n> &state) {
+Wrench<double> AppliedLoads::getEnvironmentalLoads(const Vector<double, KF::n> &state) {
     Quaternion<double> quat{state[KF::q0], state[KF::q1], state[KF::q2], state[KF::q3]};
     Vector3<double> weight = quat.rotate(WEIGHT);
 
@@ -68,20 +85,23 @@ static Wrench<double> getEnvironmentalLoads(const Vector<double, KF::n> &state) 
     return {Vector3<double>{weight + body_force + rudder_force}, torque};
 }
 
-Wrench<double> getAppliedLoads(const Vector<double, KF::n> &state, const ControlInputs &control_inputs) {
+Wrench<double> AppliedLoads::getAppliedLoads(const Vector<double, KF::n> &state) const {
     double velocity = state[KF::vx];
-    return getPropellerLoads(control_inputs.PropellerVoltage, 0, 0) +
-           getRightAileronLoads(control_inputs.RightAileronAngle, velocity) +
-           getLeftAileronLoads(control_inputs.LeftAileronAngle, velocity) +
-           getElevatorLoads(control_inputs.ElevatorAngle, velocity) +
+    return getPropellerLoads() +
+           getRightAileronLoads(velocity) +
+           getLeftAileronLoads(velocity) +
+           getElevatorLoads(velocity) +
            getEnvironmentalLoads(state);
 }
 
-void getAppliedLoadsWrapper(const double *control_inputs, const double *aircraft_state, double *forces, double *torques) {
+void AppliedLoads::updateWrapper(const double *control_inputs, const double *aircraft_state, double *forces,
+                                 double *torques) {
     Vector<double, 4> control_inputsVec{control_inputs[0], control_inputs[1], control_inputs[2], control_inputs[3]};
     Vector<double, KF::n> aircraft_state_vec;
     for (int i = 0; i < KF::n; i++) aircraft_state_vec[i] = aircraft_state[i];
-    Wrench<double> wrench = getAppliedLoads(aircraft_state_vec, ControlInputs::parseU(control_inputsVec));
+
+    update(ControlInputs::parseU(control_inputsVec));
+    Wrench<double> wrench = getAppliedLoads(aircraft_state_vec);
     for (int i = 0; i < 3; i++) {
         forces[i] = wrench.force[i];
         torques[i] = wrench.torque[i];

@@ -1,6 +1,5 @@
 #include "KF.h"
 #include "Quaternion.h"
-#include "AppliedLoads.h"
 #include "Constants.h"
 
 KF::KF() {
@@ -24,6 +23,10 @@ void KF::getOutputWrapper(double *doubleAircraftState) const {
     for (int i = 0; i < 19; i++) doubleAircraftState[i] = aircraftState[i];
 }
 
+void KF::update(const SensorMeasurements & /** sensorMeasurements **/, const ControlInputs &control_inputs, double /** dt **/) {
+    applied_loads.update(control_inputs);
+}
+
 AircraftState KF::getOutput() const {
     return AircraftState{Vector3<double>{x[px], x[py], x[pz]},
                          Quaternion<double>{x[q0], x[q1], x[q2], x[q3]},
@@ -33,8 +36,8 @@ AircraftState KF::getOutput() const {
                          Vector3<double>{x[ax], x[ay], x[az]}};
 }
 
-Vector<double, KF::n> KF::f(const Vector<double, n> &x, const ControlInputs &control_inputs, double dt) {
-    Wrench<double> wrench = getAppliedLoads(x, control_inputs);
+Vector<double, KF::n> KF::f(const Vector<double, n> &x, double dt) {
+    Wrench<double> wrench = applied_loads.getAppliedLoads(x);
 
     Quaternion<double> quat = Quaternion<double>{x[q0], x[q1], x[q2], x[q3]};
 
@@ -70,8 +73,8 @@ Vector<double, KF::n> KF::f(const Vector<double, n> &x, const ControlInputs &con
     return x_new;
 }
 
-Vector<double, KF::p> KF::h(const Vector<double, n> &x, const ControlInputs &control_inputs, double dt) {
-    Wrench<double> wrench = getAppliedLoads(x, control_inputs);
+Vector<double, KF::p> KF::h(const Vector<double, n> &x, double dt) {
+    Wrench<double> wrench = applied_loads.getAppliedLoads(x);
     // TODO
     return SensorMeasurements{ATMOSPHERIC_PRESSURE - AIR_DENSITY * GRAVITATIONAL_ACCELERATION * (-x[pz]),
                               0, 0, 0, 0, false,

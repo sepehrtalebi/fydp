@@ -16,7 +16,10 @@ UKF::UKF() {
 
 void UKF::update(const SensorMeasurements &sensorMeasurements,
                  const ControlInputs &control_inputs, double dt) {
-    Vector<double, UKF::n> x_new = f(x, control_inputs, dt);
+    // call superclass update function first
+    KF::update(sensorMeasurements, control_inputs, dt);
+
+    Vector<double, UKF::n> x_new = f(x, dt);
     auto new_sigma = sigma;
 
     for (int j = 0; j < n; j++) { //i is column number, j is row number
@@ -27,7 +30,7 @@ void UKF::update(const SensorMeasurements &sensorMeasurements,
 
     //transform sigma through state update function. this is state sigma
     auto state_sigma = new_sigma;
-    for (int i = 0; i < 2*n + 1; i++) state_sigma[i] = f(new_sigma[i], control_inputs, dt);
+    for (int i = 0; i < 2*n + 1; i++) state_sigma[i] = f(new_sigma[i], dt);
 
     //for i=0 to 2n state estimate += state weights[i] times state sigma[i]
     Vector<double, n> state_estimate;
@@ -41,7 +44,7 @@ void UKF::update(const SensorMeasurements &sensorMeasurements,
 
     //transform state sigma through measurement function
     Matrix<double, 2*n + 1, p> measurement_sigma;
-    for (int i = 0; i < 2*n + 1; i++) measurement_sigma[i] = h(state_sigma[i], control_inputs, dt);
+    for (int i = 0; i < 2*n + 1; i++) measurement_sigma[i] = h(state_sigma[i], dt);
 
     //mean measurement vector += state weights[i] times measurement sigma[i]
     Vector<double, p> measurement_estimate;

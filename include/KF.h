@@ -6,6 +6,7 @@
 #include "SensorMeasurements.h"
 #include "AircraftState.h"
 #include "ControlInputs.h"
+#include "AppliedLoads.h"
 
 class KF {
 public:
@@ -29,6 +30,7 @@ protected:
     Matrix<double, n, n> P = Matrix<double, n, n>::identity();
     const Matrix<double, n, n> Q = Matrix<double, n, n>::identity();
     const Matrix<double, p, p> R = Matrix<double, p, p>::identity();
+    AppliedLoads applied_loads{};
 
 public:
     KF();
@@ -39,14 +41,14 @@ public:
     void getOutputWrapper(double *doubleAircraftState) const;
 
     virtual void update(const SensorMeasurements &sensorMeasurements,
-                        const ControlInputs &control_inputs, double dt) = 0;
+                        const ControlInputs &control_inputs, double dt);
 
-    AircraftState getOutput() const;
+    [[nodiscard]] AircraftState getOutput() const;
 
 protected:
-    static Vector<double, n> f(const Vector<double, n> &x, const ControlInputs &control_inputs, double dt);
+    Vector<double, n> f(const Vector<double, n> &x, double dt);
 
-    static Vector<double, p> h(const Vector<double, n> &x, const ControlInputs &control_inputs, double dt);
+    Vector<double, p> h(const Vector<double, n> &x, double dt);
 };
 
 
