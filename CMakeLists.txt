@@ -5,11 +5,13 @@ set(CMAKE_CXX_STANDARD 20)
 
 include_directories(./include)
 include_directories(./include/differentiation)
+include_directories(./include/numc)
+include_directories(./include/kalman_filter)
 
 add_executable(FYDP tests.cpp
-        src/KF.cpp
-        src/UKF.cpp
-        src/EKF.cpp
+        src/kalman_filter/KF.cpp
+        src/kalman_filter/UKF.cpp
+        src/kalman_filter/EKF.cpp
         src/SensorMeasurements.cpp
         src/AircraftState.cpp
         src/ControlInputs.cpp
