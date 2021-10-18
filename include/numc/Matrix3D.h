@@ -24,9 +24,10 @@ public:
     }
 
     template<typename R>
-    Matrix3D<R, n, m, p> applyFunc(const std::function<R(T)> &func) const {
+    Matrix3D<R, n, m, p> applyFunc(R (*func)(T)) const {
         Matrix3D<R, n, m, p> result;
-        for (int i = 0; i < n; i++) result[i] = data[i].applyFunc(func);
+        for (int i = 0; i < n; i++) for (int j = 0; j < m; j++) for (int k = 0; k < p; k++)
+            result[i][j][k] = func(data[i][j][k]);
         return result;
     }
 

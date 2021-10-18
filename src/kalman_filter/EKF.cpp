@@ -6,7 +6,7 @@
 #include <map>
 #include <string>
 
-Matrix3D<ExprPtr, 4, 4, 3> get_quat_quat_jac_expr() {
+static Matrix3D<ExprPtr, 4, 4, 3> getQuatToQuatJacExpr() {
     Matrix3D<ExprPtr, 4, 4, 3> expr;
 
     Quaternion<ExprPtr> quat{std::make_shared<Variable>("q0"),
@@ -20,14 +20,14 @@ Matrix3D<ExprPtr, 4, 4, 3> get_quat_quat_jac_expr() {
     return expr;
 }
 
-const Matrix3D<ExprPtr, 4, 4, 3> EKF::quat_to_quat_jac_expr = get_quat_quat_jac_expr(); // NOLINT(cert-err58-cpp)
+const Matrix3D<ExprPtr, 4, 4, 3> EKF::QUAT_TO_QUAT_JAC_EXPR = getQuatToQuatJacExpr(); // NOLINT(cert-err58-cpp)
 
 void EKF::update(const SensorMeasurements &sensorMeasurements, const ControlInputs& control_inputs, double dt) {
     // call superclass update function first
     KF::update(sensorMeasurements, control_inputs, dt);
 
     // prediction step
-    Matrix<double, n, n> f_jac = f_jacobian(x, dt);
+    Matrix<double, n, n> f_jac = fJacobian(x, dt);
 
     Vector<double, n> new_x = f(x, dt);
     for (int i = 0; i < n; i++) x[i] = new_x[i];
@@ -38,7 +38,7 @@ void EKF::update(const SensorMeasurements &sensorMeasurements, const ControlInpu
     // update step
     Vector<double, p> z = sensorMeasurements.getZ();
     Vector<double, p> h_mat = h(x, dt);
-    Matrix<double, p, n> h_jac = h_jacobian(x, dt);
+    Matrix<double, p, n> h_jac = hJacobian(x, dt);
     Matrix<double, n, p> h_jac_transpose = h_jac.transpose();
 
     Vector<double, p> y = z - h_mat;
@@ -50,8 +50,9 @@ void EKF::update(const SensorMeasurements &sensorMeasurements, const ControlInpu
     P -= K * h_jac * P;
 }
 
-Matrix<double, n, n> EKF::f_jacobian(const Vector<double, n> &x, double dt) {
+Matrix<double, n, n> EKF::fJacobian(const Vector<double, n> &x, double dt) const {
     // TODO: take into account the effect of getAppliedLoads on the jacobian
+    Matrix<double, 6, n> applied_loads_jac = applied_loads.getAppliedLoadsJacobian(x);
 
     // the ith row and jth column represents the derivative of
     // the ith output state with respect to the jth input state
@@ -68,9 +69,9 @@ Matrix<double, n, n> EKF::f_jacobian(const Vector<double, n> &x, double dt) {
                                                 {"q3", x[q3]}};
 
     // TODO: get lambda working
-    Matrix3D<double, 4, 4, 3> mat; // = quat_to_quat_jac_expr.applyFunc<double>([&subs] (const ExprPtr &expr) { return expr->evaluate(subs); });
+    Matrix3D<double, 4, 4, 3> mat; // = QUAT_TO_QUAT_JAC_EXPR.applyFunc<double>([&subs] (const ExprPtr &expr) { return expr->evaluate(subs); });
     for (int i = 0; i < 4; i++) for (int j = 0; j < 4; j++) for (int k = 0; k < 3; k++)
-        mat[i][j][k] = quat_to_quat_jac_expr[i][j][k]->evaluate(subs);
+        mat[i][j][k] = QUAT_TO_QUAT_JAC_EXPR[i][j][k]->evaluate(subs);
     Matrix<double, 4, 4> quat_to_quat_jac = mat * Vector3<double>{x[wx], x[wy], x[wz]} * (dt / 2);
 
     Matrix<double, 4, 3> quat_to_w_jac = quat.E().transpose() * DCM_inv * dt / 2;
@@ -105,7 +106,7 @@ Matrix<double, n, n> EKF::f_jacobian(const Vector<double, n> &x, double dt) {
     return f_jac;
 }
 
-Matrix<double, p, n> EKF::h_jacobian(const Vector<double, n> &x, double dt) {
+Matrix<double, p, n> EKF::hJacobian(const Vector<double, n> &x, double /** dt **/dt) const {
     // the ith row and jth column represents the derivative of
     // the ith output measurement with respect to the jth input state
     Matrix<double, p, n> h_jac = Matrix<double, p, n>::zeros();
