@@ -5,12 +5,12 @@
 
 struct SensorMeasurements {
     enum {
-        P,
-        rail_a, rail_w, rail_x, rail_y, rail_found,
-        pixel_vx, pixel_vy,
+        PRESSURE,
+        RAIL_ANGLE, RAIL_WIDTH, RAIL_x, RAIL_y, RAIL_FOUND,
+        PIXEL_vx, PIXEL_vy,
         IMU_ax, IMU_ay, IMU_az,
         IMU_wx, IMU_wy, IMU_wz,
-        lat, longitude, alt, sat_count
+        LAT, LONG, ALT, SAT_COUNT
     };
     double pressure;
     double rail_angle;

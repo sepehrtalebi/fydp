@@ -110,12 +110,12 @@ Matrix<double, p, n> EKF::h_jacobian(const Vector<double, n> &x, double dt) {
     // the ith output measurement with respect to the jth input state
     Matrix<double, p, n> h_jac = Matrix<double, p, n>::zeros();
     // TODO
-    h_jac[SensorMeasurements::P][px] = AIR_DENSITY * GRAVITATIONAL_ACCELERATION;
+    h_jac[SensorMeasurements::PRESSURE][px] = AIR_DENSITY * GRAVITATIONAL_ACCELERATION;
 
     h_jac[SensorMeasurements::IMU_wx][wx] = 1;
     h_jac[SensorMeasurements::IMU_wy][wy] = 1;
     h_jac[SensorMeasurements::IMU_wz][wz] = 1;
 
-    h_jac[SensorMeasurements::alt][pz] = -1;
+    h_jac[SensorMeasurements::ALT][pz] = -1;
     return h_jac;
 }
