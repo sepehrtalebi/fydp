@@ -22,7 +22,7 @@ struct SensorMeasurements {
     Vector3<double> imu_acceleration;
     Vector3<double> imu_angular_velocity;
     double latitude;
-    double Longitude;
+    double longitude;
     double gps_altitude;
     uint8_t satellite_count;
 

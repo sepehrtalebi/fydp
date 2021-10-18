@@ -16,6 +16,6 @@ Vector<double, 18> SensorMeasurements::getZ() const {
             pressure, rail_angle, rail_pixel_width, rail_pixel_x, rail_pixel_y, (double) found_rail,
             pixel_velocity[0], pixel_velocity[1], imu_acceleration.x, imu_acceleration.y,
             imu_acceleration.z,
-            imu_angular_velocity.x, imu_angular_velocity.y, imu_angular_velocity.z, latitude, Longitude,
+            imu_angular_velocity.x, imu_angular_velocity.y, imu_angular_velocity.z, latitude, longitude,
             gps_altitude, (double) satellite_count};
 }
