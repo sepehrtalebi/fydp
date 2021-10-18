@@ -24,15 +24,3 @@ protected:
 
     [[nodiscard]] std::string type() const override;
 };
-
-ExprPtr operator/(const ExprPtr &expr1, const ExprPtr &expr2);
-
-ExprPtr operator/(const ExprPtr &expr, const double &num);
-
-ExprPtr operator/(const double &num, const ExprPtr &expr);
-
-void operator/=(ExprPtr &expr1, const ExprPtr &expr2);
-
-void operator/=(ExprPtr &expr, const double &num);
-
-void operator/=(const double &num, ExprPtr &expr);

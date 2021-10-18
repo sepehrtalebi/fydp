@@ -39,9 +39,3 @@ protected:
     // distributivity and commutativity.
     [[nodiscard]] virtual bool isDistributiveOn(const std::string &type) const;
 };
-
-#include "Sum.h"
-#include "Difference.h"
-#include "Product.h"
-#include "Quotient.h"
-#include "Power.h"

@@ -20,5 +20,3 @@ protected:
 
     [[nodiscard]] std::string toStrWrapper(const std::string &operandString) const override;
 };
-
-ExprPtr log(const ExprPtr &expr);

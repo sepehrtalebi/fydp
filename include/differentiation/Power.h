@@ -22,11 +22,3 @@ protected:
 
     [[nodiscard]] std::string type() const override;
 };
-
-ExprPtr pow(const ExprPtr &expr1, const ExprPtr &expr2);
-
-ExprPtr pow(const ExprPtr &expr, const double &num);
-
-ExprPtr pow(const double &num, const ExprPtr &expr);
-
-ExprPtr sqrt(const ExprPtr &expr);

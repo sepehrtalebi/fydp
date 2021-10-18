@@ -37,7 +37,3 @@ protected:
 private:
     ExprPtr operand;
 };
-
-#include "Log.h"
-#include "Sin.h"
-#include "Cos.h"

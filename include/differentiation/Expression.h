@@ -26,7 +26,85 @@ public:
     [[nodiscard]] virtual int nodeCount() const;
 };
 
-// We need to #include all direct sub-classes because they overload operators for ExprPtr
-// The direct sub-classes are in turn responsible for #include-ing their subclasses
-#include "UnaryOperator.h"
-#include "BinaryOperator.h"
+// Declare all the operators that are defined in subclasses
+// This ensures all these operators can be accessed, even if only Expression.h is #included
+
+// Sum.cpp
+
+ExprPtr operator+(const ExprPtr &expr1, const ExprPtr &expr2);
+
+ExprPtr operator+(const ExprPtr &expr, const double &num);
+
+ExprPtr operator+(const double &num, const ExprPtr &expr);
+
+void operator+=(ExprPtr &expr1, const ExprPtr &expr2);
+
+void operator+=(ExprPtr &expr, const double &num);
+
+void operator+=(const double &num, ExprPtr &expr);
+
+// Difference.cpp
+
+ExprPtr operator-(const ExprPtr &expr1, const ExprPtr &expr2);
+
+ExprPtr operator-(const ExprPtr &expr);
+
+ExprPtr operator-(const ExprPtr &expr, const double &num);
+
+ExprPtr operator-(const double &num, const ExprPtr &expr);
+
+void operator-=(ExprPtr &expr1, const ExprPtr &expr2);
+
+void operator-=(ExprPtr &expr, const double &num);
+
+void operator-=(const double &num, ExprPtr &expr);
+
+// Product.cpp
+
+ExprPtr operator*(const ExprPtr& expr1, const ExprPtr& expr2);
+
+ExprPtr operator*(const ExprPtr& expr, const double& num);
+
+ExprPtr operator*(const double& num, const ExprPtr& expr);
+
+void operator*=(ExprPtr &expr1, const ExprPtr &expr2);
+
+void operator*=(ExprPtr &expr, const double &num);
+
+void operator*=(const double &num, ExprPtr &expr);
+
+// Quotient.cpp
+
+ExprPtr operator/(const ExprPtr &expr1, const ExprPtr &expr2);
+
+ExprPtr operator/(const ExprPtr &expr, const double &num);
+
+ExprPtr operator/(const double &num, const ExprPtr &expr);
+
+void operator/=(ExprPtr &expr1, const ExprPtr &expr2);
+
+void operator/=(ExprPtr &expr, const double &num);
+
+void operator/=(const double &num, ExprPtr &expr);
+
+// Power.cpp
+
+ExprPtr pow(const ExprPtr &expr1, const ExprPtr &expr2);
+
+ExprPtr pow(const ExprPtr &expr, const double &num);
+
+ExprPtr pow(const double &num, const ExprPtr &expr);
+
+ExprPtr sqrt(const ExprPtr &expr);
+
+// Log.cpp
+
+ExprPtr log(const ExprPtr &expr);
+
+// Sin.cpp
+
+ExprPtr sin(const ExprPtr &expr);
+
+// Cos.cpp
+
+ExprPtr cos(const ExprPtr &expr);
