@@ -5,12 +5,6 @@
 #include "Quaternion.h"
 #include <cmath>
 
-AppliedLoads::AppliedLoads() {
-    current_control_inputs = {};
-    last_control_inputs = {};
-    last_propeller_ang_vel = 0;
-}
-
 void AppliedLoads::update(const ControlInputs &control_inputs) {
     last_propeller_ang_vel = getPropellerAngVelocity();
     last_control_inputs = current_control_inputs;
@@ -61,9 +55,8 @@ Wrench<double> AppliedLoads::getLeftAileronLoads(const double &velocity) const {
 }
 
 Wrench<double> AppliedLoads::getElevatorLoads(const double &velocity) const {
-    auto angle_ = saturation(current_control_inputs.ElevatorAngle, M_PI_4);
-    auto velocity_ = velocity;
-    Vector3<double> force{0, 0, LIFT_GAIN_ELEVATOR * velocity_ * velocity_ * angle_};
+    double angle_sat = saturation(current_control_inputs.ElevatorAngle, M_PI_4);
+    Vector3<double> force{0, 0, LIFT_GAIN_ELEVATOR * velocity * velocity * angle_sat};
     return {force, L_ELEVATOR.cross(force)};
 }
 
