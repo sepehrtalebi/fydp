@@ -12,19 +12,19 @@ struct SensorMeasurements {
         IMU_wx, IMU_wy, IMU_wz,
         lat, longitude, alt, sat_count
     };
-    double Pressure;
-    double RailAngle;
-    double RailPixelWidth;
-    double RailPixelX;
-    double RailPixelY;
-    bool FoundRail;
-    Vector<double, 2> PixelVelocity;
-    Vector3<double> IMUAcceleration;
-    Vector3<double> IMUAngularVelocity;
-    double Latitude;
+    double pressure;
+    double rail_angle;
+    double rail_pixel_width;
+    double rail_pixel_x;
+    double rail_pixel_y;
+    bool found_rail;
+    Vector<double, 2> pixel_velocity;
+    Vector3<double> imu_acceleration;
+    Vector3<double> imu_angular_velocity;
+    double latitude;
     double Longitude;
-    double GPSAltitude;
-    uint8_t SatelliteCount;
+    double gps_altitude;
+    uint8_t satellite_count;
 
     static SensorMeasurements parseZ(const Vector<double, 16> &doubleZ, const Vector<uint8_t, 1> &uint8Z,
                                      const Vector<bool, 1> &boolZ);

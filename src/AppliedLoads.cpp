@@ -24,8 +24,8 @@ double AppliedLoads::saturation(const double &value, const double &min, const do
 }
 
 double AppliedLoads::getPropellerAngVelocity() const {
-    double propeller_voltage_sat = saturation(current_control_inputs.PropellerVoltage, 0, 12);
-    double last_propeller_voltage_sat = saturation(last_control_inputs.PropellerVoltage, 0, 12);
+    double propeller_voltage_sat = saturation(current_control_inputs.propeller_voltage, 0, 12);
+    double last_propeller_voltage_sat = saturation(last_control_inputs.propeller_voltage, 0, 12);
     return (1 / (2 * TAU_PROPELLER + T_SAMPLE)) *
            ((2 * TAU_PROPELLER - T_SAMPLE) * last_propeller_ang_vel +
             K_PROPELLER * T_SAMPLE * (last_propeller_voltage_sat + propeller_voltage_sat));
@@ -41,21 +41,21 @@ Wrench<double> AppliedLoads::getPropellerLoads() const {
 
 Wrench<double> AppliedLoads::getRightAileronLoads(const double &velocity) const {
     double lift =
-            LIFT_GAIN_AILERON * saturation(current_control_inputs.RightAileronAngle, M_PI_4) * velocity * velocity;
+            LIFT_GAIN_AILERON * saturation(current_control_inputs.right_aileron_angle, M_PI_4) * velocity * velocity;
     Vector3<double> force{0, 0, -lift};
     Vector3<double> torque = L_RIGHT_AILERON.cross(force);
     return {force, torque};
 }
 
 Wrench<double> AppliedLoads::getLeftAileronLoads(const double &velocity) const {
-    double lift = LIFT_GAIN_AILERON * saturation(current_control_inputs.LeftAileronAngle, M_PI_4) * velocity * velocity;
+    double lift = LIFT_GAIN_AILERON * saturation(current_control_inputs.left_aileron_angle, M_PI_4) * velocity * velocity;
     Vector3<double> force{0, 0, -lift};
     Vector3<double> torque = L_LEFT_AILERON.cross(force);
     return {force, torque};
 }
 
 Wrench<double> AppliedLoads::getElevatorLoads(const double &velocity) const {
-    double angle_sat = saturation(current_control_inputs.ElevatorAngle, M_PI_4);
+    double angle_sat = saturation(current_control_inputs.elevator_angle, M_PI_4);
     Vector3<double> force{0, 0, LIFT_GAIN_ELEVATOR * velocity * velocity * angle_sat};
     return {force, L_ELEVATOR.cross(force)};
 }

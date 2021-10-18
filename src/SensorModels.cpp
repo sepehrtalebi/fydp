@@ -1,7 +1,7 @@
 #include "SensorModels.h"
 
 static void railDetection(const Vector<double, n> &state, SensorMeasurements &sensor_measurements) {
-    sensor_measurements.FoundRail = false;
+    sensor_measurements.found_rail = false;
 }
 
 SensorMeasurements getSensorMeasurements(const Vector<double, n> &state) {
