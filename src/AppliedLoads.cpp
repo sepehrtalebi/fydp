@@ -1,4 +1,5 @@
 #include "AppliedLoads.h"
+#include "KF.h"
 #include "Constants.h"
 #include "Vector3.h"
 #include "Quaternion.h"
@@ -66,7 +67,7 @@ Wrench<double> AppliedLoads::getElevatorLoads(const double &velocity) const {
     return {force, L_ELEVATOR.cross(force)};
 }
 
-Wrench<double> AppliedLoads::getEnvironmentalLoads(const Vector<double, KF::n> &state) {
+Wrench<double> AppliedLoads::getEnvironmentalLoads(const Vector<double, n> &state) {
     Quaternion<double> quat{state[KF::q0], state[KF::q1], state[KF::q2], state[KF::q3]};
     Vector3<double> weight = quat.rotate(WEIGHT);
 
@@ -85,7 +86,7 @@ Wrench<double> AppliedLoads::getEnvironmentalLoads(const Vector<double, KF::n> &
     return {Vector3<double>{weight + body_force + rudder_force}, torque};
 }
 
-Wrench<double> AppliedLoads::getAppliedLoads(const Vector<double, KF::n> &state) const {
+Wrench<double> AppliedLoads::getAppliedLoads(const Vector<double, n> &state) const {
     double velocity = state[KF::vx];
     return getPropellerLoads() +
            getRightAileronLoads(velocity) +
@@ -97,8 +98,8 @@ Wrench<double> AppliedLoads::getAppliedLoads(const Vector<double, KF::n> &state)
 void AppliedLoads::updateWrapper(const double *control_inputs, const double *aircraft_state, double *forces,
                                  double *torques) {
     Vector<double, 4> control_inputsVec{control_inputs[0], control_inputs[1], control_inputs[2], control_inputs[3]};
-    Vector<double, KF::n> aircraft_state_vec;
-    for (int i = 0; i < KF::n; i++) aircraft_state_vec[i] = aircraft_state[i];
+    Vector<double, n> aircraft_state_vec;
+    for (int i = 0; i < n; i++) aircraft_state_vec[i] = aircraft_state[i];
 
     update(ControlInputs::parseU(control_inputsVec));
     Wrench<double> wrench = getAppliedLoads(aircraft_state_vec);

@@ -44,3 +44,6 @@ static const Vector3<double> L_FRONT_PROPELLER = Vector3<double>{0, 0, 0};
 static constexpr const double LIFT_GAIN_ELEVATOR = 1;
 static const Vector3<double> L_ELEVATOR = Vector3<double>{0, 0, 0};
 
+// Kalman filter constants
+constexpr static const int n = 31; // number of states
+constexpr static const int p = 18; // number of sensor measurements

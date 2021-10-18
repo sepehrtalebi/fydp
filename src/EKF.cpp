@@ -50,7 +50,7 @@ void EKF::update(const SensorMeasurements &sensorMeasurements, const ControlInpu
     P -= K * h_jac * P;
 }
 
-Matrix<double, EKF::n, EKF::n> EKF::f_jacobian(const Vector<double, n> &x, double dt) {
+Matrix<double, n, n> EKF::f_jacobian(const Vector<double, n> &x, double dt) {
     // TODO: take into account the effect of getAppliedLoads on the jacobian
 
     // the ith row and jth column represents the derivative of
@@ -105,7 +105,7 @@ Matrix<double, EKF::n, EKF::n> EKF::f_jacobian(const Vector<double, n> &x, doubl
     return f_jac;
 }
 
-Matrix<double, EKF::p, EKF::n> EKF::h_jacobian(const Vector<double, n> &x, double dt) {
+Matrix<double, p, n> EKF::h_jacobian(const Vector<double, n> &x, double dt) {
     // the ith row and jth column represents the derivative of
     // the ith output measurement with respect to the jth input state
     Matrix<double, p, n> h_jac = Matrix<double, p, n>::zeros();

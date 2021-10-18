@@ -36,7 +36,7 @@ AircraftState KF::getOutput() const {
                          Vector3<double>{x[ax], x[ay], x[az]}};
 }
 
-Vector<double, KF::n> KF::f(const Vector<double, n> &x, double dt) {
+Vector<double, n> KF::f(const Vector<double, n> &x, double dt) {
     Wrench<double> wrench = applied_loads.getAppliedLoads(x);
 
     Quaternion<double> quat = Quaternion<double>{x[q0], x[q1], x[q2], x[q3]};
@@ -73,7 +73,7 @@ Vector<double, KF::n> KF::f(const Vector<double, n> &x, double dt) {
     return x_new;
 }
 
-Vector<double, KF::p> KF::h(const Vector<double, n> &x, double dt) {
+Vector<double, p> KF::h(const Vector<double, n> &x, double dt) {
     Wrench<double> wrench = applied_loads.getAppliedLoads(x);
     // TODO
     return SensorMeasurements{ATMOSPHERIC_PRESSURE - AIR_DENSITY * GRAVITATIONAL_ACCELERATION * (-x[pz]),

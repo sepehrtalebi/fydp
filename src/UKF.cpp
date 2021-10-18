@@ -1,6 +1,6 @@
 #include "UKF.h"
 
-const double UKF::gamma = std::sqrt(KF::n + UKF::lambda);
+const double UKF::gamma = std::sqrt(n + UKF::lambda); // NOLINT(cert-err58-cpp)
 
 UKF::UKF() {
     P_cholesky = P.cholesky();
@@ -19,7 +19,7 @@ void UKF::update(const SensorMeasurements &sensorMeasurements,
     // call superclass update function first
     KF::update(sensorMeasurements, control_inputs, dt);
 
-    Vector<double, UKF::n> x_new = f(x, dt);
+    Vector<double, n> x_new = f(x, dt);
     auto new_sigma = sigma;
 
     for (int j = 0; j < n; j++) { //i is column number, j is row number

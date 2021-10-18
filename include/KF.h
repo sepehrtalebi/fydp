@@ -7,11 +7,10 @@
 #include "AircraftState.h"
 #include "ControlInputs.h"
 #include "AppliedLoads.h"
+#include "Constants.h"
 
 class KF {
 public:
-    constexpr static const int n = 31; // number of states
-    constexpr static const int p = 18; // number of sensor measurements
     enum {
         px, py, pz,  // position in earth frame
         q0, q1, q2, q3,  // rotation from earth frame to body frame
