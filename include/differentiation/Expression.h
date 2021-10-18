@@ -11,7 +11,7 @@ typedef std::shared_ptr<Expression> ExprPtr;
 class Expression {
     // Note that we can't declare variables of type Expression since it is abstract
     // Thus we also can't have them as elements in Vector
-    // The workaround is to use ExprPtr in its place, and defined global arithmetic operators to work with it
+    // The workaround is to use ExprPtr in its place, and define global arithmetic operators to work with it
 public:
     [[nodiscard]] virtual double evaluate(const std::map<std::string, double> &variables) const = 0;
 
