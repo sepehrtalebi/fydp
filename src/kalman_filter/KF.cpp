@@ -73,6 +73,6 @@ Vector<double, n> KF::f(const Vector<double, n> &state, double dt) {
     return state_new;
 }
 
-Vector<double, p> KF::h(const Vector<double, n> &x, double dt) {
-    return getSensorMeasurements(x).getZ();
+Vector<double, p> KF::h(const Vector<double, n> &state, double /** dt **/) {
+    return getSensorMeasurements(state).getZ();
 }
