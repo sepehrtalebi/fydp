@@ -9,6 +9,7 @@ template<typename T, int n>
 class Vector {
 public:
     std::array<T, n> data{};
+    typedef typename std::array<T, n>::iterator iterator;
 public:
     Vector() = default;
 
@@ -153,6 +154,14 @@ public:
 
     T operator[](int index) const {
         return this->data[index];
+    }
+
+    iterator begin() {
+        return data.begin();
+    }
+
+    iterator end() {
+        return data.end();
     }
 };
 
