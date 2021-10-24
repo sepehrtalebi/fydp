@@ -11,5 +11,5 @@ struct AircraftState {
     Vector3<double> BodyAngularAcceleration;
     Vector3<double> BodyAcceleration;
 
-    Vector<double, 19> getX() const;
+    [[nodiscard]] Vector<double, 19> getX() const;
 };
