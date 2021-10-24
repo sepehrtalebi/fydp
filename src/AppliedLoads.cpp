@@ -14,8 +14,7 @@ static Matrix<ExprPtr, 3, 4> getWeightToQuatJacExpr() {
                              std::make_shared<Variable>("q1"),
                              std::make_shared<Variable>("q2"),
                              std::make_shared<Variable>("q3")};
-    // TODO: get lambda working so we can map WEIGHT with &Constant::make
-    Vector3<ExprPtr> weight = quat.rotate({Constant::make(WEIGHT[0]), Constant::make(WEIGHT[1]), Constant::make(WEIGHT[2])});
+    Vector3<ExprPtr> weight = quat.rotate(WEIGHT.applyFunc<ExprPtr>(&Constant::make));
     for (int i = 0; i < 3; i++) for (int j = 0; j < 4; j++)
         expr[i][j] = weight[i]->diff(std::static_pointer_cast<Variable>(quat[j])->getIdentifier())->simplify();
 
