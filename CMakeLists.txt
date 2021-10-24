@@ -35,6 +35,8 @@ add_executable(FYDP tests.cpp
         src/differentiation/Log.cpp
         src/numc/Primes.cpp
         test/TestVector.cpp
+        test/TestVector3.cpp
+        test/TestQuaternion.cpp
         test/TestMatrix.cpp
         test/TestDifferentiation.cpp
         test/TestPrimes.cpp

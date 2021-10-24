@@ -1,4 +1,6 @@
 #include "test/TestVector.h"
+#include "test/TestVector3.h"
+#include "test/TestQuaternion.h"
 #include "test/TestMatrix.h"
 #include "test/TestDifferentiation.h"
 #include "test/TestPrimes.h"
@@ -7,6 +9,8 @@
 
 int main() {
     testVector();
+    testVector3();
+    testQuaternion();
     testMatrix();
     testDifferentiation();
     testPrimes();
