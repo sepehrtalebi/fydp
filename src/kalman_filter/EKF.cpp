@@ -51,9 +51,6 @@ void EKF::update(const SensorMeasurements &sensorMeasurements, const ControlInpu
 }
 
 Matrix<double, n, n> EKF::fJacobian(const Vector<double, n> &x, double dt) const {
-    // TODO: take into account the effect of getAppliedLoads on the jacobian
-    Matrix<double, 6, n> applied_loads_jac = applied_loads.getAppliedLoadsJacobian(x);
-
     // the ith row and jth column represents the derivative of
     // the ith output state with respect to the jth input state
     Matrix<double, n, n> f_jac = Matrix<double, n, n>::zeros();
@@ -99,6 +96,15 @@ Matrix<double, n, n> EKF::fJacobian(const Vector<double, n> &x, double dt) const
         for(int j = 0; j < 4; j++) f_jac[q0 + i][q0 + j] = quat_to_quat_jac[i][j]; // derivative of quaternion with respect to itself
         for (int j = 0; j < 3; j++) f_jac[q0 + i][wx + j] = quat_to_w_jac[i][j]; // derivative of quaternion with respect to angular velocity
     }
+
+    Matrix<double, 6, n> applied_loads_jac = applied_loads.getAppliedLoadsJacobian(x);
+    Matrix<double, n, 6> wrench_jac = Matrix<double, n, 6>::zeros();
+    // TODO: double check the math
+    for (int i = 0; i < 3; i++) {
+        wrench_jac[ax + i][i] = 1 / MASS;
+        for (int j = 0; j < 3; j++) wrench_jac[ax + i][3 + j] = INERTIA_TENSOR_INV[i][j];
+    }
+    f_jac += wrench_jac * applied_loads_jac;
 
     return f_jac;
 }
