@@ -10,10 +10,10 @@
 static Matrix<ExprPtr, 3, 4> getWeightToQuatJacExpr() {
     Matrix<ExprPtr, 3, 4> expr;
 
-    Quaternion<ExprPtr> quat{std::make_shared<Variable>("q0"),
-                             std::make_shared<Variable>("q1"),
-                             std::make_shared<Variable>("q2"),
-                             std::make_shared<Variable>("q3")};
+    Quaternion<ExprPtr> quat{Variable::make("q0"),
+                             Variable::make("q1"),
+                             Variable::make("q2"),
+                             Variable::make("q3")};
     Vector3<ExprPtr> weight = quat.rotate(WEIGHT.applyFunc<ExprPtr>(&Constant::make));
     for (int i = 0; i < 3; i++) for (int j = 0; j < 4; j++)
         expr[i][j] = weight[i]->diff(std::static_pointer_cast<Variable>(quat[j])->getIdentifier())->simplify();

@@ -13,6 +13,8 @@ private:
 public:
     explicit Variable(std::string id) : identifier(std::move(id)) {}
 
+    static std::shared_ptr<Variable> make(const std::string &id);
+
     [[nodiscard]] double evaluate(const std::map<std::string, double> &variables) const override;
 
     [[nodiscard]] ExprPtr diff(const std::string &id) const override;

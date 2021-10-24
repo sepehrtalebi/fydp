@@ -9,10 +9,10 @@
 static Matrix3D<ExprPtr, 4, 4, 3> getQuatToQuatJacExpr() {
     Matrix3D<ExprPtr, 4, 4, 3> expr;
 
-    Quaternion<ExprPtr> quat{std::make_shared<Variable>("q0"),
-                             std::make_shared<Variable>("q1"),
-                             std::make_shared<Variable>("q2"),
-                             std::make_shared<Variable>("q3")};
+    Quaternion<ExprPtr> quat{Variable::make("q0"),
+                             Variable::make("q1"),
+                             Variable::make("q2"),
+                             Variable::make("q3")};
     Matrix<ExprPtr, 4, 3> mat = quat.E().transpose() * quat.cong().toDCM();
     for (int i = 0; i < 4; i++) for (int j = 0; j < 4; j++) for (int k = 0; k < 3; k++)
         expr[i][j][k] = mat[j][k]->diff(std::static_pointer_cast<Variable>(quat[i])->getIdentifier())->simplify();

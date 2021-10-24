@@ -34,8 +34,9 @@ void testVector() {
     Vector<int, 5> test_sq_int = test.applyFunc<int>([](const double &d) { return (int) (d * d); });
     for (int i = 0; i < 5; i++) assert(test_sq_int[i] == (int) (test[i] * test[i]));
 
-    Vector<ExprPtr, 3> expr{std::make_shared<Variable>("x"), std::make_shared<Variable>("y"),
-                            std::make_shared<Variable>("z")};
+    Vector<ExprPtr, 3> expr{Variable::make("x"),
+                            Variable::make("y"),
+                            Variable::make("z")};
     const std::map<std::string, double> subs{{"x", 0},
                                              {"y", 1},
                                              {"z", 2}};
