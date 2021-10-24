@@ -33,7 +33,10 @@ add_executable(FYDP tests.cpp
         src/differentiation/Sin.cpp
         src/differentiation/Cos.cpp
         src/differentiation/Log.cpp
+        src/numc/Primes.cpp
         test/TestVector.cpp
         test/TestMatrix.cpp
         test/TestDifferentiation.cpp
+        test/TestPrimes.cpp
+        test/TestFourier.cpp
         )

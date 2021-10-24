@@ -2,8 +2,10 @@
 
 #include "Wrench.h"
 #include "Vector.h"
+#include "Matrix.h"
 #include "ControlInputs.h"
 #include "Constants.h"
+#include "Expression.h"
 
 class AppliedLoads {
 public:
@@ -13,7 +15,11 @@ public:
 
     [[nodiscard]] Wrench<double> getAppliedLoads(const Vector<double, n> &state) const;
 
+    [[nodiscard]] Matrix<double, 6, n> getAppliedLoadsJacobian(const Vector<double, n> &state) const;
+
 private:
+    static const Matrix<ExprPtr, 3, 4> WEIGHT_TO_QUAT_JAC_EXPR;
+
     ControlInputs current_control_inputs{0, 0, 0, 0};
     ControlInputs last_control_inputs{0, 0, 0, 0};
     double last_propeller_ang_vel = 0;

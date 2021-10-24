@@ -10,9 +10,9 @@ public:
                 const ControlInputs &control_inputs, double dt) override;
 
 private:
-    static const Matrix3D<ExprPtr, 4, 4, 3> quat_to_quat_jac_expr;
+    static const Matrix3D<ExprPtr, 4, 4, 3> QUAT_TO_QUAT_JAC_EXPR;
 
-    Matrix<double, n, n> f_jacobian(const Vector<double, n> &x, double dt);
+    [[nodiscard]] Matrix<double, n, n> fJacobian(const Vector<double, n> &x, double dt) const;
 
-    Matrix<double, p, n> h_jacobian(const Vector<double, n> &x, double dt);
+    [[nodiscard]] Matrix<double, p, n> hJacobian(const Vector<double, n> &x, double dt) const;
 };

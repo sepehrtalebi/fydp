@@ -60,12 +60,11 @@ public:
     }
 
     template<typename R>
-    Matrix<R, n, m> applyFunc(const std::function<R(T)> &func) {
+    Matrix<R, n, m> applyFunc(const std::function<R(const T &)> &func) const {
         Matrix<R, n, m> result;
-        for (int i = 0; i < n; i++) result[i] = data[i].applyFunc(func);
+        for (int i = 0; i < n; i++) for (int j = 0; j < m; j++) result[i][j] = func(data[i][j]);
         return result;
     }
-
 
     Matrix<T, m, n> cholesky() const {
         if (m != n) throw std::invalid_argument("Cannot find the Cholesky Decomposition of a non-square matrix");
