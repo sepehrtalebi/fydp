@@ -11,7 +11,7 @@ public:
     T &q2 = this->data[2];
     T &q3 = this->data[3];
 public:
-    explicit Quaternion(T q0, T q1, T q2, T q3) {
+    explicit Quaternion(T q0 = 1, T q1 = 0, T q2 = 0, T q3 = 0) {
         this->q0 = q0;
         this->q1 = q1;
         this->q2 = q2;
