@@ -57,7 +57,7 @@ public:
     }
 
     template<typename R>
-    Vector<R, n> applyFunc(const std::function<R(const T &)> &func) {
+    Vector<R, n> applyFunc(const std::function<R(const T &)> &func) const {
         Vector<R, n> result;
         for (int i = 0; i < n; i++) result[i] = func(data[i]);
         return result;
