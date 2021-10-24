@@ -7,8 +7,6 @@
 
 class AppliedLoads {
 public:
-    AppliedLoads();
-
     void update(const ControlInputs &control_inputs);
 
     void updateWrapper(const double *control_inputs, const double *aircraft_state, double *forces, double *torques);
@@ -16,9 +14,9 @@ public:
     [[nodiscard]] Wrench<double> getAppliedLoads(const Vector<double, n> &state) const;
 
 private:
-    ControlInputs current_control_inputs;
-    ControlInputs last_control_inputs;
-    double last_propeller_ang_vel;
+    ControlInputs current_control_inputs{0, 0, 0, 0};
+    ControlInputs last_control_inputs{0, 0, 0, 0};
+    double last_propeller_ang_vel = 0;
 
     static double saturation(const double &value, const double &limit);
 

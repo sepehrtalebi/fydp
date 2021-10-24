@@ -20,7 +20,7 @@ Matrix3D<ExprPtr, 4, 4, 3> get_quat_quat_jac_expr() {
     return expr;
 }
 
-const Matrix3D<ExprPtr, 4, 4, 3> EKF::quat_to_quat_jac_expr = get_quat_quat_jac_expr();
+const Matrix3D<ExprPtr, 4, 4, 3> EKF::quat_to_quat_jac_expr = get_quat_quat_jac_expr(); // NOLINT(cert-err58-cpp)
 
 void EKF::update(const SensorMeasurements &sensorMeasurements, const ControlInputs& control_inputs, double dt) {
     // call superclass update function first
@@ -58,10 +58,10 @@ Matrix<double, n, n> EKF::f_jacobian(const Vector<double, n> &x, double dt) {
     Matrix<double, n, n> f_jac = Matrix<double, n, n>::zeros();
 
     // setup some basic variables for use later
-    Quaternion<double> quat = Quaternion<double>{x[q0], x[q1], x[q2], x[q3]};
+    Quaternion<double> quat{x[q0], x[q1], x[q2], x[q3]};
     Matrix<double, 3, 3> DCM_inv = quat.cong().toDCM();
     Vector3<double> w_abs = quat.unrotate(Vector3<double>{x[wx], x[wy], x[wz]});
-    Quaternion<double> quat_new = Quaternion<double>{quat + quat.E().transpose() * w_abs * (dt / 2)};
+    Quaternion<double> quat_new = quat + quat.E().transpose() * w_abs * (dt / 2);
     const std::map<std::string, double> subs = {{"q0", x[q0]},
                                                 {"q1", x[q1]},
                                                 {"q2", x[q2]},
@@ -110,12 +110,12 @@ Matrix<double, p, n> EKF::h_jacobian(const Vector<double, n> &x, double dt) {
     // the ith output measurement with respect to the jth input state
     Matrix<double, p, n> h_jac = Matrix<double, p, n>::zeros();
     // TODO
-    h_jac[SensorMeasurements::P][px] = AIR_DENSITY * GRAVITATIONAL_ACCELERATION;
+    h_jac[SensorMeasurements::PRESSURE][px] = AIR_DENSITY * GRAVITATIONAL_ACCELERATION;
 
     h_jac[SensorMeasurements::IMU_wx][wx] = 1;
     h_jac[SensorMeasurements::IMU_wy][wy] = 1;
     h_jac[SensorMeasurements::IMU_wz][wz] = 1;
 
-    h_jac[SensorMeasurements::alt][pz] = -1;
+    h_jac[SensorMeasurements::ALT][pz] = -1;
     return h_jac;
 }

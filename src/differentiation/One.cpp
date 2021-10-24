@@ -1,5 +1,4 @@
 #include "One.h"
-#include "Zero.h"
 
 const ConstPtr One::INSTANCE = std::shared_ptr<One>(new One()); // NOLINT(cert-err58-cpp)
 

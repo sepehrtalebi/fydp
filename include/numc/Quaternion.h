@@ -18,7 +18,8 @@ public:
         this->q3 = q3;
     }
 
-    explicit Quaternion(Vector<T, 4> vec) : Quaternion(vec[0], vec[1], vec[2], vec[3]) {}
+    // allow implicit conversions
+    Quaternion(Vector<T, 4> vec) : Quaternion(vec[0], vec[1], vec[2], vec[3]) {} // NOLINT(google-explicit-constructor)
 
     Quaternion cong() const {
         return Quaternion{q0, -q1, -q2, -q3};

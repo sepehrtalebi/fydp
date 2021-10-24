@@ -38,11 +38,11 @@ static constexpr const double K_PROPELLER = 1;
 static constexpr const double TAU_PROPELLER = 1;
 static constexpr const double THRUST_GAIN_PROPELLER = 1;
 static constexpr const double TORQUE_GAIN_PROPELLER = 1;
-static const Vector3<double> L_FRONT_PROPELLER = Vector3<double>{0, 0, 0};
+static const Vector3<double> L_FRONT_PROPELLER{0, 0, 0};
 
 //elevator constants
 static constexpr const double LIFT_GAIN_ELEVATOR = 1;
-static const Vector3<double> L_ELEVATOR = Vector3<double>{0, 0, 0};
+static const Vector3<double> L_ELEVATOR{0, 0, 0};
 
 // Kalman filter constants
 constexpr static const int n = 31; // number of states

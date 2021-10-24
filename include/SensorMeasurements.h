@@ -5,26 +5,26 @@
 
 struct SensorMeasurements {
     enum {
-        P,
-        rail_a, rail_w, rail_x, rail_y, rail_found,
-        pixel_vx, pixel_vy,
+        PRESSURE,
+        RAIL_ANGLE, RAIL_WIDTH, RAIL_x, RAIL_y, RAIL_FOUND,
+        PIXEL_vx, PIXEL_vy,
         IMU_ax, IMU_ay, IMU_az,
         IMU_wx, IMU_wy, IMU_wz,
-        lat, longitude, alt, sat_count
+        LAT, LONG, ALT, SAT_COUNT
     };
-    double Pressure;
-    double RailAngle;
-    double RailPixelWidth;
-    double RailPixelX;
-    double RailPixelY;
-    bool FoundRail;
-    Vector<double, 2> PixelVelocity;
-    Vector3<double> IMUAcceleration;
-    Vector3<double> IMUAngularVelocity;
-    double Latitude;
-    double Longitude;
-    double GPSAltitude;
-    uint8_t SatelliteCount;
+    double pressure;
+    double rail_angle;
+    double rail_pixel_width;
+    double rail_pixel_x;
+    double rail_pixel_y;
+    bool found_rail;
+    Vector<double, 2> pixel_velocity;
+    Vector3<double> imu_acceleration;
+    Vector3<double> imu_angular_velocity;
+    double latitude;
+    double longitude;
+    double gps_altitude;
+    uint8_t satellite_count;
 
     static SensorMeasurements parseZ(const Vector<double, 16> &doubleZ, const Vector<uint8_t, 1> &uint8Z,
                                      const Vector<bool, 1> &boolZ);

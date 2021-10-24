@@ -1,9 +1,11 @@
 #include "TestDifferentiation.h"
+
+#include "Expression.h"
 #include "Variable.h"
+#include "Vector.h"
+#include "Vector3.h"
 #include "Quaternion.h"
 #include "Matrix.h"
-#include "Vector3.h"
-#include "Vector.h"
 #include <iostream>
 
 void testDifferentiation() {

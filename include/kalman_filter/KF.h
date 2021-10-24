@@ -45,9 +45,9 @@ public:
     [[nodiscard]] AircraftState getOutput() const;
 
 protected:
-    Vector<double, n> f(const Vector<double, n> &x, double dt);
+    Vector<double, n> f(const Vector<double, n> &state, double dt);
 
-    Vector<double, p> h(const Vector<double, n> &x, double dt);
+    static Vector<double, p> h(const Vector<double, n> &state, double dt);
 };
 
 

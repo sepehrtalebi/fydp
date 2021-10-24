@@ -13,9 +13,9 @@ SensorMeasurements SensorMeasurements::parseZ(const Vector<double, 16> &doubleZ,
 
 Vector<double, 18> SensorMeasurements::getZ() const {
     return Vector<double, 18>{
-            Pressure, RailAngle, RailPixelWidth, RailPixelX, RailPixelY, (double) FoundRail,
-            PixelVelocity[0], PixelVelocity[1], IMUAcceleration.x, IMUAcceleration.y,
-            IMUAcceleration.z,
-            IMUAngularVelocity.x, IMUAngularVelocity.y, IMUAngularVelocity.z, Latitude, Longitude,
-            GPSAltitude, (double) SatelliteCount};
+            pressure, rail_angle, rail_pixel_width, rail_pixel_x, rail_pixel_y, (double) found_rail,
+            pixel_velocity[0], pixel_velocity[1], imu_acceleration.x, imu_acceleration.y,
+            imu_acceleration.z,
+            imu_angular_velocity.x, imu_angular_velocity.y, imu_angular_velocity.z, latitude, longitude,
+            gps_altitude, (double) satellite_count};
 }

@@ -14,11 +14,11 @@ public:
 
     void operator=(const One &) = delete;
 
-    ExprPtr subs(const std::map<std::string, ExprPtr> &subs) const override;
+    [[nodiscard]] ExprPtr subs(const std::map<std::string, ExprPtr> &subs) const override;
 
-    ExprPtr simplify() const override;
+    [[nodiscard]] ExprPtr simplify() const override;
 
-    std::string toStr() const override;
+    [[nodiscard]] std::string toStr() const override;
 
 private:
     One() noexcept : Constant(1) {}

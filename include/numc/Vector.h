@@ -9,6 +9,7 @@ template<typename T, int n>
 class Vector {
 public:
     std::array<T, n> data{};
+    typedef typename std::array<T, n>::iterator iterator;
 public:
     Vector() = default;
 
@@ -18,6 +19,12 @@ public:
         int i = 0;
         for (auto it = elements.begin(); i < n && it != elements.end(); it++)
             data[i++] = *it;
+    }
+
+    explicit Vector(const T *arr) {
+        // initializes this Vector with data from the raw C++ array
+        // this should only be used when inputting data from MATLAB
+        for (int i = 0; i < n; i++) data[i] = arr[i];
     }
 
     Vector(const Vector<T, n> &other) {
@@ -147,6 +154,14 @@ public:
 
     T operator[](int index) const {
         return this->data[index];
+    }
+
+    iterator begin() {
+        return data.begin();
+    }
+
+    iterator end() {
+        return data.end();
     }
 };
 
