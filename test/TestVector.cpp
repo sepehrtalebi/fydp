@@ -1,9 +1,11 @@
 #include "TestVector.h"
 #include "Vector.h"
+#include "Expression.h"
+#include "Variable.h"
 #include <cassert>
 #include <iostream>
 
-static int roundDown(double num) {
+static int roundDown(const double &num) {
     return (int) num;
 }
 
@@ -26,14 +28,19 @@ void testVector() {
     assert(z[0] == 10);
 
     Vector<double, 5> test{1.1, -4.5, 3, 4, 0};
-    Vector<int, 5> test_floor = test.applyFunc(&roundDown);
+    Vector<int, 5> test_floor = test.applyFunc<int>(&roundDown);
     for (int i = 0; i < 5; i++) assert(test_floor[i] == (int) test[i]);
 
-    Vector<std::string, 5> test_str = test.applyFunc(&std::to_string);
-    std::cout << test_str[1] << std::endl;
-
-    Vector<int, 5> test_sq_int = test.applyFunc<int>([] (double d) {return (int) (d * d); });
+    Vector<int, 5> test_sq_int = test.applyFunc<int>([](const double &d) { return (int) (d * d); });
     for (int i = 0; i < 5; i++) assert(test_sq_int[i] == (int) (test[i] * test[i]));
+
+    Vector<ExprPtr, 3> expr{std::make_shared<Variable>("x"), std::make_shared<Variable>("y"),
+                            std::make_shared<Variable>("z")};
+    const std::map<std::string, double> subs{{"x", 0},
+                                             {"y", 1},
+                                             {"z", 2}};
+    Vector<double, 3> result = expr.applyFunc<double>([&subs](const ExprPtr &e) { return e->evaluate(subs); });
+    for (int i = 0; i < 3; i++) assert(result[i] == i);
 
     std::cout << "Passed All Tests for Vector!" << std::endl;
 }
