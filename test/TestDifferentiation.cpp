@@ -6,9 +6,14 @@
 #include "Vector3.h"
 #include "Quaternion.h"
 #include "Matrix.h"
+#include <cassert>
 #include <iostream>
 
 void testDifferentiation() {
+    ExprPtr x = Variable::make("x");
+    ExprPtr test = 2 * (2 * x + 1);
+    assert(test->simplify()->toStr() == "(2.000000 + (4.000000 * x))");
+
     Quaternion<ExprPtr> quat{Variable::make("q0"),
                              Variable::make("q1"),
                              Variable::make("q2"),
