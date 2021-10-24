@@ -68,10 +68,7 @@ Matrix<double, n, n> EKF::fJacobian(const Vector<double, n> &x, double dt) const
                                                 {"q2", x[q2]},
                                                 {"q3", x[q3]}};
 
-    // TODO: get lambda working
-    Matrix3D<double, 4, 4, 3> mat; // = QUAT_TO_QUAT_JAC_EXPR.applyFunc<double>([&subs] (const ExprPtr &expr) { return expr->evaluate(subs); });
-    for (int i = 0; i < 4; i++) for (int j = 0; j < 4; j++) for (int k = 0; k < 3; k++)
-        mat[i][j][k] = QUAT_TO_QUAT_JAC_EXPR[i][j][k]->evaluate(subs);
+    Matrix3D<double, 4, 4, 3> mat = QUAT_TO_QUAT_JAC_EXPR.applyFunc<double>([&subs] (const ExprPtr &expr) { return expr->evaluate(subs); });
     Matrix<double, 4, 4> quat_to_quat_jac = mat * Vector3<double>{x[wx], x[wy], x[wz]} * (dt / 2);
 
     Matrix<double, 4, 3> quat_to_w_jac = quat.E().transpose() * DCM_inv * dt / 2;
