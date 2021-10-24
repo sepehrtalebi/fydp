@@ -32,5 +32,8 @@ void testVector() {
     Vector<std::string, 5> test_str = test.applyFunc(&std::to_string);
     std::cout << test_str[1] << std::endl;
 
+    Vector<int, 5> test_sq_int = test.applyFunc<int>([] (double d) {return (int) (d * d); });
+    for (int i = 0; i < 5; i++) assert(test_sq_int[i] == (int) (test[i] * test[i]));
+
     std::cout << "Passed All Tests for Vector!" << std::endl;
 }
