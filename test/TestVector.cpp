@@ -39,8 +39,8 @@ void testVector() {
     const std::map<std::string, double> subs{{"x", 0},
                                              {"y", 1},
                                              {"z", 2}};
-    Vector<double, 3> result = expr.applyFunc<double>([&subs](const ExprPtr &e) { return e->evaluate(subs); });
-    for (int i = 0; i < 3; i++) assert(result[i] == i);
+    Vector<double, 3> expr_sub = expr.applyFunc<double>([&subs](const ExprPtr &e) { return e->evaluate(subs); });
+    for (int i = 0; i < 3; i++) assert(expr_sub[i] == i);
 
     std::cout << "Passed All Tests for Vector!" << std::endl;
 }
