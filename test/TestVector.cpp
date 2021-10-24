@@ -29,7 +29,7 @@ void testVector() {
     Vector<int, 5> test_floor = test.applyFunc(&roundDown);
     for (int i = 0; i < 5; i++) assert(test_floor[i] == (int) test[i]);
 
-    Vector<std::string, 5> test_str = test.applyFunc(std::to_string);
+    Vector<std::string, 5> test_str = test.applyFunc(&std::to_string);
     std::cout << test_str[1] << std::endl;
 
     std::cout << "Passed All Tests for Vector!" << std::endl;
