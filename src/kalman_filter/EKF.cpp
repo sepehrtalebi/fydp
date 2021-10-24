@@ -106,7 +106,7 @@ Matrix<double, n, n> EKF::fJacobian(const Vector<double, n> &x, double dt) const
     return f_jac;
 }
 
-Matrix<double, p, n> EKF::hJacobian(const Vector<double, n> &x, double /** dt **/dt) const {
+Matrix<double, p, n> EKF::hJacobian(const Vector<double, n> &x, double /** dt **/) const {
     // the ith row and jth column represents the derivative of
     // the ith output measurement with respect to the jth input state
     Matrix<double, p, n> h_jac = Matrix<double, p, n>::zeros();
