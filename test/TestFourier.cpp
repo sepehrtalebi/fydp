@@ -11,7 +11,7 @@ void testTranspose() {
     for (int i = 0; i < TEST_SIZE; i++) {
         vec[i] = std::complex((double) i, 0.0);
     }
-    std::cout << "test" << std::endl;
+    // std::cout << "test" << std::endl;
     Fourier<double>::transpose(vec.begin(), 1, 3, 5);
     return;
 }
