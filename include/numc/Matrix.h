@@ -60,7 +60,7 @@ public:
     }
 
     template<typename R>
-    Matrix<R, n, m> applyFunc(R (*func)(T)) {
+    Matrix<R, n, m> applyFunc(const std::function<R(const T &)> &func) {
         Matrix<R, n, m> result;
         for (int i = 0; i < n; i++) for (int j = 0; j < m; j++) result[i][j] = func(data[i][j]);
         return result;
