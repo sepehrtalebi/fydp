@@ -29,6 +29,8 @@ struct SensorMeasurements {
     static SensorMeasurements parseZ(const Vector<double, 16> &doubleZ, const Vector<uint8_t, 1> &uint8Z,
                                      const Vector<bool, 1> &boolZ);
 
+    void assignZ(double *doubleZ, uint8_t *uint8tZ, unsigned char *boolZ) const;
+
     // may be unnecessary and replaced with more specific functions in the future
     [[nodiscard]] Vector<double, 18> getZ() const;
 };
