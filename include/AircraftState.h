@@ -4,6 +4,8 @@
 #include "Quaternion.h"
 
 struct AircraftState {
+    // represents the AircraftState as stored in Simulink
+
     Vector3<double> position;
     Quaternion<double> orientation;
     Vector3<double> body_velocity;
