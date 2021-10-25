@@ -77,15 +77,15 @@ SensorMeasurements getSensorMeasurements(const Vector<double, n> &state) {
     return sensor_measurements;
 }
 
-void getSensorMeasurementsWrapper(const double *aircraft_state, double *sensor_measurements) {
+void getSensorMeasurementsWrapper(const double *aircraft_state, double *double_sensor_measurements,
+                                  uint8_t *uint8_sensor_measurements, unsigned char *bool_sensor_measurements) {
     Vector<double, n> aircraft_state_vec;
 
     // only copy over the position, orientation, velocity, and angular velocity
     // TODO: clean up
     for (int i = 0; i < 13; i++) aircraft_state_vec[i] = aircraft_state[i];
 
-    Vector<double, p> sensor_measurements_vec = getSensorMeasurements(aircraft_state_vec).getZ();
-    for (int i = 0; i < p; i++) sensor_measurements[i] = sensor_measurements_vec[i];
+    getSensorMeasurements(aircraft_state_vec).assignZ(double_sensor_measurements, uint8_sensor_measurements, bool_sensor_measurements);
 }
 
 Matrix<double, p, n> getSensorMeasurementsJacobian(const Vector<double, n> &state, const Wrench<double> &current_loads) {
