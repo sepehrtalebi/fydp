@@ -4,6 +4,14 @@
 #include "KF.h"
 #include <cmath>
 
+#if SENSOR_NOISE == 1
+#include <chrono>
+#include <random>
+static unsigned seed = std::chrono::system_clock::now().time_since_epoch().count(); // NOLINT(cert-err58-cpp)
+static auto random_engine = std::default_random_engine(seed); // NOLINT(cert-err58-cpp)
+static std::normal_distribution<double> optical_flow_noise(0, 1); // NOLINT(cert-err58-cpp)
+#endif
+
 static void railDetection(const Quaternion<double> &quat, const double &altitude, SensorMeasurements &sensor_measurements) {
     if (altitude < 0) {
         // cannot see rail if we are underground
@@ -42,6 +50,10 @@ static void opticalFlow(const Vector3<double> &velocity, const double &altitude,
     Vector3<double> pixel_velocity = velocity* OPTICAL_FLOW_VELOCITY_GAIN / altitude;
     sensor_measurements.pixel_velocity[0] = pixel_velocity.x;
     sensor_measurements.pixel_velocity[1] = pixel_velocity.y;
+#if SENSOR_NOISE == 1
+    sensor_measurements.pixel_velocity[0] += optical_flow_noise(random_engine);
+    sensor_measurements.pixel_velocity[1] += optical_flow_noise(random_engine);
+#endif
 }
 
 SensorMeasurements getSensorMeasurements(const Vector<double, n> &state) {
