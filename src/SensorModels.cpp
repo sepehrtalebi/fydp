@@ -76,3 +76,19 @@ SensorMeasurements getSensorMeasurements(const Vector<double, n> &state) {
 //                              .getZ();
     return sensor_measurements;
 }
+
+Matrix<double, p, n> getSensorMeasurementsJacobian(const Vector<double, n> &state, const Wrench<double> &current_loads) {
+    // the ith row and jth column represents the derivative of
+    // the ith output measurement with respect to the jth input state
+    Matrix<double, p, n> h_jac = Matrix<double, p, n>::zeros();
+    // TODO
+    h_jac[SensorMeasurements::PRESSURE][KF::px] = AIR_DENSITY * GRAVITATIONAL_ACCELERATION;
+
+    h_jac[SensorMeasurements::IMU_wx][KF::wx] = 1;
+    h_jac[SensorMeasurements::IMU_wy][KF::wy] = 1;
+    h_jac[SensorMeasurements::IMU_wz][KF::wz] = 1;
+
+    h_jac[SensorMeasurements::ALT][KF::pz] = -1;
+
+    return h_jac;
+}
