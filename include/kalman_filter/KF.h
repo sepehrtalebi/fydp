@@ -16,8 +16,6 @@ public:
         q0, q1, q2, q3,  // rotation from earth frame to body frame
         vx, vy, vz,  // velocity in body frame
         wx, wy, wz,  // angular velocity in body frame
-        ax, ay, az,  // acceleration in body frame
-        ang_ax, ang_ay, ang_az,  //angular acceleration in body frame
         magx, magy, magz,  // magnetic field vector in body frame
         accel_bx, accel_by, accel_bz,  // accelerometer bias in body frame
         gyro_bx, gyro_by, gyro_bz,  // gyroscope bias in body frame
@@ -30,6 +28,7 @@ protected:
     const Matrix<double, n, n> Q = Matrix<double, n, n>::identity();
     const Matrix<double, p, p> R = Matrix<double, p, p>::identity();
     AppliedLoads applied_loads{};
+    Wrench<double> current_loads; // stores applied_loads.getAppliedLoads(x) for the current time-step
 
 public:
     KF();

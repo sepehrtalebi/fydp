@@ -25,6 +25,9 @@ void KF::getOutputWrapper(double *doubleAircraftState) const {
 
 void KF::update(const SensorMeasurements & /** sensorMeasurements **/, const ControlInputs &control_inputs, double /** dt **/) {
     applied_loads.update(control_inputs);
+
+    // calculate current loads once and store in an instance variable so that it can be used throughout
+    current_loads = applied_loads.getAppliedLoads(x);
 }
 
 AircraftState KF::getOutput() const {
@@ -32,13 +35,11 @@ AircraftState KF::getOutput() const {
                          Quaternion<double>{x[q0], x[q1], x[q2], x[q3]},
                          Vector3<double>{x[vx], x[vy], x[vz]},
                          Vector3<double>{x[wx], x[wy], x[wz]},
-                         Vector3<double>{x[ang_ax], x[ang_ay], x[ang_az]},
-                         Vector3<double>{x[ax], x[ay], x[az]}};
+                         INERTIA_TENSOR_INV * current_loads.torque,
+                         current_loads.force / MASS};
 }
 
 Vector<double, n> KF::f(const Vector<double, n> &state, double dt) const {
-    Wrench<double> wrench = applied_loads.getAppliedLoads(state);
-
     Quaternion<double> quat{state[q0], state[q1], state[q2], state[q3]};
 
     Vector<double, n> state_new = state;
@@ -52,7 +53,7 @@ Vector<double, n> KF::f(const Vector<double, n> &state, double dt) const {
     Quaternion<double> quat_new = quat + quat.E().transpose() * w_abs * (dt / 2);
     quat_new.normalize();
 
-    Vector3<double> ang_a_new = INERTIA_TENSOR_INV * wrench.torque;
+    Vector3<double> ang_a_new = INERTIA_TENSOR_INV * current_loads.torque;
 
     Vector3<double> mag{state[magx], state[magy], state[magz]};
     Vector3<double> mag_b{state[mag_bx], state[mag_by], state[mag_bz]};
@@ -61,10 +62,8 @@ Vector<double, n> KF::f(const Vector<double, n> &state, double dt) const {
     for (int i = 0; i < 3; i++) {
         state_new[px + i] += v_abs[i] * dt;
         state_new[q0 + i] = quat_new[i];
-        state_new[vx + i] += state[ax + i] * dt;
-        state_new[wx + i] += state[ang_ax + i] * dt;
-        state_new[ax + i] = wrench.force[i] / MASS;
-        state_new[ang_ax + i] = ang_a_new[i];
+        state_new[vx + i] += current_loads.force[i] / MASS * dt;
+        state_new[wx + i] += ang_a_new[i] * dt;
         state_new[magx + i] = mag_new[i];
     }
     state_new[q3] = quat_new.q3; // not included in for loop
