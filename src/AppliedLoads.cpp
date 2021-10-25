@@ -7,6 +7,11 @@
 #include "Constant.h"
 #include <cmath>
 
+#ifndef M_PI_4
+// this is needed for the code to compile in the Simulink S Function Builder
+#define M_PI_4 0.78539816339744830962
+#endif
+
 static Matrix<ExprPtr, 3, 4> getWeightToQuatJacExpr() {
     Matrix<ExprPtr, 3, 4> expr;
 
