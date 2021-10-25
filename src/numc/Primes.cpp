@@ -1,10 +1,11 @@
 #include "Primes.h"
 #include <cmath>
+#include <stdexcept>
 
 std::vector<int> primesUpTo(const int &n) {
     // returns all primes <= n
     if (n < 2) {
-        return {};
+        throw std::invalid_argument("n < 2");
     }
 
     std::vector<bool> is_prime(n - 1, true); // index i corresponds to the number i + 2
