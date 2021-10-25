@@ -7,16 +7,17 @@
 template<typename T>
 class Fourier {
     typedef typename std::vector<std::complex<T>>::iterator iterator;
-    typedef std::vector<int>::iterator factors_iterator;
 public:
     static void fft(iterator begin, iterator end) {
         int N = end - begin;
         if (N <= 1) return;
-        std::vector<int> factors = primeFactorization(N);
-        fft_impl(begin, end, 1, factors.begin(), factors.end());
+        FactorTree *factor_tree = planFFT(N);
+        std::vector<std::complex<T>> roots_of_unity = getRootsOfUnity(N);
+        fftImpl(begin, end, 1, factor_tree, roots_of_unity);
+        delete factor_tree;
     }
 
-    static void inverse_fft(iterator begin, iterator end) {
+    static void inverseFFT(iterator begin, iterator end) {
         for (iterator it = begin; it < end; it++) {
             (*it) = std::conj(*it);
         }
@@ -29,50 +30,77 @@ public:
         }
     }
 
-private:
-    static void fft_impl(iterator begin, iterator end, const int &incr,
-                         factors_iterator factors_begin, factors_iterator factors_end) {
-        int factors_count = (int) (factors_end - factors_begin);
-        if (factors_count == 1) {
-            // prime number of elements
-            dft(begin, end, incr);
-            return;
-        }
-        int N = (end - begin) / incr;
-        int P = *factors_begin;
-        int Q = N / P;
-        std::cout << "fft with " << P << ", " << Q << std::endl;
+public:  // private:
+    struct FactorTree {
+        int value = 1;
+        FactorTree *left = nullptr;
+        FactorTree *right = nullptr;
 
-        for (int i = 0; i < Q; i++) {
-            fft_impl(begin + i * incr, end, incr * Q, factors_begin, factors_begin + 1);
+        [[nodiscard]] bool isTerminal() const {
+            return left == nullptr;
         }
 
-        std::cout << "twiddling fft with " << P << ", " << Q << std::endl;
-        // twiddle factors
-        std::vector<std::complex<T>> roots_of_unity = getRootsOfUnity(N);
-        for (int p = 0; p < P; p++) for (int q = 0; q < Q; q++) {
-            begin[(Q * p + q) * incr] *= roots_of_unity[(N - p * q) % N];
+        ~FactorTree() {
+            delete left;
+            delete right;
         }
+    };
 
-        std::cout << "second fft with " << P << ", " << Q << std::endl;
-        for (int i = 0; i < P; i++) {
-            fft_impl(begin + i * incr, end, incr * P, factors_begin + 1, factors_end);
+    static FactorTree *planFFT(const int &N) {
+        std::vector<int> factors = primeFactorization(N);
+
+        auto *tree = new FactorTree();
+        tree->value = factors[factors.size() - 1];
+
+        for (int i = (int) factors.size() - 2; i >= 0; i--) {
+            auto *left = new FactorTree();
+            left->value = factors[i];
+            FactorTree *right = tree;
+
+            tree = new FactorTree();
+            tree->value = left->value * right->value;
+            tree->left = left;
+            tree->right = right;
         }
-
-        std::cout << "transposing fft with " << P << ", " << Q << std::endl;
-        transpose(begin, incr, P, Q);
-        std::cout << "done fft with " << P << ", " << Q << std::endl;
+        return tree;
     }
 
-    static void dft(iterator begin, iterator end, const int &incr) {
+    static void fftImpl(iterator begin, iterator end, const int &incr,
+                        FactorTree *factor_tree,
+                        const std::vector<std::complex<T>> &roots_of_unity) {
+        if (factor_tree->isTerminal()) {
+            // prime number of elements
+            dft(begin, end, incr, roots_of_unity);
+            return;
+        }
+        const int &N = factor_tree->value;
+        const int &P = factor_tree->left->value;
+        const int &Q = factor_tree->right->value;
+
+        for (int i = 0; i < Q; i++) {
+            fftImpl(begin + i * incr, end, incr * Q, factor_tree->left, roots_of_unity);
+        }
+
+        // twiddle factors
+        for (int p = 0; p < P; p++) for (int q = 0; q < Q; q++) {
+            begin[(Q * p + q) * incr] *= roots_of_unity[((N - p * q) % N) * incr];
+        }
+
+        for (int i = 0; i < P; i++) {
+            fftImpl(begin + i * incr, end, incr * P, factor_tree->right, roots_of_unity);
+        }
+
+        transpose(begin, incr, P, Q);
+    }
+
+    static void dft(iterator begin, iterator end, const int &incr, const std::vector<std::complex<T>> &roots_of_unity) {
         // should only be used for prime sized data
         int N = (end - begin) / incr;
-        std::vector<std::complex<T>> roots_of_unity = getRootsOfUnity(N);
 
         std::vector<std::complex<T>> result(N);
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
-                result[i * incr] += begin[j * incr] * roots_of_unity[(N * N - i * j) % N];
+                result[i * incr] += begin[j * incr] * roots_of_unity[((N * N - i * j) % N) * incr];
             }
         }
 
@@ -94,7 +122,6 @@ private:
         return roots_of_unity;
     }
 
-public:
     static void transpose(iterator begin, const int &incr, const int &P, const int &Q) {
         int N = P * Q;
         std::vector<bool> moved(N - 1);
