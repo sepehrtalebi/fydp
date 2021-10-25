@@ -36,7 +36,7 @@ AircraftState KF::getOutput() const {
                          Vector3<double>{x[ax], x[ay], x[az]}};
 }
 
-Vector<double, n> KF::f(const Vector<double, n> &state, double dt) {
+Vector<double, n> KF::f(const Vector<double, n> &state, double dt) const {
     Wrench<double> wrench = applied_loads.getAppliedLoads(state);
 
     Quaternion<double> quat{state[q0], state[q1], state[q2], state[q3]};
