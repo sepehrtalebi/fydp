@@ -87,7 +87,7 @@ public:  // private:
         }
 
         for (int i = 0; i < P; i++) {
-            fftImpl(begin + i * incr, end, incr * P, factor_tree->right, roots_of_unity);
+            fftImpl(begin + i * Q * incr, end, incr, factor_tree->right, roots_of_unity);
         }
 
         transpose(begin, incr, P, Q);
