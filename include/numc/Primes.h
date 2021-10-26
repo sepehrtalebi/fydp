@@ -10,4 +10,4 @@ std::vector<int> uniquePrimeFactors(int n);
 
 int lowestPrimitiveRootOfPrime(const int &p);
 
-int powMod(const int &a, const int &b, const int &n);
+int powMod(int base, int exponent, const int &m);
