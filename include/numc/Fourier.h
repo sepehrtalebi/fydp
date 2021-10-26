@@ -125,6 +125,7 @@ public:  // private:
     }
 
     static void transpose(iterator begin, const int &incr, const int &P, const int &Q) {
+        // Based on: https://en.wikipedia.org/wiki/In-place_matrix_transposition#Properties_of_the_permutation
         int N = P * Q;
         // first and last points of the matrix never need to move, so we only need N - 2 bits of auxiliary storage
         // thus, whether the ith element of the matrix has been moved is stored in the (i - 1)th index of moved
