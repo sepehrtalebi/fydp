@@ -9,6 +9,7 @@ class Fourier {
     typedef typename std::vector<std::complex<T>>::iterator iterator;
 public:
     static void fft(iterator begin, iterator end) {
+        // Based on: https://numericalrecipes.wordpress.com/2009/05/29/the-cooley-tukey-fft-algorithm-for-general-factorizations/
         int N = end - begin;
         if (N <= 1) return;
         FactorTree *factor_tree = planFFT(N);
