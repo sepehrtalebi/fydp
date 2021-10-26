@@ -68,12 +68,13 @@ public:  // private:
     static void fftImpl(iterator begin, iterator end, const int &incr,
                         FactorTree *factor_tree,
                         const std::vector<std::complex<T>> &roots_of_unity) {
+        const int &N = factor_tree->value;
+
         if (factor_tree->isTerminal()) {
             // prime number of elements
-            dft(begin, end, incr, roots_of_unity);
+            dft(begin, incr, roots_of_unity, N);
             return;
         }
-        const int &N = factor_tree->value;
         const int &P = factor_tree->left->value;
         const int &Q = factor_tree->right->value;
 
@@ -93,19 +94,19 @@ public:  // private:
         transpose(begin, incr, P, Q);
     }
 
-    static void dft(iterator begin, iterator end, const int &incr, const std::vector<std::complex<T>> &roots_of_unity) {
+    static void dft(iterator begin, const int &incr, const std::vector<std::complex<T>> &roots_of_unity,
+                    const int &N) {
         // should only be used for prime sized data
-        int N = (end - begin) / incr;
-
+        int ratio = roots_of_unity.size() / N;
         std::vector<std::complex<T>> result(N);
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
-                result[i * incr] += begin[j * incr] * roots_of_unity[((N * N - i * j) % N) * incr];
+                result[i] += begin[j * incr] * roots_of_unity[((N * N - i * j) % N) * ratio];
             }
         }
 
         for (int i = 0; i < N; i++) {
-            begin[i * incr] = result[i * incr];
+            begin[i * incr] = result[i];
         }
     }
 
