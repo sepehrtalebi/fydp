@@ -20,8 +20,8 @@ void testPrimes() {
     assert(factors2.size() == 1);
     assert(factors2[0] == 2);
 
-    std::vector<int> test_cases{2, 3, 5, 7, 11, 13, 17, 19, 23};
-    std::vector<int> outputs{1, 2, 2, 3, 2, 2, 3, 2, 5};
+    std::vector<int> test_cases{2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31};
+    std::vector<int> outputs{1, 2, 2, 3, 2, 2, 3, 2, 5, 2, 3};
     for (int i = 0; i < test_cases.size(); i++) {
         assert(lowestPrimitiveRootOfPrime(test_cases[i]) == outputs[i]);
     }
