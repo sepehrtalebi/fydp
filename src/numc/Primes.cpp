@@ -1,5 +1,6 @@
 #include "Primes.h"
 #include <cmath>
+#include <stdexcept>
 
 std::vector<int> primesUpTo(const int &n) {
     // returns all primes <= n using the sieve of Eratosthenes
@@ -37,4 +38,50 @@ std::vector<int> primeFactorization(int n) {
         factors.push_back(n);
     }
     return factors;
+}
+
+std::vector<int> uniquePrimeFactors(int n) {
+    std::vector<int> factors;
+    for (int candidate : primesUpTo((int) std::sqrt(n))) {
+        if (n % candidate == 0) {
+            factors.push_back(candidate);
+            n /= candidate;
+        }
+        while (n % candidate == 0) {
+            n /= candidate;
+        }
+    }
+    if (n != 1) {
+        factors.push_back(n);
+    }
+    return factors;
+}
+
+int lowestPrimitiveRootOfPrime(const int &p) {
+    // p must be prime
+    // Based on: https://math.stackexchange.com/questions/124408/finding-a-primitive-root-of-a-prime-number
+    std::vector<int> test_cases = uniquePrimeFactors(p - 1);
+    for (int &test_case: test_cases) test_case = p / test_case;
+    for (int n = 2; n < p; n++) {
+        int is_primitive_root = true;
+        for (const int &test_case : test_cases) {
+            if (powMod(n, test_case, p) == 1) {
+                is_primitive_root = false;
+                break;
+            }
+        }
+        if (is_primitive_root) return n;
+    }
+    throw std::runtime_error("No primitive root found. This function only supports prime arguments!");
+}
+
+int powMod(int base, int exponent, const int &m) {
+    // computes (base ** exponent) mod m
+    int result = 1;
+    while (exponent > 0) {
+        if (exponent & 1) result = (result * base) % m;
+        base = (base * base) % m;
+        exponent /= 2;
+    }
+    return result;
 }
