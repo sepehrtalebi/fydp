@@ -60,6 +60,7 @@ std::vector<int> uniquePrimeFactors(int n) {
 int lowestPrimitiveRootOfPrime(const int &p) {
     // p must be prime
     // Based on: https://math.stackexchange.com/questions/124408/finding-a-primitive-root-of-a-prime-number
+    if (p == 2) return 1;
     std::vector<int> test_cases = uniquePrimeFactors(p - 1);
     for (int &test_case: test_cases) test_case = p / test_case;
     for (int n = 2; n < p; n++) {
