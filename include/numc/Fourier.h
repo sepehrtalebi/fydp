@@ -125,16 +125,16 @@ public:  // private:
 
     static void transpose(iterator begin, const int &incr, const int &P, const int &Q) {
         int N = P * Q;
-        std::vector<bool> moved(N - 1);
-        moved[0] = true;
-        // first and last points of the matrix never need to move
+        // first and last points of the matrix never need to move, so we only need N - 2 bits of auxiliary storage
+        // thus, whether the ith element of the matrix has been moved is stored in the (i - 1)th index of moved
+        std::vector<bool> moved(N - 2);
         for (int i = 1; i < N - 1; i++) {
-            if (!moved[i]) {
+            if (!moved[i - 1]) {
                 std::complex<T> last_value = begin[i * incr];
-                moved[i] = true;
+                moved[i - 1] = true;
                 int next_index = (Q * i) % (N - 1);
                 while (next_index != i) {
-                    moved[next_index] = true;
+                    moved[next_index - 1] = true;
                     std::swap(last_value, begin[next_index * incr]);
                     next_index = (Q * next_index) % (N - 1);
                 }
