@@ -85,7 +85,7 @@ public:  // private:
 
         // twiddle factors
         for (int p = 0; p < P; p++) for (int q = 0; q < Q; q++) {
-            begin[(Q * p + q) * incr] *= roots_of_unity[((N - p * q) % N) * incr];
+            begin[(Q * p + q) * incr] *= roots_of_unity[p * q * incr];
         }
 
         for (int i = 0; i < P; i++) {
@@ -102,7 +102,7 @@ public:  // private:
         std::vector<std::complex<T>> result(N);
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
-                result[i] += begin[j * incr] * roots_of_unity[((N * N - i * j) % N) * ratio];
+                result[i] += begin[j * incr] * roots_of_unity[((i * j) % N) * ratio];
             }
         }
 
@@ -112,12 +112,12 @@ public:  // private:
     }
 
     static std::vector<std::complex<T>> getRootsOfUnity(const int &N) {
-        // the kth element of the output is e^[i*(2*pi*k/N)]
+        // the kth element of the output is e^[i*(-2*pi*k/N)]
         // compute roots of unity via repeated multiplication
         // this avoids repetitive use of std::polar which is slower since it requires sin and cos
         std::vector<std::complex<T>> roots_of_unity(N);
         roots_of_unity[0] = std::complex<T>(1, 0);
-        roots_of_unity[1] = std::polar(1.0, (2 * M_PI / N));
+        roots_of_unity[1] = std::polar(1.0, (-2 * M_PI / N));
         for (int i = 2; i < N; i++) {
             roots_of_unity[i] = roots_of_unity[1] * roots_of_unity[i - 1];
         }
