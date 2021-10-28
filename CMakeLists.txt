@@ -7,6 +7,7 @@ include_directories(./include)
 include_directories(./include/differentiation)
 include_directories(./include/numc)
 include_directories(./include/kalman_filter)
+include_directories(./include/utils)
 
 add_executable(FYDP tests.cpp
         src/kalman_filter/KF.cpp
