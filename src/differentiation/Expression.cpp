@@ -1,5 +1,5 @@
 #include "Expression.h"
 
-int Expression::nodeCount() const {
+unsigned int Expression::nodeCount() const {
     return 1;
 }

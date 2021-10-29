@@ -23,7 +23,7 @@ public:
 
     [[nodiscard]] virtual std::string toStr() const = 0;
 
-    [[nodiscard]] virtual int nodeCount() const;
+    [[nodiscard]] virtual unsigned int nodeCount() const;
 };
 
 // Declare all the operators that are defined in subclasses

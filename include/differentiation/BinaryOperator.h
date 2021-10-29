@@ -19,7 +19,7 @@ public:
 
     [[nodiscard]] ExprPtr simplify() const override;
 
-    [[nodiscard]] int nodeCount() const override;
+    [[nodiscard]] unsigned int nodeCount() const override;
 
 protected:
     ExprPtr first;

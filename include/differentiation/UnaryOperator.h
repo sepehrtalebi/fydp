@@ -23,7 +23,7 @@ public:
 
     [[nodiscard]] std::string toStr() const override;
 
-    [[nodiscard]] int nodeCount() const override;
+    [[nodiscard]] unsigned int nodeCount() const override;
 
 protected:
     [[nodiscard]] virtual double call(const double &operand) const = 0;
