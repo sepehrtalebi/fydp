@@ -20,7 +20,7 @@ void KF::updateWrapper(const double *doubleSensorMeasurements, const uint8_t *ui
 
 void KF::getOutputWrapper(double *doubleAircraftState) const {
     Vector<double, 19> aircraftState = getOutput().getX();
-    for (int i = 0; i < 19; i++) doubleAircraftState[i] = aircraftState[i];
+    for (size_t i = 0; i < 19; i++) doubleAircraftState[i] = aircraftState[i];
 }
 
 void KF::update(const SensorMeasurements & /** sensorMeasurements **/, const ControlInputs &control_inputs, double /** dt **/) {
@@ -59,7 +59,7 @@ Vector<double, n> KF::f(const Vector<double, n> &state, double dt) const {
     Vector3<double> mag_b{state[mag_bx], state[mag_by], state[mag_bz]};
     Vector3<double> mag_new = quat_new.rotate(quat.unrotate(mag - mag_b)) + mag_b;
 
-    for (int i = 0; i < 3; i++) {
+    for (size_t i = 0; i < 3; i++) {
         state_new[px + i] += v_abs[i] * dt;
         state_new[q0 + i] = quat_new[i];
         state_new[vx + i] += current_loads.force[i] / MASS * dt;

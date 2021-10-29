@@ -83,7 +83,7 @@ void getSensorMeasurementsWrapper(const double *aircraft_state, double *double_s
 
     // only copy over the position, orientation, velocity, and angular velocity
     // TODO: clean up
-    for (int i = 0; i < 13; i++) aircraft_state_vec[i] = aircraft_state[i];
+    for (size_t i = 0; i < 13; i++) aircraft_state_vec[i] = aircraft_state[i];
 
     getSensorMeasurements(aircraft_state_vec).assignZ(double_sensor_measurements, uint8_sensor_measurements, bool_sensor_measurements);
 }

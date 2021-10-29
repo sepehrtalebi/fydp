@@ -20,7 +20,7 @@ static Matrix<ExprPtr, 3, 4> getWeightToQuatJacExpr() {
                              Variable::make("q2"),
                              Variable::make("q3")};
     Vector3<ExprPtr> weight = quat.rotate(WEIGHT.applyFunc<ExprPtr>(&Constant::make));
-    for (int i = 0; i < 3; i++) for (int j = 0; j < 4; j++)
+    for (size_t i = 0; i < 3; i++) for (size_t j = 0; j < 4; j++)
         expr[i][j] = weight[i]->diff(std::static_pointer_cast<Variable>(quat[j])->getIdentifier())->simplify();
 
     return expr;
@@ -115,7 +115,7 @@ void AppliedLoads::updateWrapper(const double *control_inputs, const double *air
 
     update(ControlInputs::parseU(control_inputsVec));
     Wrench<double> wrench = getAppliedLoads(aircraft_state_vec);
-    for (int i = 0; i < 3; i++) {
+    for (size_t i = 0; i < 3; i++) {
         forces[i] = wrench.force[i];
         torques[i] = wrench.torque[i];
     }
@@ -129,19 +129,19 @@ Matrix<double, 6, n> AppliedLoads::getAppliedLoadsJacobian(const Vector<double, 
     double d_lift_d_vel = LIFT_GAIN_AILERON * saturation(current_control_inputs.right_aileron_angle, M_PI_4) * 2 * state[KF::vx];
     applied_loads_jac[2][KF::vx] -= d_lift_d_vel;
     Vector3<double> d_torque_right_d_vel = L_RIGHT_AILERON.cross({0, 0, -d_lift_d_vel});
-    for (int i = 0; i < 3; i++) applied_loads_jac[3 + i][KF::vx] += d_torque_right_d_vel[i];
+    for (size_t i = 0; i < 3; i++) applied_loads_jac[3 + i][KF::vx] += d_torque_right_d_vel[i];
 
     // left aileron loads
     d_lift_d_vel = LIFT_GAIN_AILERON * saturation(current_control_inputs.left_aileron_angle, M_PI_4) * 2 * state[KF::vx];
     applied_loads_jac[2][KF::vx] -= d_lift_d_vel;
     Vector3<double> d_torque_left_d_vel = L_LEFT_AILERON.cross({0, 0, -d_lift_d_vel});
-    for (int i = 0; i < 3; i++) applied_loads_jac[3 + i][KF::vx] += d_torque_left_d_vel[i];
+    for (size_t i = 0; i < 3; i++) applied_loads_jac[3 + i][KF::vx] += d_torque_left_d_vel[i];
 
     // elevator loads
     d_lift_d_vel = LIFT_GAIN_ELEVATOR * saturation(current_control_inputs.elevator_angle, M_PI_4) * 2 * state[KF::vx];
     applied_loads_jac[2][KF::vx] += d_lift_d_vel;
     Vector3<double> d_torque_elevator_d_vel = L_ELEVATOR.cross({0, 0, d_lift_d_vel});
-    for (int i = 0; i < 3; i++) applied_loads_jac[3 + i][KF::vx] += d_torque_elevator_d_vel[i];
+    for (size_t i = 0; i < 3; i++) applied_loads_jac[3 + i][KF::vx] += d_torque_elevator_d_vel[i];
 
     return applied_loads_jac;
 }

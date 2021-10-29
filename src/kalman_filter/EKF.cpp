@@ -15,7 +15,7 @@ static Matrix3D<ExprPtr, 4, 4, 3> getQuatToQuatJacExpr() {
                              Variable::make("q2"),
                              Variable::make("q3")};
     Matrix<ExprPtr, 4, 3> mat = quat.E().transpose() * quat.cong().toDCM();
-    for (int i = 0; i < 4; i++) for (int j = 0; j < 4; j++) for (int k = 0; k < 3; k++)
+    for (size_t i = 0; i < 4; i++) for (size_t j = 0; j < 4; j++) for (size_t k = 0; k < 3; k++)
         expr[i][j][k] = mat[j][k]->diff(std::static_pointer_cast<Variable>(quat[i])->getIdentifier())->simplify();
 
     return expr;
@@ -31,10 +31,10 @@ void EKF::update(const SensorMeasurements &sensorMeasurements, const ControlInpu
     Matrix<double, n, n> f_jac = fJacobian(x, dt);
 
     Vector<double, n> new_x = f(x, dt);
-    for (int i = 0; i < n; i++) x[i] = new_x[i];
+    for (size_t i = 0; i < n; i++) x[i] = new_x[i];
 
     Matrix<double, n, n> new_P = f_jac * P * f_jac.transpose() + Q;
-    for (int i = 0; i < n; i++) for (int j = 0; j < n; j++) P[i][j] = new_P[i][j];
+    for (size_t i = 0; i < n; i++) for (size_t j = 0; j < n; j++) P[i][j] = new_P[i][j];
 
     // update step
     Vector<double, p> z = sensorMeasurements.getZ();
@@ -87,8 +87,8 @@ Matrix<double, n, n> EKF::fJacobian(const Vector<double, n> &x, double dt) const
     Matrix<double, 3, 3> mag_to_mag_jac = (quat_new.toDCM() * DCM_inv - Matrix<double, 3, 3>::identity()) / dt;
 
     // fill in the separate elements into f_jac
-    for (int i = 0; i < 3; i++) {
-        for (int j = 0; j < 3; j++) {
+    for (size_t i = 0; i < 3; i++) {
+        for (size_t j = 0; j < 3; j++) {
             f_jac[px + i][vx + j] = DCM_inv[i][j] * dt; // derivative of position with respect to velocity
             f_jac[magx + i][magx + j] = mag_to_mag_jac[i][j]; // derivative of magnetic field with respect to itself
             f_jac[magx + i][mag_bx + j] = -mag_to_mag_jac[i][j]; // derivative of magnetic field with respect to magnetic field bias
@@ -96,9 +96,9 @@ Matrix<double, n, n> EKF::fJacobian(const Vector<double, n> &x, double dt) const
         }
         wrench_jac[vx + i][i] = dt / MASS; // derivative of velocity with respect to forces
     }
-    for (int i = 0; i < 4; i++) {
-        for(int j = 0; j < 4; j++) f_jac[q0 + i][q0 + j] = quat_to_quat_jac[i][j]; // derivative of quaternion with respect to itself
-        for (int j = 0; j < 3; j++) f_jac[q0 + i][wx + j] = quat_to_w_jac[i][j]; // derivative of quaternion with respect to angular velocity
+    for (size_t i = 0; i < 4; i++) {
+        for(size_t j = 0; j < 4; j++) f_jac[q0 + i][q0 + j] = quat_to_quat_jac[i][j]; // derivative of quaternion with respect to itself
+        for (size_t j = 0; j < 3; j++) f_jac[q0 + i][wx + j] = quat_to_w_jac[i][j]; // derivative of quaternion with respect to angular velocity
     }
 
     // second term is from the chain rule

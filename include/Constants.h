@@ -55,5 +55,5 @@ static constexpr const double LIFT_GAIN_ELEVATOR = 1;
 static const Vector3<double> L_ELEVATOR{0, 0, 0}; // NOLINT(cert-err58-cpp)
 
 // Kalman filter constants
-constexpr static const int n = 25; // number of states
-constexpr static const int p = 18; // number of sensor measurements
+constexpr static const size_t n = 25; // number of states
+constexpr static const size_t p = 18; // number of sensor measurements

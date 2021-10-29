@@ -11,7 +11,7 @@
 
 class KF {
 public:
-    enum {
+    enum : size_t {
         px, py, pz,  // position in earth frame
         q0, q1, q2, q3,  // rotation from earth frame to body frame
         vx, vy, vz,  // velocity in body frame
