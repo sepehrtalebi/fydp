@@ -6,7 +6,7 @@
 
 class Expression;
 
-typedef std::shared_ptr<Expression> ExprPtr;
+using ExprPtr = std::shared_ptr<Expression>;
 
 class Expression {
     // Note that we can't declare variables of type Expression since it is abstract

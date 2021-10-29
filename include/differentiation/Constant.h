@@ -8,7 +8,7 @@
 
 class Constant;
 
-typedef std::shared_ptr<Constant> ConstPtr;
+using ConstPtr = std::shared_ptr<Constant>;
 
 class Constant : public Expression {
 public:

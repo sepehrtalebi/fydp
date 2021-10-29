@@ -9,7 +9,7 @@ template<typename T, size_t n>
 class Vector {
 public:
     std::array<T, n> data{};
-    typedef typename std::array<T, n>::iterator iterator;
+    using iterator = typename std::array<T, n>::iterator;
 public:
     Vector() = default;
 
