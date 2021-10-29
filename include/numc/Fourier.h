@@ -6,8 +6,15 @@
 
 template<typename T>
 class Fourier {
-    typedef typename std::vector<std::complex<T>>::iterator iterator;
 public:
+    using iterator = typename std::vector<std::complex<T>>::iterator;
+
+    /**
+     * @brief Computes the discrete fourier transform
+     *
+     * @param begin Iterator to the beginning of the data
+     * @param end Iterator to the end of the data
+     */
     static void fft(iterator begin, iterator end) {
         // Based on: https://numericalrecipes.wordpress.com/2009/05/29/the-cooley-tukey-fft-algorithm-for-general-factorizations/
         size_t N = end - begin;
@@ -18,6 +25,12 @@ public:
         delete factor_tree;
     }
 
+    /**
+     * @brief Computes the inverse discrete fourier transform
+     *
+     * @param begin Iterator to the beginning of the data
+     * @param end Iterator to the end of the data
+     */
     static void inverseFFT(iterator begin, iterator end) {
         for (iterator it = begin; it < end; it++) {
             (*it) = std::conj(*it);
@@ -37,6 +50,9 @@ public:  // private:
         FactorTree *left = nullptr;
         FactorTree *right = nullptr;
 
+        /**
+         * @return Whether or not this FactorTree is a leaf node
+         */
         [[nodiscard]] bool isLeaf() const {
             return left == nullptr;
         }
@@ -52,6 +68,13 @@ public:  // private:
         }
     };
 
+    /**
+     * @brief Computes a FactorTree for N
+     * Each non-leaf node in the tree corresponds to a recursive call of the Cooley-Tukey algorithm
+     *
+     * @param N The number to compute the FactorTree for. Must be larger than 1
+     * @return A FactorTree for N
+     */
     static FactorTree *planFFT(const size_t &N) {
         std::vector<size_t> factors = primeFactorization(N);
 
@@ -71,6 +94,16 @@ public:  // private:
         return tree;
     }
 
+    /**
+     * @brief Performs an in-place discrete fourier transform using the Cooley-Tukey algorithm
+     *
+     * @param begin An iterator to the beginning of the array
+     * @param end An iterator to the end of the array
+     * @param incr The spacing between elements of the array
+     * @param factor_tree A FactorTree for the number of elements in the array
+     * @param roots_of_unity The Nth complex roots of unity, where N is the number of elements in the
+     * array times incr
+     */
     static void cooleyTukeyFFT(iterator begin, iterator end, const size_t &incr,
                                FactorTree *factor_tree,
                                const std::vector<std::complex<T>> &roots_of_unity) {
@@ -100,6 +133,15 @@ public:  // private:
         transpose(begin, incr, P, Q);
     }
 
+    /**
+     * @brief Performs an in-place discrete fourier transform
+     * This uses the naive O(n^2) algorithm, so should only be used as a base case when N is prime
+     *
+     * @param begin An iterator to the start of array
+     * @param incr The spacing between elements of the array
+     * @param roots_of_unity The complex roots of unity
+     * @param N The number of points in the array
+     */
     static void dft(iterator begin, const size_t &incr, const std::vector<std::complex<T>> &roots_of_unity,
                     const size_t &N) {
         // should only be used for prime sized data
@@ -116,6 +158,13 @@ public:  // private:
         }
     }
 
+    /**
+     * @brief Computes the complex roots of unity
+     * The kth element of the output is e^[i*(-2*M_PI*k/N)], where i is the imaginary unit
+     *
+     * @param N The number of roots to calculate
+     * @return The Nth complex roots of unity
+     */
     static std::vector<std::complex<T>> getRootsOfUnity(const size_t &N) {
         // the kth element of the output is e^[i*(-2*pi*k/N)]
         // compute roots of unity via repeated multiplication
@@ -129,6 +178,15 @@ public:  // private:
         return roots_of_unity;
     }
 
+    /**
+     * @brief Performs an in-place matrix transposition
+     * The matrix is assumed to be in row major order
+     *
+     * @param begin An Iterator to the start of the matrix
+     * @param incr The spacing between elements of the matrix
+     * @param P The number of rows
+     * @param Q The number of columns
+     */
     static void transpose(iterator begin, const size_t &incr, const size_t &P, const size_t &Q) {
         // Based on: https://en.wikipedia.org/wiki/In-place_matrix_transposition#Properties_of_the_permutation
         size_t N = P * Q;
