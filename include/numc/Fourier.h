@@ -44,7 +44,7 @@ public:
         }
     }
 
-public:  // private:
+private:
     struct FactorTree {
         size_t value;
         FactorTree *left = nullptr;
@@ -207,4 +207,6 @@ public:  // private:
             }
         }
     }
+
+    friend void testFFT(const size_t &N);
 };
