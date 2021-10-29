@@ -78,12 +78,12 @@ private:
         std::vector<size_t> factors = primeFactorization(N);
 
         FactorTree *tree = new FactorTree();
-        tree->value = factors[factors.size() - 1];
+        tree->value = factors[0];
 
-        for (size_t i = factors.size() - 2; i >= 0; i--) {
-            FactorTree *left = new FactorTree();
-            left->value = factors[i];
-            FactorTree *right = tree;
+        for (size_t i = 1; i < N; i++) {
+            FactorTree *right = new FactorTree();
+            right->value = factors[i];
+            FactorTree *left = tree;
 
             tree = new FactorTree();
             tree->value = left->value * right->value;
