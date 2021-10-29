@@ -37,13 +37,18 @@ public:  // private:
         FactorTree *left = nullptr;
         FactorTree *right = nullptr;
 
-        [[nodiscard]] bool isTerminal() const {
+        [[nodiscard]] bool isLeaf() const {
             return left == nullptr;
         }
 
         ~FactorTree() {
             delete left;
             delete right;
+        }
+
+        [[nodiscard]] int multiplicationCount() const {
+            if (isLeaf()) return value * value;
+            return right->value * left->multiplicationCount() + left->value * right->multiplicationCount() + value;
         }
     };
 
@@ -71,7 +76,7 @@ public:  // private:
                         const std::vector<std::complex<T>> &roots_of_unity) {
         const int &N = factor_tree->value;
 
-        if (factor_tree->isTerminal()) {
+        if (factor_tree->isLeaf()) {
             // prime number of elements
             dft(begin, incr, roots_of_unity, N);
             return;
