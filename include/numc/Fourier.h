@@ -2,7 +2,6 @@
 
 #include "Primes.h"
 #include <complex>
-#include <iostream>
 
 template<typename T>
 class Fourier {
