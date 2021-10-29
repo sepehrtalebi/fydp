@@ -12,12 +12,12 @@
 #include <chrono>
 #endif
 
-void testFFT(const int &N) {
+void testFFT(const size_t &N) {
     std::vector<std::complex<double>> test1;
     std::vector<std::complex<double>> test2;
     test1.reserve(N);
     test2.reserve(N);
-    for (int i = 0; i < N; i++) {
+    for (size_t i = 0; i < N; i++) {
         test1.emplace_back(1, 1);
         test2.emplace_back(1, 1);
     }
@@ -38,7 +38,7 @@ void testFFT(const int &N) {
     Fourier<double>::dft(test2.begin(), 1, Fourier<double>::getRootsOfUnity(N), N);
 #endif
 
-    for (int i = 0; i < N; i++) {
+    for (size_t i = 0; i < N; i++) {
         std::complex<double> error = test1[i] - test2[i];
         assert(std::abs(error.real()) < 0.0001);
         assert(std::abs(error.imag()) < 0.0001);
@@ -46,7 +46,7 @@ void testFFT(const int &N) {
 }
 
 void testFourier() {
-    for (int i = 2; i < 1000; i++) {
+    for (size_t i = 2; i < 1000; i++) {
         testFFT(i);
     }
     testFFT(10000);

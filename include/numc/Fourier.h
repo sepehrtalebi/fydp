@@ -10,11 +10,11 @@ class Fourier {
 public:
     static void fft(iterator begin, iterator end) {
         // Based on: https://numericalrecipes.wordpress.com/2009/05/29/the-cooley-tukey-fft-algorithm-for-general-factorizations/
-        int N = end - begin;
+        size_t N = end - begin;
         if (N <= 1) return;
         FactorTree *factor_tree = planFFT(N);
         std::vector<std::complex<T>> roots_of_unity = getRootsOfUnity(N);
-        fftImpl(begin, end, 1, factor_tree, roots_of_unity);
+        cooleyTukeyFFT(begin, end, 1, factor_tree, roots_of_unity);
         delete factor_tree;
     }
 
@@ -25,7 +25,7 @@ public:
 
         fft(begin, end);
 
-        int N = (end - begin);
+        size_t N = (end - begin);
         for (iterator it = begin; it < end; it++) {
             (*it) = std::conj(*it) / N;
         }
@@ -33,7 +33,7 @@ public:
 
 public:  // private:
     struct FactorTree {
-        int value = 1;
+        size_t value;
         FactorTree *left = nullptr;
         FactorTree *right = nullptr;
 
@@ -46,20 +46,20 @@ public:  // private:
             delete right;
         }
 
-        [[nodiscard]] int multiplicationCount() const {
+        [[nodiscard]] unsigned int multiplicationCount() const {
             if (isLeaf()) return value * value;
             return right->value * left->multiplicationCount() + left->value * right->multiplicationCount() + value;
         }
     };
 
-    static FactorTree *planFFT(const int &N) {
-        std::vector<int> factors = primeFactorization(N);
+    static FactorTree *planFFT(const size_t &N) {
+        std::vector<size_t> factors = primeFactorization(N);
 
-        auto *tree = new FactorTree();
+        FactorTree *tree = new FactorTree();
         tree->value = factors[factors.size() - 1];
 
-        for (int i = (int) factors.size() - 2; i >= 0; i--) {
-            auto *left = new FactorTree();
+        for (size_t i = factors.size() - 2; i >= 0; i--) {
+            FactorTree *left = new FactorTree();
             left->value = factors[i];
             FactorTree *right = tree;
 
@@ -71,75 +71,75 @@ public:  // private:
         return tree;
     }
 
-    static void fftImpl(iterator begin, iterator end, const int &incr,
-                        FactorTree *factor_tree,
-                        const std::vector<std::complex<T>> &roots_of_unity) {
-        const int &N = factor_tree->value;
+    static void cooleyTukeyFFT(iterator begin, iterator end, const size_t &incr,
+                               FactorTree *factor_tree,
+                               const std::vector<std::complex<T>> &roots_of_unity) {
+        const size_t &N = factor_tree->value;
 
         if (factor_tree->isLeaf()) {
             // prime number of elements
             dft(begin, incr, roots_of_unity, N);
             return;
         }
-        const int &P = factor_tree->left->value;
-        const int &Q = factor_tree->right->value;
+        const size_t &P = factor_tree->left->value;
+        const size_t &Q = factor_tree->right->value;
 
-        for (int i = 0; i < Q; i++) {
-            fftImpl(begin + i * incr, end, incr * Q, factor_tree->left, roots_of_unity);
+        for (size_t i = 0; i < Q; i++) {
+            cooleyTukeyFFT(begin + i * incr, end, incr * Q, factor_tree->left, roots_of_unity);
         }
 
         // twiddle factors
-        for (int p = 0; p < P; p++) for (int q = 0; q < Q; q++) {
+        for (size_t p = 0; p < P; p++) for (size_t q = 0; q < Q; q++) {
             begin[(Q * p + q) * incr] *= roots_of_unity[p * q * incr];
         }
 
-        for (int i = 0; i < P; i++) {
-            fftImpl(begin + i * Q * incr, end, incr, factor_tree->right, roots_of_unity);
+        for (size_t i = 0; i < P; i++) {
+            cooleyTukeyFFT(begin + i * Q * incr, end, incr, factor_tree->right, roots_of_unity);
         }
 
         transpose(begin, incr, P, Q);
     }
 
-    static void dft(iterator begin, const int &incr, const std::vector<std::complex<T>> &roots_of_unity,
-                    const int &N) {
+    static void dft(iterator begin, const size_t &incr, const std::vector<std::complex<T>> &roots_of_unity,
+                    const size_t &N) {
         // should only be used for prime sized data
-        int ratio = roots_of_unity.size() / N;
+        size_t ratio = roots_of_unity.size() / N;
         std::vector<std::complex<T>> result(N);
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++) {
+        for (size_t i = 0; i < N; i++) {
+            for (size_t j = 0; j < N; j++) {
                 result[i] += begin[j * incr] * roots_of_unity[((i * j) % N) * ratio];
             }
         }
 
-        for (int i = 0; i < N; i++) {
+        for (size_t i = 0; i < N; i++) {
             begin[i * incr] = result[i];
         }
     }
 
-    static std::vector<std::complex<T>> getRootsOfUnity(const int &N) {
+    static std::vector<std::complex<T>> getRootsOfUnity(const size_t &N) {
         // the kth element of the output is e^[i*(-2*pi*k/N)]
         // compute roots of unity via repeated multiplication
         // this avoids repetitive use of std::polar which is slower since it requires sin and cos
         std::vector<std::complex<T>> roots_of_unity(N);
         roots_of_unity[0] = std::complex<T>(1, 0);
         roots_of_unity[1] = std::polar(1.0, (-2 * M_PI / N));
-        for (int i = 2; i < N; i++) {
+        for (size_t i = 2; i < N; i++) {
             roots_of_unity[i] = roots_of_unity[1] * roots_of_unity[i - 1];
         }
         return roots_of_unity;
     }
 
-    static void transpose(iterator begin, const int &incr, const int &P, const int &Q) {
+    static void transpose(iterator begin, const size_t &incr, const size_t &P, const size_t &Q) {
         // Based on: https://en.wikipedia.org/wiki/In-place_matrix_transposition#Properties_of_the_permutation
-        int N = P * Q;
+        size_t N = P * Q;
         // first and last points of the matrix never need to move, so we only need N - 2 bits of auxiliary storage
         // thus, whether the ith element of the matrix has been moved is stored in the (i - 1)th index of moved
         std::vector<bool> moved(N - 2);
-        for (int i = 1; i < N - 1; i++) {
+        for (size_t i = 1; i < N - 1; i++) {
             if (!moved[i - 1]) {
                 std::complex<T> last_value = begin[i * incr];
                 moved[i - 1] = true;
-                int next_index = (Q * i) % (N - 1);
+                size_t next_index = (Q * i) % (N - 1);
                 while (next_index != i) {
                     moved[next_index - 1] = true;
                     std::swap(last_value, begin[next_index * incr]);

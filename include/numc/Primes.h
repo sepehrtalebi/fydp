@@ -2,12 +2,12 @@
 
 #include <vector>
 
-std::vector<int> primesUpTo(const int &n);
+std::vector<size_t> primesUpTo(const size_t &n);
 
-std::vector<int> primeFactorization(int n);
+std::vector<size_t> primeFactorization(size_t n);
 
-std::vector<int> uniquePrimeFactors(int n);
+std::vector<size_t> uniquePrimeFactors(size_t n);
 
-int lowestPrimitiveRootOfPrime(const int &p);
+size_t lowestPrimitiveRootOfPrime(const size_t &p);
 
-int powMod(int base, int exponent, const int &m);
+size_t powMod(size_t base, size_t exponent, const size_t &m);
