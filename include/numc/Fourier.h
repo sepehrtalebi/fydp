@@ -80,7 +80,7 @@ private:
         FactorTree *tree = new FactorTree();
         tree->value = factors[0];
 
-        for (size_t i = 1; i < N; i++) {
+        for (size_t i = 1; i < factors.size(); i++) {
             FactorTree *right = new FactorTree();
             right->value = factors[i];
             FactorTree *left = tree;
