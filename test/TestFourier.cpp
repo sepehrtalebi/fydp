@@ -40,8 +40,8 @@ void testFFT(const size_t &N) {
 
     for (size_t i = 0; i < N; i++) {
         std::complex<double> error = test1[i] - test2[i];
-        assert(std::abs(error.real()) < 0.0001);
-        assert(std::abs(error.imag()) < 0.0001);
+        assert(std::abs(error.real()) / abs(test2[i]) < 0.0001);
+        assert(std::abs(error.imag()) / abs(test2[i]) < 0.0001);
     }
 }
 
