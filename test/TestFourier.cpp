@@ -1,16 +1,18 @@
 #include "TestFourier.h"
 #include "Fourier.h"
 #include <cmath>
+#include <chrono>
+#include <random>
 #include <vector>
 #include <complex>
 #include <cassert>
 #include <iostream>
 
-#define BENCHMARK 0
+static unsigned seed = std::chrono::system_clock::now().time_since_epoch().count(); // NOLINT(cert-err58-cpp)
+static auto random_engine = std::default_random_engine(seed); // NOLINT(cert-err58-cpp)
+static std::uniform_real_distribution<double> distribution(-100, 100); // NOLINT(cert-err58-cpp)
 
-#if BENCHMARK == 1
-#include <chrono>
-#endif
+#define BENCHMARK 0
 
 void testFFT(const size_t &N) {
     std::vector<std::complex<double>> test1;
@@ -18,8 +20,10 @@ void testFFT(const size_t &N) {
     test1.reserve(N);
     test2.reserve(N);
     for (size_t i = 0; i < N; i++) {
-        test1.emplace_back(1, 1);
-        test2.emplace_back(1, 1);
+        double real = distribution(random_engine);
+        double imag = distribution(random_engine);
+        test1.emplace_back(real, imag);
+        test2.emplace_back(real, imag);
     }
 #if BENCHMARK == 1
     auto t1 = std::chrono::high_resolution_clock::now();
