@@ -11,14 +11,28 @@ public:
     T &q2 = this->data[2];
     T &q3 = this->data[3];
 public:
-    explicit Quaternion(T q0, T q1, T q2, T q3) {
+    explicit Quaternion(T q0 = 1, T q1 = 0, T q2 = 0, T q3 = 0) {
         this->q0 = q0;
         this->q1 = q1;
         this->q2 = q2;
         this->q3 = q3;
     }
 
-    explicit Quaternion(Vector<T, 4> vec) : Quaternion(vec[0], vec[1], vec[2], vec[3]) {}
+    // allow implicit conversions
+    Quaternion(Vector<T, 4> vec) : Quaternion(vec[0], vec[1], vec[2], vec[3]) {} // NOLINT(google-explicit-constructor)
+
+    Quaternion& operator=(const Quaternion<T> &other) {
+        // need to overload this operator to allow copying the contents of a Quaternion
+        q0 = other.q0;
+        q1 = other.q1;
+        q2 = other.q2;
+        q3 = other.q3;
+        return *this;
+    }
+
+    static Quaternion identity() {
+        return Quaternion{1, 0, 0, 0};
+    }
 
     Quaternion cong() const {
         return Quaternion{q0, -q1, -q2, -q3};

@@ -1,19 +1,23 @@
 cmake_minimum_required(VERSION 3.17)
 project(FYDP)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 20)
 
 include_directories(./include)
 include_directories(./include/differentiation)
+include_directories(./include/numc)
+include_directories(./include/kalman_filter)
+include_directories(./include/utils)
 
 add_executable(FYDP tests.cpp
-        src/KF.cpp
-        src/UKF.cpp
-        src/EKF.cpp
+        src/kalman_filter/KF.cpp
+        src/kalman_filter/UKF.cpp
+        src/kalman_filter/EKF.cpp
         src/SensorMeasurements.cpp
         src/AircraftState.cpp
         src/ControlInputs.cpp
         src/AppliedLoads.cpp
+        src/SensorModels.cpp
         src/differentiation/Expression.cpp
         src/differentiation/Constant.cpp
         src/differentiation/Zero.cpp
@@ -30,7 +34,12 @@ add_executable(FYDP tests.cpp
         src/differentiation/Sin.cpp
         src/differentiation/Cos.cpp
         src/differentiation/Log.cpp
+        src/numc/Primes.cpp
         test/TestVector.cpp
+        test/TestVector3.cpp
+        test/TestQuaternion.cpp
         test/TestMatrix.cpp
         test/TestDifferentiation.cpp
+        test/TestPrimes.cpp
+        test/TestFourier.cpp
         )

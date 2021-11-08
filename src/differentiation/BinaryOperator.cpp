@@ -86,14 +86,14 @@ ExprPtr BinaryOperator::simplify() const {
     ExprPtr result;
     if (isCommutative() && second_const) result = call(second_const, simplified_first);
     else result = call(simplified_first, simplified_second);
-    int result_node_count = 0; // lazily initialized
+    unsigned int result_node_count = 0; // lazily initialized
 
     // try left distributivity to see if it decreases the nodeCount
     if (second_bin_op && isDistributiveOn(second_bin_op->type())) {
         result_node_count = result->nodeCount();
 
         ExprPtr expr = second_bin_op->call(call(simplified_first, second_bin_op->first), call(simplified_first, second_bin_op->second))->simplify();
-        int expr_node_count = expr->nodeCount();
+        unsigned int expr_node_count = expr->nodeCount();
         if (expr_node_count < result_node_count) {
             result = expr;
             result_node_count = expr_node_count;
@@ -105,7 +105,7 @@ ExprPtr BinaryOperator::simplify() const {
         if (result_node_count == 0) result_node_count = result->nodeCount();
 
         ExprPtr expr = first_bin_op->call(call(first_bin_op->first, simplified_second), call(first_bin_op->second, simplified_second))->simplify();
-        int expr_node_count = expr->nodeCount();
+        unsigned int expr_node_count = expr->nodeCount();
         if (expr_node_count < result_node_count) {
             result = expr;
             // No need to update expr_node_count
@@ -115,7 +115,7 @@ ExprPtr BinaryOperator::simplify() const {
     return result;
 }
 
-int BinaryOperator::nodeCount() const {
+unsigned int BinaryOperator::nodeCount() const {
     return 1 + first->nodeCount() + second->nodeCount();
 }
 

@@ -6,18 +6,16 @@
 #include "SensorMeasurements.h"
 #include "AircraftState.h"
 #include "ControlInputs.h"
+#include "AppliedLoads.h"
+#include "Constants.h"
 
 class KF {
 public:
-    constexpr static const int n = 31; // number of states
-    constexpr static const int p = 18; // number of sensor measurements
-    enum {
+    enum : size_t {
         px, py, pz,  // position in earth frame
         q0, q1, q2, q3,  // rotation from earth frame to body frame
         vx, vy, vz,  // velocity in body frame
         wx, wy, wz,  // angular velocity in body frame
-        ax, ay, az,  // acceleration in body frame
-        ang_ax, ang_ay, ang_az,  //angular acceleration in body frame
         magx, magy, magz,  // magnetic field vector in body frame
         accel_bx, accel_by, accel_bz,  // accelerometer bias in body frame
         gyro_bx, gyro_by, gyro_bz,  // gyroscope bias in body frame
@@ -29,6 +27,8 @@ protected:
     Matrix<double, n, n> P = Matrix<double, n, n>::identity();
     const Matrix<double, n, n> Q = Matrix<double, n, n>::identity();
     const Matrix<double, p, p> R = Matrix<double, p, p>::identity();
+    AppliedLoads applied_loads{};
+    Wrench<double> current_loads; // stores applied_loads.getAppliedLoads(x) for the current time-step
 
 public:
     KF();
@@ -39,14 +39,14 @@ public:
     void getOutputWrapper(double *doubleAircraftState) const;
 
     virtual void update(const SensorMeasurements &sensorMeasurements,
-                        const ControlInputs &control_inputs, double dt) = 0;
+                        const ControlInputs &control_inputs, double dt);
 
-    AircraftState getOutput() const;
+    [[nodiscard]] AircraftState getOutput() const;
 
 protected:
-    static Vector<double, n> f(const Vector<double, n> &x, const ControlInputs &control_inputs, double dt);
+    [[nodiscard]] Vector<double, n> f(const Vector<double, n> &state, double dt) const;
 
-    static Vector<double, p> h(const Vector<double, n> &x, const ControlInputs &control_inputs, double dt);
+    static Vector<double, p> h(const Vector<double, n> &state, double dt);
 };
 
 

@@ -26,6 +26,6 @@ std::string UnaryOperator::toStr() const {
     return toStrWrapper(operand->toStr());
 }
 
-int UnaryOperator::nodeCount() const {
+unsigned int UnaryOperator::nodeCount() const {
     return 1 + operand->nodeCount();
 }

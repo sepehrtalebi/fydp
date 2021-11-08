@@ -3,6 +3,7 @@
 #include "Nan.h"
 #include "Constant.h"
 #include "Variable.h"
+#include "Product.h"
 
 ExprPtr Difference::diff(const std::string &id) const {
     return first->diff(id) - second->diff(id);

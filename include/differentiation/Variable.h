@@ -13,15 +13,17 @@ private:
 public:
     explicit Variable(std::string id) : identifier(std::move(id)) {}
 
-    double evaluate(const std::map<std::string, double> &variables) const override;
+    static std::shared_ptr<Variable> make(const std::string &id);
 
-    ExprPtr diff(const std::string &id) const override;
+    [[nodiscard]] double evaluate(const std::map<std::string, double> &variables) const override;
 
-    ExprPtr subs(const std::map<std::string, ExprPtr> &subs) const override;
+    [[nodiscard]] ExprPtr diff(const std::string &id) const override;
 
-    ExprPtr simplify() const override;
+    [[nodiscard]] ExprPtr subs(const std::map<std::string, ExprPtr> &subs) const override;
 
-    std::string toStr() const override;
+    [[nodiscard]] ExprPtr simplify() const override;
 
-    std::string getIdentifier() const;
+    [[nodiscard]] std::string toStr() const override;
+
+    [[nodiscard]] std::string getIdentifier() const;
 };

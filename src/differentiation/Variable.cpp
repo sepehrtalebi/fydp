@@ -2,6 +2,10 @@
 #include "Zero.h"
 #include "One.h"
 
+std::shared_ptr<Variable> Variable::make(const std::string &id) {
+    return std::make_shared<Variable>(id);
+}
+
 double Variable::evaluate(const std::map<std::string, double> &variables) const {
     return variables.at(identifier);
 }
@@ -13,12 +17,12 @@ ExprPtr Variable::diff(const std::string &id) const {
 
 ExprPtr Variable::subs(const std::map<std::string, ExprPtr> & subs) const {
     auto it = subs.find(identifier);
-    if (it == subs.end()) return std::make_shared<Variable>(identifier);
+    if (it == subs.end()) return Variable::make(identifier);
     return it->second;
 }
 
 ExprPtr Variable::simplify() const {
-    return std::make_shared<Variable>(identifier);
+    return Variable::make(identifier);
 }
 
 std::string Variable::toStr() const {
