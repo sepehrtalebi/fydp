@@ -80,7 +80,7 @@ private:
         FactorTree *tree = new FactorTree();
         tree->value = factors[0];
 
-        for (size_t i = 1; i < N; i++) {
+        for (size_t i = 1; i < factors.size(); i++) {
             FactorTree *right = new FactorTree();
             right->value = factors[i];
             FactorTree *left = tree;
@@ -196,11 +196,11 @@ private:
             if (!moved[i - 1]) {
                 std::complex<T> last_value = begin[i * incr];
                 moved[i - 1] = true;
-                size_t next_index = (Q * i) % (N - 1);
+                size_t next_index = (P * i) % (N - 1);
                 while (next_index != i) {
                     moved[next_index - 1] = true;
                     std::swap(last_value, begin[next_index * incr]);
-                    next_index = (Q * next_index) % (N - 1);
+                    next_index = (P * next_index) % (N - 1);
                 }
                 begin[i * incr] = last_value;
             }
