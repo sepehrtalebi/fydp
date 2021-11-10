@@ -15,8 +15,8 @@ private:
     Vector<double, 2 * n + 1> state_weights;
     Vector<double, 2 * n + 1> covariance_weights;
 
-    void update(const SensorMeasurements &sensorMeasurements,
-                const ControlInputs &control_inputs, double dt) override;
+    void updateKF(const SensorMeasurements &sensorMeasurements,
+                  const double &dt) override;
 
 public:
     UKF();

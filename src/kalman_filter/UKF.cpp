@@ -14,11 +14,8 @@ UKF::UKF() {
     for (size_t i = 1; i < 2 * n + 1; i++) covariance_weights[i] = 1 / (2 * (n + lambda));
 }
 
-void UKF::update(const SensorMeasurements &sensorMeasurements,
-                 const ControlInputs &control_inputs, double dt) {
-    // call superclass update function first
-    KF::update(sensorMeasurements, control_inputs, dt);
-
+void UKF::updateKF(const SensorMeasurements &sensorMeasurements,
+                  const double &dt) {
     Vector<double, n> x_new = f(x, dt);
     auto new_sigma = sigma;
 

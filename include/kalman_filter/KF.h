@@ -32,14 +32,16 @@ public:
     KF();
 
     void update(const SensorMeasurements &sensorMeasurements,
-                const ControlInputs &control_inputs, double dt) override;
+                const ControlInputs &control_inputs, double dt) final;
+
+    virtual void updateKF(const SensorMeasurements &sensorMeasurements, const double &dt) = 0;
 
     [[nodiscard]] AircraftState getOutput() const final;
 
 protected:
-    [[nodiscard]] Vector<double, n> f(const Vector<double, n> &state, double dt) const;
+    [[nodiscard]] Vector<double, n> f(const Vector<double, n> &state, const double &dt) const;
 
-    static Vector<double, p> h(const Vector<double, n> &state, double dt);
+    static Vector<double, p> h(const Vector<double, n> &state, const double &dt);
 };
 
 

@@ -23,10 +23,7 @@ static Matrix3D<ExprPtr, 4, 4, 3> getQuatToQuatJacExpr() {
 
 const Matrix3D<ExprPtr, 4, 4, 3> EKF::QUAT_TO_QUAT_JAC_EXPR = getQuatToQuatJacExpr(); // NOLINT(cert-err58-cpp)
 
-void EKF::update(const SensorMeasurements &sensorMeasurements, const ControlInputs& control_inputs, double dt) {
-    // call superclass update function first
-    KF::update(sensorMeasurements, control_inputs, dt);
-
+void EKF::updateKF(const SensorMeasurements &sensorMeasurements, const double &dt) {
     // prediction step
     Matrix<double, n, n> f_jac = fJacobian(x, dt);
 
@@ -51,7 +48,7 @@ void EKF::update(const SensorMeasurements &sensorMeasurements, const ControlInpu
     P -= K * h_jac * P;
 }
 
-Matrix<double, n, n> EKF::fJacobian(const Vector<double, n> &x, double dt) const {
+Matrix<double, n, n> EKF::fJacobian(const Vector<double, n> &x, const double &dt) const {
     Matrix<double, 6, n> applied_loads_jac = applied_loads.getAppliedLoadsJacobian(x); // derivative of wrench with respect to state
     Matrix<double, n, 6> wrench_jac = Matrix<double, n, 6>::zeros(); // derivative of state with respect to wrench
 
@@ -105,6 +102,6 @@ Matrix<double, n, n> EKF::fJacobian(const Vector<double, n> &x, double dt) const
     return f_jac + wrench_jac * applied_loads_jac;
 }
 
-Matrix<double, p, n> EKF::hJacobian(const Vector<double, n> &x, double /** dt **/) const {
+Matrix<double, p, n> EKF::hJacobian(const Vector<double, n> &x, const double & /** dt **/) const {
     return getSensorMeasurementsJacobian(x, current_loads);
 }

@@ -8,11 +8,14 @@ KF::KF() {
     P[px][px] = P[py][py] = 0;
 }
 
-void KF::update(const SensorMeasurements & /** sensorMeasurements **/, const ControlInputs &control_inputs, double /** dt **/) {
+void KF::update(const SensorMeasurements &sensorMeasurements, const ControlInputs &control_inputs, double dt) {
     applied_loads.update(control_inputs);
 
     // calculate current loads once and store in an instance variable so that it can be used throughout
     current_loads = applied_loads.getAppliedLoads(x);
+
+    // delegate to subclasses
+    updateKF(sensorMeasurements, dt);
 }
 
 AircraftState KF::getOutput() const {
@@ -24,7 +27,7 @@ AircraftState KF::getOutput() const {
                          current_loads.force / MASS};
 }
 
-Vector<double, n> KF::f(const Vector<double, n> &state, double dt) const {
+Vector<double, n> KF::f(const Vector<double, n> &state, const double &dt) const {
     Quaternion<double> quat{state[q0], state[q1], state[q2], state[q3]};
 
     Vector<double, n> state_new = state;
@@ -56,6 +59,6 @@ Vector<double, n> KF::f(const Vector<double, n> &state, double dt) const {
     return state_new;
 }
 
-Vector<double, p> KF::h(const Vector<double, n> &state, double /** dt **/) {
+Vector<double, p> KF::h(const Vector<double, n> &state, const double & /** dt **/) {
     return getSensorMeasurements(state).getZ();
 }
