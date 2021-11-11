@@ -3,6 +3,7 @@
 #include "Quaternion.h"
 #include "KF.h"
 #include <cmath>
+#include "Constants.h"
 
 #if SENSOR_NOISE == 1
 #include <chrono>
@@ -55,6 +56,40 @@ static void opticalFlow(const Vector3<double> &velocity, const double &altitude,
     sensor_measurements.pixel_velocity[1] += optical_flow_noise(random_engine);
 #endif
 }
+
+static void AltitudeSensor(const double &altitude, SensorMeasurements &sensor_measurements) {
+    //Temperature is a function of height and also location and also time of year so this might change
+    double Temperature = 288.15; // K
+    double pressure = ATMOSPHERIC_PRESSURE * exp( - GRAVITATIONAL_ACCELERATION * AIR_MOLAR_MASS * altitude /
+                                                          (GAS_CONSTANT * Temperature));
+    sensor_measurements.pressure = pressure;
+}
+
+static void IMU(const Vector3<double> &body_acceleration, const Vector3<double> &body_ang_velocity,
+                const Vector3<double> &body_ang_acceleration, SensorMeasurements &sensor_measurements) {
+    Vector3<double> measured_acceleration = body_acceleration +
+            body_ang_velocity.cross(body_ang_velocity.cross(IMU_OFFSET)) + body_ang_acceleration.cross(IMU_OFFSET) -
+            Vector3<double> {0, 0, 9.81};
+//    measured_acceleration = measured_acceleration.cross(ANG_ACCELERATION_SCALING) + ANG_ACCELERATION_BIAS;
+    sensor_measurements.imu_acceleration = measured_acceleration;
+    sensor_measurements.imu_angular_velocity = body_ang_velocity;
+}
+
+
+static void GPS(const Vector3<double> position, SensorMeasurements &sensor_measurements) {
+    // eqn from https://www.movable-type.co.uk/scripts/latlong.html
+    double rect_dist = sqrt(position[0]*position[0] + position[1]*position[1]);
+    double lattitude = asin(sin(STARTING_COORDINATES[0]) * cos(rect_dist / EARTH_RADIUS) +
+                                    cos(STARTING_COORDINATES[0]) * sin(rect_dist / EARTH_RADIUS) *
+                                    position[1] / rect_dist);
+    double longitude = STARTING_COORDINATES[1] + atan2(position[0] / rect_dist * sin(rect_dist / EARTH_RADIUS) *
+                                                               cos(STARTING_COORDINATES[0]),
+                                                       cos(rect_dist / EARTH_RADIUS) -
+                                                       sin(STARTING_COORDINATES[0]) * sin(lattitude));
+    sensor_measurements.latitude = lattitude;
+    sensor_measurements.longitude = longitude;
+}
+
 
 SensorMeasurements getSensorMeasurements(const Vector<double, n> &state) {
     Quaternion<double> quat{state[KF::q0], state[KF::q1], state[KF::q2], state[KF::q3]};

@@ -7,6 +7,8 @@
 static constexpr const double GRAVITATIONAL_ACCELERATION = 9.81; // m/s^2
 static constexpr const double ATMOSPHERIC_PRESSURE = 101325; // Pa
 static constexpr const double AIR_DENSITY = 1.225; // kg/m^3
+static constexpr const double AIR_MOLAR_MASS = 0.0289644; // kg/mol
+static constexpr const double GAS_CONSTANT = 8.3144598; // J/(K mol)
 
 // rail track constants
 static constexpr const double RAIL_WIDTH = 1.4351; // m
@@ -17,6 +19,19 @@ static constexpr const double CAMERA_GAIN = 1;
 static constexpr const int HALF_CAMERA_HORIZONTAL_PIXELS = 1920 / 2;
 static constexpr const int HALF_CAMERA_VERTICAL_PIXELS = 1080 / 2;
 static constexpr const double OPTICAL_FLOW_VELOCITY_GAIN = 1.3;
+
+//IMU constants
+static const Vector3<double> IMU_OFFSET{1, -0.1, -0.01}; //m, distance that the IMU is forward, right,
+                                                                    // and below the center of gravity
+//https://commons.erau.edu/cgi/viewcontent.cgi?article=1001&context=pr-honors-coe#:~:text=Scale%20factor%20errors%20describe%20how,slope%20produced%20by%20the%20IMU.
+static const Matrix<double, 3, 3> ANG_ACCELERATION_SCALING{0.95, 0.96, 0.97, -0,96, 0.98, 0.99, -0.97, -0.99, 1};
+static const Vector3<double> ANG_ACCELERATION_BIAS{0.001, 0.002, 0.003};
+static const Matrix<double, 3, 3> ANG_VELOCITY_SCALING{0.95, 0.96, 0.97, -0,96, 0.98, 0.99, -0.97, -0.99, 1};
+static const Vector3<double> ANG_VELOCITY_BIAS{0.001, 0.002, 0.003};
+
+//GPS constants
+static const Vector<double, 2> STARTING_COORDINATES{43.47308029580669, -80.54007051556243}; //lat long coordinates of E5
+static const double EARTH_RADIUS =  6.3781e6; //m
 
 // aircraft inertial constants
 static constexpr const double MASS = 1; // aircraft mass, kg
