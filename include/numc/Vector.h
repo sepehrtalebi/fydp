@@ -10,6 +10,7 @@ class Vector {
 public:
     std::array<T, n> data{};
     using iterator = typename std::array<T, n>::iterator;
+    using const_iterator = typename std::array<T, n>::const_iterator;
 public:
     Vector() = default;
 
@@ -161,6 +162,14 @@ public:
     }
 
     iterator end() {
+        return data.end();
+    }
+
+    const_iterator begin() const {
+        return data.begin();
+    }
+
+    const_iterator end() const {
         return data.end();
     }
 };
