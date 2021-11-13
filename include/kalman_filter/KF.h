@@ -32,7 +32,7 @@ public:
     KF();
 
     void update(const SensorMeasurements &sensorMeasurements,
-                const ControlInputs &control_inputs, double dt) final;
+                const ControlInputs &control_inputs, const double &dt) final;
 
     virtual void updateKF(const SensorMeasurements &sensorMeasurements, const double &dt) = 0;
 
