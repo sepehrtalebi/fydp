@@ -1,4 +1,5 @@
 #include "SensorModels.h"
+#include "AppliedLoads.h"
 #include "Vector3.h"
 #include "Quaternion.h"
 #include "KF.h"
@@ -90,8 +91,7 @@ static void GPS(const Vector3<double> position, SensorMeasurements &sensor_measu
     sensor_measurements.longitude = longitude;
 }
 
-
-SensorMeasurements getSensorMeasurements(const Vector<double, n> &state) {
+SensorMeasurements getSensorMeasurements(const Vector<double, n> &state, const Accel<double> &accel) {
     Quaternion<double> quat{state[KF::q0], state[KF::q1], state[KF::q2], state[KF::q3]};
     Vector3<double> velocity{state[KF::vx], state[KF::vy], state[KF::vz]};
     double altitude = -state[KF::pz];
@@ -120,7 +120,11 @@ void getSensorMeasurementsWrapper(const double *aircraft_state, double *double_s
     // TODO: clean up
     for (size_t i = 0; i < 13; i++) aircraft_state_vec[i] = aircraft_state[i];
 
-    getSensorMeasurements(aircraft_state_vec).assignZ(double_sensor_measurements, uint8_sensor_measurements, bool_sensor_measurements);
+    Wrench<double> applied_loads = AppliedLoads{}.getAppliedLoads(aircraft_state_vec);
+
+    getSensorMeasurements(aircraft_state_vec, toAccel(applied_loads)).assignZ(double_sensor_measurements,
+                                                                              uint8_sensor_measurements,
+                                                                              bool_sensor_measurements);
 }
 
 Matrix<double, p, n> getSensorMeasurementsJacobian(const Vector<double, n> &state, const Wrench<double> &current_loads) {

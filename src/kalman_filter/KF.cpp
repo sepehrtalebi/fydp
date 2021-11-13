@@ -59,5 +59,5 @@ Vector<double, n> KF::f(const Vector<double, n> &state, const double &dt) const 
 }
 
 Vector<double, p> KF::h(const Vector<double, n> &state, const double & /** dt **/) {
-    return getSensorMeasurements(state).getZ();
+    return getSensorMeasurements(state, current_accel).getZ();
 }
