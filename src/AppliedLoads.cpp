@@ -12,7 +12,7 @@
 #define M_PI_4 0.78539816339744830962
 #endif
 
-static Matrix<ExprPtr, 3, 4> getWeightToQuatJacExpr() {
+static Matrix<ExprPtr, 3, 4> getQuatToWeightJacExpr() {
     Matrix<ExprPtr, 3, 4> expr;
 
     Quaternion<ExprPtr> quat{Variable::make("q0"),
@@ -26,7 +26,7 @@ static Matrix<ExprPtr, 3, 4> getWeightToQuatJacExpr() {
     return expr;
 }
 
-const Matrix<ExprPtr, 3, 4> AppliedLoads::WEIGHT_TO_QUAT_JAC_EXPR = getWeightToQuatJacExpr(); // NOLINT(cert-err58-cpp)
+const Matrix<ExprPtr, 3, 4> AppliedLoads::QUAT_TO_WEIGHT_JAC_EXPR = getQuatToWeightJacExpr(); // NOLINT(cert-err58-cpp)
 
 void AppliedLoads::update(const ControlInputs &control_inputs) {
     last_propeller_ang_vel = getPropellerAngVelocity();
@@ -122,26 +122,28 @@ void AppliedLoads::updateWrapper(const double *control_inputs, const double *air
 }
 
 Matrix<double, 6, n> AppliedLoads::getAppliedLoadsJacobian(const Vector<double, n> &state) const {
-    Matrix<double, 6, n> applied_loads_jac = Matrix<double, 6, n>::zeros();
+    Matrix<double, 6, n> wrench_jac = Matrix<double, 6, n>::zeros();
     // propeller loads does not contribute since it does not depend on state
 
     // right aileron loads
-    double d_lift_d_vel = LIFT_GAIN_AILERON * saturation(current_control_inputs.right_aileron_angle, M_PI_4) * 2 * state[KF::vx];
-    applied_loads_jac[2][KF::vx] -= d_lift_d_vel;
-    Vector3<double> d_torque_right_d_vel = L_RIGHT_AILERON.cross({0, 0, -d_lift_d_vel});
-    for (size_t i = 0; i < 3; i++) applied_loads_jac[3 + i][KF::vx] += d_torque_right_d_vel[i];
+    double vel_to_lift_jac = LIFT_GAIN_AILERON * saturation(current_control_inputs.right_aileron_angle, M_PI_4) * 2 * state[KF::vx];
+    wrench_jac[2][KF::vx] -= vel_to_lift_jac;
+    Vector3<double> vel_to_right_torque_jac = L_RIGHT_AILERON.cross({0, 0, -vel_to_lift_jac});
+    for (size_t i = 0; i < 3; i++) wrench_jac[3 + i][KF::vx] += vel_to_right_torque_jac[i];
 
     // left aileron loads
-    d_lift_d_vel = LIFT_GAIN_AILERON * saturation(current_control_inputs.left_aileron_angle, M_PI_4) * 2 * state[KF::vx];
-    applied_loads_jac[2][KF::vx] -= d_lift_d_vel;
-    Vector3<double> d_torque_left_d_vel = L_LEFT_AILERON.cross({0, 0, -d_lift_d_vel});
-    for (size_t i = 0; i < 3; i++) applied_loads_jac[3 + i][KF::vx] += d_torque_left_d_vel[i];
+    vel_to_lift_jac = LIFT_GAIN_AILERON * saturation(current_control_inputs.left_aileron_angle, M_PI_4) * 2 * state[KF::vx];
+    wrench_jac[2][KF::vx] -= vel_to_lift_jac;
+    Vector3<double> vel_to_left_torque_jac = L_LEFT_AILERON.cross({0, 0, -vel_to_lift_jac});
+    for (size_t i = 0; i < 3; i++) wrench_jac[3 + i][KF::vx] += vel_to_left_torque_jac[i];
 
     // elevator loads
-    d_lift_d_vel = LIFT_GAIN_ELEVATOR * saturation(current_control_inputs.elevator_angle, M_PI_4) * 2 * state[KF::vx];
-    applied_loads_jac[2][KF::vx] += d_lift_d_vel;
-    Vector3<double> d_torque_elevator_d_vel = L_ELEVATOR.cross({0, 0, d_lift_d_vel});
-    for (size_t i = 0; i < 3; i++) applied_loads_jac[3 + i][KF::vx] += d_torque_elevator_d_vel[i];
+    vel_to_lift_jac = LIFT_GAIN_ELEVATOR * saturation(current_control_inputs.elevator_angle, M_PI_4) * 2 * state[KF::vx];
+    wrench_jac[2][KF::vx] += vel_to_lift_jac;
+    Vector3<double> vel_to_elevator_torque_jac = L_ELEVATOR.cross({0, 0, vel_to_lift_jac});
+    for (size_t i = 0; i < 3; i++) wrench_jac[3 + i][KF::vx] += vel_to_elevator_torque_jac[i];
 
-    return applied_loads_jac;
+    // TODO: environmental loads
+
+    return wrench_jac;
 }
