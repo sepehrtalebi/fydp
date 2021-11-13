@@ -4,7 +4,9 @@
 #include "Quaternion.h"
 #include "KF.h"
 #include <cmath>
-#include "Constants.h"
+
+// determines whether noise is added to the sensor measurements
+#define SENSOR_NOISE 1
 
 #if SENSOR_NOISE == 1
 #include <chrono>
@@ -130,10 +132,10 @@ void getSensorMeasurementsWrapper(const double *aircraft_state, double *double_s
                                                                               bool_sensor_measurements);
 }
 
-Matrix<double, p, n> getSensorMeasurementsJacobian(const Vector<double, n> &state, const Wrench<double> &current_loads) {
-    // the ith row and jth column represents the derivative of
-    // the ith output measurement with respect to the jth input state
+std::pair<Matrix<double, p, n>, Matrix<double, p, 6>> getSensorMeasurementsJacobian(const Vector<double, n> &state, const Accel<double> &accel) {
     Matrix<double, p, n> h_jac = Matrix<double, p, n>::zeros();
+    Matrix<double, p, 6> accel_to_h_jac = Matrix<double, p, 6>::zeros();
+
     // TODO
     h_jac[SensorMeasurements::PRESSURE][KF::px] = AIR_DENSITY * GRAVITATIONAL_ACCELERATION;
 
@@ -143,5 +145,5 @@ Matrix<double, p, n> getSensorMeasurementsJacobian(const Vector<double, n> &stat
 
     h_jac[SensorMeasurements::ALT][KF::pz] = -1;
 
-    return h_jac;
+    return {h_jac, accel_to_h_jac};
 }
