@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Vector3.h"
+#include "Accel.h"
 
 template<typename T>
 struct Wrench {
@@ -51,3 +52,5 @@ struct Wrench {
         return index < 3 ? force[index] : torque[index - 3];
     }
 };
+
+Accel<double> toAccel(const Wrench<double> &wrench);
