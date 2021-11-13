@@ -4,6 +4,8 @@
 #include "Vector.h"
 #include "Matrix.h"
 #include "Vector3.h"
+#include "Wrench.h"
+#include "Accel.h"
 #include "AppliedLoads.h"
 #include "Constants.h"
 
@@ -27,6 +29,7 @@ protected:
     const Matrix<double, p, p> R = Matrix<double, p, p>::identity();
     AppliedLoads applied_loads{};
     Wrench<double> current_loads; // stores applied_loads.getAppliedLoads(x) for the current time-step
+    Accel<double> current_accel; // stores accelerations and angular accelerations based on current_loads
 
 public:
     KF();
@@ -41,7 +44,5 @@ public:
 protected:
     [[nodiscard]] Vector<double, n> f(const Vector<double, n> &state, const double &dt) const;
 
-    static Vector<double, p> h(const Vector<double, n> &state, const double &dt);
+    [[nodiscard]] Vector<double, p> h(const Vector<double, n> &state, const double &dt);
 };
-
-
