@@ -28,8 +28,8 @@ protected:
     const Matrix<n, n> Q = Matrix<n, n>::identity();
     const Matrix<p, p> R = Matrix<p, p>::identity();
     AppliedLoads applied_loads{};
-    Wrench<double> current_loads; // stores applied_loads.getAppliedLoads(x) for the current time-step
-    Accel<double> current_accel; // stores accelerations and angular accelerations based on current_loads
+    Wrench<> current_loads; // stores applied_loads.getAppliedLoads(x) for the current time-step
+    Accel<> current_accel; // stores accelerations and angular accelerations based on current_loads
 
 public:
     KF();

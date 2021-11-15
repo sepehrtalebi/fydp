@@ -53,7 +53,7 @@ struct Wrench {
     }
 };
 
-Accel<double> toAccel(const Wrench<double> &wrench);
+Accel<> toAccel(const Wrench<> &wrench);
 
 template<typename T>
 Wrench<T> operator+(const T &scalar, const Wrench<T> &wrench) {

@@ -67,6 +67,6 @@ static Vector3<> const elevator_controller(Vector3<> const *pitch_command, Vecto
     return K_ff * *pitch_command + u;
 }
 
-static Vector<2, Vector3<>> const aileron_controller(Vector3<double> const *roll_command, Vector3<double> const *aircraft_roll, double dt) {
-    Vector3<double> error = *roll_command - *aircraft_roll;
+static Vector<2, Vector3<>> const aileron_controller(Vector3<> const *roll_command, Vector3<> const *aircraft_roll, double dt) {
+    Vector3<> error = *roll_command - *aircraft_roll;
 }
