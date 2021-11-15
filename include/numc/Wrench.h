@@ -3,7 +3,7 @@
 #include "Vector3.h"
 #include "Accel.h"
 
-template<typename T>
+template<typename T = double>
 struct Wrench {
     Vector3<T> force;
     Vector3<T> torque;
