@@ -121,11 +121,7 @@ public:
     }
 
     void operator*=(const Quaternion<T> &other) {
-        Quaternion<T> product = (*this) * other;
-        q0 = product.q0;
-        q1 = product.q1;
-        q2 = product.q2;
-        q3 = product.q3;
+        *this = (*this) * other;
     }
 
     Quaternion<T> operator/(const Quaternion<T> &other) const {
@@ -133,10 +129,6 @@ public:
     }
 
     void operator/=(const Quaternion<T> &other) {
-        Quaternion<T> quotient = (*this) / other.cong();
-        q0 = quotient.q0;
-        q1 = quotient.q1;
-        q2 = quotient.q2;
-        q3 = quotient.q3;
+        *this = (*this) * other.cong();
     }
 };
