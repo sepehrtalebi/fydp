@@ -44,4 +44,4 @@ add_executable(FYDP tests.cpp
         test/TestDifferentiation.cpp
         test/TestPrimes.cpp
         test/TestFourier.cpp
-        )
+        src/PID.cpp)
