@@ -10,6 +10,7 @@ include_directories(./include/kalman_filter)
 include_directories(./include/utils)
 
 add_executable(FYDP tests.cpp
+        src/utils/math_utils.cpp
         src/kalman_filter/SensorFilter.cpp
         src/kalman_filter/BasicSensorFilter.cpp
         src/kalman_filter/KF.cpp
