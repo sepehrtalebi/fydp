@@ -48,7 +48,7 @@ struct Wrench {
         return index < 3 ? force[index] : torque[index - 3];
     }
 
-    T operator[](const size_t& index) const {
+    const T &operator[](const size_t& index) const {
         return index < 3 ? force[index] : torque[index - 3];
     }
 };

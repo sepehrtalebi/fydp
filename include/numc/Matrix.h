@@ -167,7 +167,7 @@ public:
         return this->data[index];
     }
 
-    Vector<T, m> operator[](const size_t &index) const {
+    const Vector<T, m> &operator[](const size_t &index) const {
         return this->data[index];
     }
 };

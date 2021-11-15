@@ -47,7 +47,7 @@ struct Accel {
         return index < 3 ? linear[index] : angular[index - 3];
     }
 
-    T operator[](const size_t& index) const {
+    const T &operator[](const size_t& index) const {
         return index < 3 ? linear[index] : angular[index - 3];
     }
 };

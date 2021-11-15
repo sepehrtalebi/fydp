@@ -153,7 +153,7 @@ public:
         return this->data[index];
     }
 
-    T operator[](const size_t &index) const {
+    const T &operator[](const size_t &index) const {
         return this->data[index];
     }
 
