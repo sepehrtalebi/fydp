@@ -2,7 +2,9 @@
 
 #include "KF.h"
 #include "Expression.h"
+#include "Matrix.h"
 #include "Matrix3D.h"
+#include <utility>
 
 class EKF : public KF {
 public:
@@ -11,8 +13,7 @@ public:
 
 private:
     static const Matrix3D<ExprPtr, 4, 4, 3> QUAT_TO_QUAT_JAC_EXPR;
+    static const Matrix<double, 6, 6> WRENCH_TO_ACCEL_JAC;
 
-    [[nodiscard]] Matrix<double, n, n> fJacobian(const Vector<double, n> &x, const double &dt) const;
-
-    [[nodiscard]] Matrix<double, p, n> hJacobian(const Vector<double, n> &x, const double &dt) const;
+    static std::pair<Matrix<double, n, n>, Matrix<double, n, 6>> fJacobian(const Vector<double, n> &x, const double &dt);
 };

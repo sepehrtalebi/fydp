@@ -8,11 +8,12 @@ KF::KF() {
     P[px][px] = P[py][py] = 0;
 }
 
-void KF::update(const SensorMeasurements &sensorMeasurements, const ControlInputs &control_inputs, double dt) {
+void KF::update(const SensorMeasurements &sensorMeasurements, const ControlInputs &control_inputs, const double &dt) {
     applied_loads.update(control_inputs);
 
     // calculate current loads once and store in an instance variable so that it can be used throughout
     current_loads = applied_loads.getAppliedLoads(x);
+    current_accel = toAccel(current_loads);
 
     // delegate to subclasses
     updateKF(sensorMeasurements, dt);
@@ -23,8 +24,8 @@ AircraftState KF::getOutput() const {
                          Quaternion<double>{x[q0], x[q1], x[q2], x[q3]},
                          Vector3<double>{x[vx], x[vy], x[vz]},
                          Vector3<double>{x[wx], x[wy], x[wz]},
-                         INERTIA_TENSOR_INV * current_loads.torque,
-                         current_loads.force / MASS};
+                         current_accel.angular,
+                         current_accel.linear};
 }
 
 Vector<double, n> KF::f(const Vector<double, n> &state, const double &dt) const {
@@ -41,8 +42,6 @@ Vector<double, n> KF::f(const Vector<double, n> &state, const double &dt) const 
     Quaternion<double> quat_new = quat + quat.E().transpose() * w_abs * (dt / 2);
     quat_new.normalize();
 
-    Vector3<double> ang_a_new = INERTIA_TENSOR_INV * current_loads.torque;
-
     Vector3<double> mag{state[magx], state[magy], state[magz]};
     Vector3<double> mag_b{state[mag_bx], state[mag_by], state[mag_bz]};
     Vector3<double> mag_new = quat_new.rotate(quat.unrotate(mag - mag_b)) + mag_b;
@@ -50,8 +49,8 @@ Vector<double, n> KF::f(const Vector<double, n> &state, const double &dt) const 
     for (size_t i = 0; i < 3; i++) {
         state_new[px + i] += v_abs[i] * dt;
         state_new[q0 + i] = quat_new[i];
-        state_new[vx + i] += current_loads.force[i] / MASS * dt;
-        state_new[wx + i] += ang_a_new[i] * dt;
+        state_new[vx + i] += current_accel.linear[i] * dt;
+        state_new[wx + i] += current_accel.angular[i] * dt;
         state_new[magx + i] = mag_new[i];
     }
     state_new[q3] = quat_new.q3; // not included in for loop
@@ -60,5 +59,5 @@ Vector<double, n> KF::f(const Vector<double, n> &state, const double &dt) const 
 }
 
 Vector<double, p> KF::h(const Vector<double, n> &state, const double & /** dt **/) {
-    return getSensorMeasurements(state).getZ();
+    return getSensorMeasurements(state, current_accel).getZ();
 }

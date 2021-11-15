@@ -21,25 +21,44 @@ static Matrix3D<ExprPtr, 4, 4, 3> getQuatToQuatJacExpr() {
     return expr;
 }
 
+static Matrix<double, 6, 6> getWrenchToAccelJac() {
+    Matrix<double, 6, 6> mat = Matrix<double, 6, 6>::zeros();
+    for (size_t i = 0; i < 3; i++) {
+        mat[i][i] = 1 / MASS;
+        for (size_t j = 0; j < 3; j++) mat[i][j] = INERTIA_TENSOR_INV[i][j];
+    }
+
+    return mat;
+}
+
 const Matrix3D<ExprPtr, 4, 4, 3> EKF::QUAT_TO_QUAT_JAC_EXPR = getQuatToQuatJacExpr(); // NOLINT(cert-err58-cpp)
+const Matrix<double, 6, 6> EKF::WRENCH_TO_ACCEL_JAC = getWrenchToAccelJac(); // NOLINT(cert-err58-cpp)
 
 void EKF::updateKF(const SensorMeasurements &sensorMeasurements, const double &dt) {
+    // Jacobian naming convention:
+    // a_to_b_jac represents the derivative of b with respect to a, and is a matrix of size (b, a)
+    // The ith row and jth column of a_to_b_jac represents the derivative of the ith element of b with respect to the jth element of a
+    // In other words, how does a impact b
+    // For simplicity, x_to_a_jac is simply written as a_jac when x represents the state
+    // By the chain rule, b_to_c_jac * a_to_b_jac = a_to_c_jac
+    Matrix<double, 6, n> wrench_jac = applied_loads.getAppliedLoadsJacobian(x); // derivative of wrench with respect to state
+    Matrix<double, 6, n> accel_jac = WRENCH_TO_ACCEL_JAC * wrench_jac;
+
     // prediction step
-    Matrix<double, n, n> f_jac = fJacobian(x, dt);
+    auto [f_jac, accel_to_f_jac] = fJacobian(x, dt);
+    f_jac += accel_to_f_jac * accel_jac;
 
-    Vector<double, n> new_x = f(x, dt);
-    for (size_t i = 0; i < n; i++) x[i] = new_x[i];
-
-    Matrix<double, n, n> new_P = f_jac * P * f_jac.transpose() + Q;
-    for (size_t i = 0; i < n; i++) for (size_t j = 0; j < n; j++) P[i][j] = new_P[i][j];
+    x = f(x, dt);
+    P = f_jac * P * f_jac.transpose() + Q;
 
     // update step
     Vector<double, p> z = sensorMeasurements.getZ();
-    Vector<double, p> h_mat = h(x, dt);
-    Matrix<double, p, n> h_jac = hJacobian(x, dt);
+    Vector<double, p> h_vec = h(x, dt);
+    auto [h_jac, accel_to_h_jac] = getSensorMeasurementsJacobian(x, current_accel);
+    h_jac += accel_to_h_jac * accel_jac;
     Matrix<double, n, p> h_jac_transpose = h_jac.transpose();
 
-    Vector<double, p> y = z - h_mat;
+    Vector<double, p> y = z - h_vec;
     // multiplication order doesn't matter, both require n*p*(n+p) multiplications regardless of order
     Matrix<double, p, p> S = h_jac * P * h_jac_transpose + R;
     Matrix<double, n, p> K = P * h_jac_transpose * S.inv();
@@ -48,13 +67,9 @@ void EKF::updateKF(const SensorMeasurements &sensorMeasurements, const double &d
     P -= K * h_jac * P;
 }
 
-Matrix<double, n, n> EKF::fJacobian(const Vector<double, n> &x, const double &dt) const {
-    Matrix<double, 6, n> applied_loads_jac = applied_loads.getAppliedLoadsJacobian(x); // derivative of wrench with respect to state
-    Matrix<double, n, 6> wrench_jac = Matrix<double, n, 6>::zeros(); // derivative of state with respect to wrench
-
-    // the ith row and jth column represents the derivative of
-    // the ith output state with respect to the jth input state
+std::pair<Matrix<double, n, n>, Matrix<double, n, 6>> EKF::fJacobian(const Vector<double, n> &x, const double &dt) {
     Matrix<double, n, n> f_jac = Matrix<double, n, n>::zeros(); // derivative of state with respect to state
+    Matrix<double, n, 6> accel_jac = Matrix<double, n, 6>::zeros(); // derivative of state with respect to accel
 
     // setup some basic variables for use later
     Quaternion<double> quat{x[q0], x[q1], x[q2], x[q3]};
@@ -69,7 +84,7 @@ Matrix<double, n, n> EKF::fJacobian(const Vector<double, n> &x, const double &dt
     Matrix3D<double, 4, 4, 3> mat = QUAT_TO_QUAT_JAC_EXPR.applyFunc<double>([&subs] (const ExprPtr &expr) { return expr->evaluate(subs); });
     Matrix<double, 4, 4> quat_to_quat_jac = mat * Vector3<double>{x[wx], x[wy], x[wz]} * (dt / 2);
 
-    Matrix<double, 4, 3> quat_to_w_jac = quat.E().transpose() * DCM_inv * dt / 2;
+    Matrix<double, 4, 3> w_to_quat_jac = quat.E().transpose() * DCM_inv * dt / 2;
 
     // TODO: magnetic field derivatives with respect to quaternion and angular velocity
     /**
@@ -89,19 +104,14 @@ Matrix<double, n, n> EKF::fJacobian(const Vector<double, n> &x, const double &dt
             f_jac[px + i][vx + j] = DCM_inv[i][j] * dt; // derivative of position with respect to velocity
             f_jac[magx + i][magx + j] = mag_to_mag_jac[i][j]; // derivative of magnetic field with respect to itself
             f_jac[magx + i][mag_bx + j] = -mag_to_mag_jac[i][j]; // derivative of magnetic field with respect to magnetic field bias
-            wrench_jac[wx + i][3 + j] = INERTIA_TENSOR_INV[i][j] * dt; // derivative of angular velocity with respect to torques
+            accel_jac[wx + i][3 + j] = dt; // derivative of angular velocity with respect to angular accelerations
         }
-        wrench_jac[vx + i][i] = dt / MASS; // derivative of velocity with respect to forces
+        accel_jac[vx + i][i] = dt; // derivative of velocity with respect to accelerations
     }
     for (size_t i = 0; i < 4; i++) {
         for(size_t j = 0; j < 4; j++) f_jac[q0 + i][q0 + j] = quat_to_quat_jac[i][j]; // derivative of quaternion with respect to itself
-        for (size_t j = 0; j < 3; j++) f_jac[q0 + i][wx + j] = quat_to_w_jac[i][j]; // derivative of quaternion with respect to angular velocity
+        for (size_t j = 0; j < 3; j++) f_jac[q0 + i][wx + j] = w_to_quat_jac[i][j]; // derivative of quaternion with respect to angular velocity
     }
 
-    // second term is from the chain rule
-    return f_jac + wrench_jac * applied_loads_jac;
-}
-
-Matrix<double, p, n> EKF::hJacobian(const Vector<double, n> &x, const double & /** dt **/) const {
-    return getSensorMeasurementsJacobian(x, current_loads);
+    return {f_jac, accel_jac};
 }
