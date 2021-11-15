@@ -8,7 +8,7 @@ void SensorFilter::updateWrapper(const double *doubleSensorMeasurements, const u
     Vector<1, uint8_t> uint8Z{uint8SensorMeasurements};
     Vector<1, bool> boolZ{(bool) boolSensorMeasurements[0]};
     Vector<4> control_inputsVec{control_inputs};
-    SensorMeasurements sensorMeasurements = SensorMeasurements::parseZ(doubleZ, uint8Z, boolZ);
+    SensorMeasurements sensorMeasurements = SensorMeasurements<>::parseZ(doubleZ, uint8Z, boolZ);
     update(sensorMeasurements, ControlInputs::parseU(control_inputsVec), dt);
 }
 

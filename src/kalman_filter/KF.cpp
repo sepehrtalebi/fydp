@@ -8,7 +8,7 @@ KF::KF() {
     P[px][px] = P[py][py] = 0;
 }
 
-void KF::update(const SensorMeasurements &sensorMeasurements, const ControlInputs &control_inputs, const double &dt) {
+void KF::update(const SensorMeasurements<> &sensorMeasurements, const ControlInputs &control_inputs, const double &dt) {
     applied_loads.update(control_inputs);
 
     // calculate current loads once and store in an instance variable so that it can be used throughout

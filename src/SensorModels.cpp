@@ -16,7 +16,7 @@ static auto random_engine = std::default_random_engine(seed); // NOLINT(cert-err
 static std::normal_distribution<> optical_flow_noise(0, 1); // NOLINT(cert-err58-cpp)
 #endif
 
-static void railDetection(const Quaternion<> &quat, const double &altitude, SensorMeasurements &sensor_measurements) {
+static void railDetection(const Quaternion<> &quat, const double &altitude, SensorMeasurements<> &sensor_measurements) {
     if (altitude < 0) {
         // cannot see rail if we are underground
         // leave found_rail as false and leave rail_pixel_x, rail_pixel_y, rail_pixel_width, and rail_angle as 0
@@ -50,7 +50,7 @@ static void railDetection(const Quaternion<> &quat, const double &altitude, Sens
     sensor_measurements.rail_angle = std::atan2(rail_direction_pixels.y, rail_direction_pixels.x);
 }
 
-static void opticalFlow(const Vector3<> &velocity, const double &altitude, SensorMeasurements &sensor_measurements) {
+static void opticalFlow(const Vector3<> &velocity, const double &altitude, SensorMeasurements<> &sensor_measurements) {
     Vector3<> pixel_velocity = velocity * OPTICAL_FLOW_VELOCITY_GAIN / altitude;
     sensor_measurements.pixel_velocity[0] = pixel_velocity.x;
     sensor_measurements.pixel_velocity[1] = pixel_velocity.y;
@@ -60,7 +60,7 @@ static void opticalFlow(const Vector3<> &velocity, const double &altitude, Senso
 #endif
 }
 
-static void altitudeSensor(const double &altitude, SensorMeasurements &sensor_measurements) {
+static void altitudeSensor(const double &altitude, SensorMeasurements<> &sensor_measurements) {
     // temperature is a function of height and also location and also time of year so this might change
     double temperature = 288.15; // K
     sensor_measurements.pressure = ATMOSPHERIC_PRESSURE *
@@ -73,7 +73,7 @@ static void imu(const Quaternion<> &quat,
                 const Vector3<> &body_ang_velocity,
                 const Vector3<> &accelerometer_bias,
                 const Vector3<> &gyroscope_bias,
-                SensorMeasurements &sensor_measurements) {
+                SensorMeasurements<> &sensor_measurements) {
     Vector3<> body_gravity = quat.rotate(EARTH_GRAVITY);
     Vector3<> measured_acceleration = body_acceleration +
                                             body_ang_velocity.cross(body_ang_velocity.cross(IMU_OFFSET)) +
@@ -85,7 +85,7 @@ static void imu(const Quaternion<> &quat,
     sensor_measurements.imu_angular_velocity = body_ang_velocity + gyroscope_bias;
 }
 
-static void gps(const Vector3<> &position, SensorMeasurements &sensor_measurements) {
+static void gps(const Vector3<> &position, SensorMeasurements<> &sensor_measurements) {
     // Based on: https://www.movable-type.co.uk/scripts/latlong.html
     double rect_dist = sqrt(position.x * position.x + position.y * position.y);
     sensor_measurements.latitude = asin(sin(STARTING_COORDINATES[0]) * cos(rect_dist / EARTH_RADIUS) +
@@ -97,7 +97,7 @@ static void gps(const Vector3<> &position, SensorMeasurements &sensor_measuremen
                                             sin(STARTING_COORDINATES[0]) * sin(sensor_measurements.latitude));
 }
 
-SensorMeasurements getSensorMeasurements(const Vector<n> &state, const Accel<> &accel) {
+SensorMeasurements<> getSensorMeasurements(const Vector<n> &state, const Accel<> &accel) {
     Quaternion<> quat{state[KF::q0], state[KF::q1], state[KF::q2], state[KF::q3]};
     Vector3<> position{state[KF::px], state[KF::py], state[KF::pz]};
     Vector3<> velocity{state[KF::vx], state[KF::vy], state[KF::vz]};
@@ -137,13 +137,13 @@ std::pair<Matrix<p, n>, Matrix<p, 6>> getSensorMeasurementsJacobian(const Vector
     Matrix<p, 6> accel_to_h_jac = Matrix<p, 6>::zeros();
 
     // TODO
-    h_jac[SensorMeasurements::PRESSURE][KF::px] = AIR_DENSITY * GRAVITATIONAL_ACCELERATION;
+    h_jac[SensorMeasurements<>::PRESSURE][KF::px] = AIR_DENSITY * GRAVITATIONAL_ACCELERATION;
 
-    h_jac[SensorMeasurements::IMU_wx][KF::wx] = 1;
-    h_jac[SensorMeasurements::IMU_wy][KF::wy] = 1;
-    h_jac[SensorMeasurements::IMU_wz][KF::wz] = 1;
+    h_jac[SensorMeasurements<>::IMU_wx][KF::wx] = 1;
+    h_jac[SensorMeasurements<>::IMU_wy][KF::wy] = 1;
+    h_jac[SensorMeasurements<>::IMU_wz][KF::wz] = 1;
 
-    h_jac[SensorMeasurements::ALT][KF::pz] = -1;
+    h_jac[SensorMeasurements<>::ALT][KF::pz] = -1;
 
     return {h_jac, accel_to_h_jac};
 }

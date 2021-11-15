@@ -15,7 +15,7 @@ private:
     Vector<2 * n + 1> state_weights;
     Vector<2 * n + 1> covariance_weights;
 
-    void updateKF(const SensorMeasurements &sensorMeasurements,
+    void updateKF(const SensorMeasurements<> &sensorMeasurements,
                   const double &dt) override;
 
 public:

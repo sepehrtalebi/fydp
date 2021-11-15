@@ -4,7 +4,7 @@ BasicSensorFilter::BasicSensorFilter() {
     state.orientation = Quaternion<>::identity();
 }
 
-void BasicSensorFilter::update(const SensorMeasurements &sensorMeasurements,
+void BasicSensorFilter::update(const SensorMeasurements<> &sensorMeasurements,
                                const ControlInputs &control_inputs, const double &dt) {
     AircraftState last_state = state;
     Vector3<> w_abs = state.orientation.unrotate(state.body_angular_velocity);

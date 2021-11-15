@@ -34,7 +34,7 @@ static Matrix<6, 6> getWrenchToAccelJac() {
 const Matrix3D<4, 4, 3, ExprPtr> EKF::QUAT_TO_QUAT_JAC_EXPR = getQuatToQuatJacExpr(); // NOLINT(cert-err58-cpp)
 const Matrix<6, 6> EKF::WRENCH_TO_ACCEL_JAC = getWrenchToAccelJac(); // NOLINT(cert-err58-cpp)
 
-void EKF::updateKF(const SensorMeasurements &sensorMeasurements, const double &dt) {
+void EKF::updateKF(const SensorMeasurements<> &sensorMeasurements, const double &dt) {
     // Jacobian naming convention:
     // a_to_b_jac represents the derivative of b with respect to a, and is a matrix of size (b, a)
     // The ith row and jth column of a_to_b_jac represents the derivative of the ith element of b with respect to the jth element of a

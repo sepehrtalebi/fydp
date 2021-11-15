@@ -8,7 +8,7 @@
 
 class EKF : public KF {
 public:
-    void updateKF(const SensorMeasurements &sensorMeasurements,
+    void updateKF(const SensorMeasurements<> &sensorMeasurements,
                   const double &dt) override;
 
 private:

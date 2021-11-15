@@ -15,7 +15,6 @@ add_executable(FYDP tests.cpp
         src/kalman_filter/KF.cpp
         src/kalman_filter/UKF.cpp
         src/kalman_filter/EKF.cpp
-        src/SensorMeasurements.cpp
         src/AircraftState.cpp
         src/ControlInputs.cpp
         src/AppliedLoads.cpp

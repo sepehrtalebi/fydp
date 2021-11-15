@@ -14,7 +14,7 @@ UKF::UKF() {
     for (size_t i = 1; i < 2 * n + 1; i++) covariance_weights[i] = 1 / (2 * (n + lambda));
 }
 
-void UKF::updateKF(const SensorMeasurements &sensorMeasurements,
+void UKF::updateKF(const SensorMeasurements<> &sensorMeasurements,
                   const double &dt) {
     Vector<n> x_new = f(x, dt);
     auto new_sigma = sigma;
