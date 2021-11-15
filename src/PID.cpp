@@ -3,6 +3,7 @@
 #include "Vector3.h"
 #include <cmath>
 #include "AppliedLoads.h"
+#include "math_utils.h"
 
 double PID::output_signal(double error, double dt) {
     double output_signal = 0;
@@ -45,7 +46,7 @@ static Vector3<> const roll_controller(Vector3<> const *heading_command, Vector3
     PID pid = PID(K_p, K_i, K_d);
     Vector3<> u;
     for (int i = 0; i < 3; i++) {
-        u[i] = AppliedLoads::saturation(pid.output_signal(error[i], dt), 5);
+        u[i] = utils::saturation<double>(pid.output_signal(error[i], dt), 5);
     }
     return u;
 }
