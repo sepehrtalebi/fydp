@@ -1,9 +1,9 @@
 #pragma once
 
-#include <array>
-#include<stdexcept>
-#include <iostream>
 #include "Vector.h"
+#include <array>
+#include <cmath>
+#include <stdexcept>
 
 template<typename T, size_t n, size_t m>
 class Matrix {
@@ -68,15 +68,15 @@ public:
 
     Matrix<T, m, n> cholesky() const {
         if (m != n) throw std::invalid_argument("Cannot find the Cholesky Decomposition of a non-square matrix");
-        Matrix<T, m, n> L; //Lower-triangular matrix defined by A=LL'
+        Matrix<T, m, n> L; // Lower-triangular matrix defined by A=LL'
         for (size_t i = 0; i < m; i++) {
             for (size_t j = 0; j <= i; j++) {
-                float sum = 0;
+                T sum{};
                 for (size_t k = 0; k < j; k++)
                     sum += L[i][k] * L[j][k];
 
                 if (i == j)
-                    L[i][j] = std::sqrt(this->data[i][i] - sum);
+                    L[i][j] = sqrt(this->data[i][i] - sum);
                 else
                     L[i][j] = (1.0 / L[j][j] * (this->data[i][j] - sum));
             }
@@ -84,15 +84,13 @@ public:
         return L;
     }
 
-
     Matrix<T, m, n> inv() const {
         if (m != n) throw std::invalid_argument("Cannot find the inverse of a non-square matrix");
-//        std::cout << "Are you sure you want to use the inverse? This is very inefficient." << std::endl;
         Matrix<T, m, n> L = cholesky();
         Matrix<T, m, n> u;
         Matrix<T, m, n> I = Matrix<T, m, n>::identity();
 
-        //forward substitution
+        // forward substitution
         for (size_t k = 0; k < n; k++) {
             for (size_t i = 0; i < m; i++) {
                 T alpha = I[i][k];
@@ -105,8 +103,6 @@ public:
 
         return u.transpose() * u;
     }
-
-
 
     Matrix<T, n, m> operator+(const Matrix<T, n, m> &other) const {
         Matrix<T, n, m> sum;
