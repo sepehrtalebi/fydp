@@ -45,4 +45,4 @@ add_executable(FYDP tests.cpp
         test/TestDifferentiation.cpp
         test/TestPrimes.cpp
         test/TestFourier.cpp
-        src/PID.cpp)
+        include/controller/Controller.h src/controller/Controller.cpp include/controller/PIDGains.h)
