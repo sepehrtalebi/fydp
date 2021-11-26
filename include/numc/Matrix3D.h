@@ -89,7 +89,7 @@ public:
         return this->data[index];
     }
 
-    Matrix<T, m, p> operator[](const size_t &index) const {
+    const Matrix<T, m, p> &operator[](const size_t &index) const {
         return this->data[index];
     }
 };

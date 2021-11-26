@@ -47,7 +47,31 @@ struct Accel {
         return index < 3 ? linear[index] : angular[index - 3];
     }
 
-    T operator[](const size_t& index) const {
+    const T &operator[](const size_t& index) const {
         return index < 3 ? linear[index] : angular[index - 3];
     }
 };
+
+template<typename T>
+Accel<T> operator+(const T &scalar, const Accel<T> &accel) {
+    // respect operator order in case underlying type is non-commutative
+    return {scalar + accel.linear, scalar + accel.angular};
+}
+
+template<typename T>
+Accel<T> operator-(const T &scalar, const Accel<T> &accel) {
+    // respect operator order in case underlying type is non-commutative
+    return {scalar - accel.linear, scalar - accel.angular};
+}
+
+template<typename T>
+Accel<T> operator*(const T &scalar, const Accel<T> &accel) {
+    // respect operator order in case underlying type is non-commutative
+    return {scalar * accel.linear, scalar * accel.angular};
+}
+
+template<typename T>
+Accel<T> operator/(const T &scalar, const Accel<T> &accel) {
+    // respect operator order in case underlying type is non-commutative
+    return {scalar / accel.linear, scalar / accel.angular};
+}

@@ -13,17 +13,17 @@ public:
 
     explicit UnaryOperator(ExprPtr operand) : operand(std::move(operand)) {}
 
-    [[nodiscard]] double evaluate(const std::map<std::string, double> &variables) const override;
+    [[nodiscard]] double evaluate(const std::map<std::string, double> &variables) const final;
 
-    [[nodiscard]] ExprPtr diff(const std::string &id) const override;
+    [[nodiscard]] ExprPtr diff(const std::string &id) const final;
 
-    [[nodiscard]] ExprPtr subs(const std::map<std::string, ExprPtr> &subs) const override;
+    [[nodiscard]] ExprPtr subs(const std::map<std::string, ExprPtr> &subs) const final;
 
     [[nodiscard]] ExprPtr simplify() const override;
 
-    [[nodiscard]] std::string toStr() const override;
+    [[nodiscard]] std::string toStr() const final;
 
-    [[nodiscard]] unsigned int nodeCount() const override;
+    [[nodiscard]] unsigned int nodeCount() const final;
 
 protected:
     [[nodiscard]] virtual double call(const double &operand) const = 0;

@@ -13,13 +13,13 @@ public:
 
     explicit BinaryOperator(ExprPtr first, ExprPtr second) : first(std::move(first)), second(std::move(second)) {}
 
-    [[nodiscard]] double evaluate(const std::map<std::string, double> &variables) const override;
+    [[nodiscard]] double evaluate(const std::map<std::string, double> &variables) const final;
 
-    [[nodiscard]] ExprPtr subs(const std::map<std::string, ExprPtr> &subs) const override;
+    [[nodiscard]] ExprPtr subs(const std::map<std::string, ExprPtr> &subs) const final;
 
     [[nodiscard]] ExprPtr simplify() const override;
 
-    [[nodiscard]] unsigned int nodeCount() const override;
+    [[nodiscard]] unsigned int nodeCount() const final;
 
 protected:
     ExprPtr first;

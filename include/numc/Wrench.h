@@ -48,9 +48,33 @@ struct Wrench {
         return index < 3 ? force[index] : torque[index - 3];
     }
 
-    T operator[](const size_t& index) const {
+    const T &operator[](const size_t& index) const {
         return index < 3 ? force[index] : torque[index - 3];
     }
 };
 
 Accel<double> toAccel(const Wrench<double> &wrench);
+
+template<typename T>
+Wrench<T> operator+(const T &scalar, const Wrench<T> &wrench) {
+    // respect operator order in case underlying type is non-commutative
+    return {scalar + wrench.force, scalar + wrench.torque};
+}
+
+template<typename T>
+Wrench<T> operator-(const T &scalar, const Wrench<T> &wrench) {
+    // respect operator order in case underlying type is non-commutative
+    return {scalar - wrench.force, scalar - wrench.torque};
+}
+
+template<typename T>
+Wrench<T> operator*(const T &scalar, const Wrench<T> &wrench) {
+    // respect operator order in case underlying type is non-commutative
+    return {scalar * wrench.force, scalar * wrench.torque};
+}
+
+template<typename T>
+Wrench<T> operator/(const T &scalar, const Wrench<T> &wrench) {
+    // respect operator order in case underlying type is non-commutative
+    return {scalar / wrench.force, scalar / wrench.torque};
+}
