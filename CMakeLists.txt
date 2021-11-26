@@ -33,9 +33,10 @@ add_executable(FYDP tests.cpp
         src/differentiation/Product.cpp
         src/differentiation/Quotient.cpp
         src/differentiation/Power.cpp
+        src/differentiation/Exp.cpp
+        src/differentiation/Log.cpp
         src/differentiation/Sin.cpp
         src/differentiation/Cos.cpp
-        src/differentiation/Log.cpp
         src/numc/Wrench.cpp
         src/numc/Primes.cpp
         test/TestVector.cpp

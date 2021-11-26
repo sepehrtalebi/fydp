@@ -4,9 +4,9 @@
 
 #include <string>
 
-class Sin : public UnaryOperator {
+class Exp : public UnaryOperator {
 public:
-    explicit Sin(const ExprPtr &operand) : UnaryOperator(operand) {}
+    explicit Exp(const ExprPtr &operand) : UnaryOperator(operand) {}
 
 protected:
     [[nodiscard]] double call(const double &operand) const override;

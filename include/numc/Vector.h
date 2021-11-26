@@ -158,7 +158,7 @@ public:
         return this->data[index];
     }
 
-    T operator[](const size_t &index) const {
+    const T &operator[](const size_t &index) const {
         return this->data[index];
     }
 
@@ -180,7 +180,7 @@ public:
 };
 
 template<typename T, size_t n>
-Vector<T, n> operator+(const double &scalar, const Vector<T, n> vec) {
+Vector<T, n> operator+(const T &scalar, const Vector<T, n> &vec) {
     Vector<T, n> sum;
     for (size_t i = 0; i < n; i++)
         sum[i] = scalar + vec[i]; // respect operator order in case underlying type is non-commutative
@@ -188,7 +188,7 @@ Vector<T, n> operator+(const double &scalar, const Vector<T, n> vec) {
 }
 
 template<typename T, size_t n>
-Vector<T, n> operator-(const double &scalar, const Vector<T, n> vec) {
+Vector<T, n> operator-(const T &scalar, const Vector<T, n> &vec) {
     Vector<T, n> sum;
     for (size_t i = 0; i < n; i++)
         sum[i] = scalar - vec[i]; // respect operator order in case underlying type is non-commutative
@@ -196,7 +196,7 @@ Vector<T, n> operator-(const double &scalar, const Vector<T, n> vec) {
 }
 
 template<typename T, size_t n>
-Vector<T, n> operator*(const double &scalar, const Vector<T, n> vec) {
+Vector<T, n> operator*(const T &scalar, const Vector<T, n> &vec) {
     Vector<T, n> sum;
     for (size_t i = 0; i < n; i++)
         sum[i] = scalar * vec[i]; // respect operator order in case underlying type is non-commutative
@@ -204,7 +204,7 @@ Vector<T, n> operator*(const double &scalar, const Vector<T, n> vec) {
 }
 
 template<typename T, size_t n>
-Vector<T, n> operator/(const double &scalar, const Vector<T, n> vec) {
+Vector<T, n> operator/(const T &scalar, const Vector<T, n> &vec) {
     Vector<T, n> sum;
     for (size_t i = 0; i < n; i++)
         sum[i] = scalar / vec[i]; // respect operator order in case underlying type is non-commutative

@@ -2,10 +2,7 @@
 
 #include "UnaryOperator.h"
 
-#include <map>
-#include <memory>
 #include <string>
-#include <utility>
 
 class Cos : public UnaryOperator {
 public:

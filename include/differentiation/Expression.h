@@ -97,6 +97,10 @@ ExprPtr pow(const double &num, const ExprPtr &expr);
 
 ExprPtr sqrt(const ExprPtr &expr);
 
+// Exp.cpp
+
+ExprPtr exp(const ExprPtr &expr);
+
 // Log.cpp
 
 ExprPtr log(const ExprPtr &expr);
