@@ -46,4 +46,4 @@ add_executable(FYDP tests.cpp
         test/TestDifferentiation.cpp
         test/TestPrimes.cpp
         test/TestFourier.cpp
-        include/controller/Controller.h src/controller/Controller.cpp include/controller/PIDGains.h)
+        include/controller/Controller.h src/controller/Controller.cpp include/controller/PIDGains.h include/controller/TransferFunction.h include/controller/Polynomial.h include/controller/RationalFunction.h include/controller/TestPolynomial.h)
