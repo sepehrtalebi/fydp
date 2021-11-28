@@ -7,11 +7,12 @@
 
 template<typename T, size_t n>
 class Vector {
-public:
+protected:
     std::array<T, n> data{};
+public:
     using iterator = typename std::array<T, n>::iterator;
     using const_iterator = typename std::array<T, n>::const_iterator;
-public:
+
     Vector() = default;
 
     Vector(std::initializer_list<T> elements) {
