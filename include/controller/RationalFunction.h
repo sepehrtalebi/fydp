@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 #include "Polynomial.h"
+#include <algorithm>
 
 template <typename T, size_t n, size_t m>
 class RationalFunction {
@@ -36,10 +37,10 @@ public:
     }
 
     template<size_t p, size_t q>
-    RationalFunction<T, n * p, m * p> _of_(const RationalFunction<T, p, q> &x) {
-        RationalFunction<T, n * p, n * q> num;
-        RationalFunction<T, n, m> den;
-        return;
+    auto _of_(const RationalFunction<T, p, q> &x) {
+        Polynomial<T, n * std::max(p, q) + std::max<size_t>(q * (m - n), 0)> num;
+        Polynomial<T, m * std::max(p, q) + std::max<size_t>(q * (n - m), 0)> den;
+        return RationalFunction{num, den};
     }
 
     template<size_t p, size_t q>
