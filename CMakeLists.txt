@@ -8,6 +8,7 @@ include_directories(./include/differentiation)
 include_directories(./include/numc)
 include_directories(./include/kalman_filter)
 include_directories(./include/utils)
+include_directories(./include/controller)
 
 add_executable(FYDP tests.cpp
         src/kalman_filter/SensorFilter.cpp
@@ -46,4 +47,6 @@ add_executable(FYDP tests.cpp
         test/TestDifferentiation.cpp
         test/TestPrimes.cpp
         test/TestFourier.cpp
-        include/controller/Controller.h src/controller/Controller.cpp include/controller/PIDGains.h include/controller/TransferFunction.h include/controller/Polynomial.h include/controller/RationalFunction.h include/controller/TestPolynomial.h)
+        test/TestPolynomial.cpp
+        test/TestRationalFunction.cpp
+        src/controller/Controller.cpp)

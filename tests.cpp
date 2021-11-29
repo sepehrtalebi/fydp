@@ -5,7 +5,8 @@
 #include "test/TestDifferentiation.h"
 #include "test/TestPrimes.h"
 #include "test/TestFourier.h"
-#include "controller/TestPolynomial.h"
+#include "test/TestPolynomial.h"
+#include "test/TestRationalFunction.h"
 #include <iostream>
 
 int main() {
@@ -18,5 +19,6 @@ int main() {
 //    testFourier();
 //    std::cout << "Passed All Tests!" << std::endl;
     testPolynomial();
+    testRationalFunction();
     return 0;
 }
