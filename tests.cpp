@@ -5,6 +5,7 @@
 #include "test/TestDifferentiation.h"
 #include "test/TestPrimes.h"
 #include "test/TestFourier.h"
+#include "test/TestDubinsPath.h"
 #include <iostream>
 
 int main() {
@@ -15,6 +16,7 @@ int main() {
     testDifferentiation();
     testPrimes();
     testFourier();
+    testDubinsPath();
     std::cout << "Passed All Tests!" << std::endl;
     return 0;
 }

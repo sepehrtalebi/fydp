@@ -8,6 +8,7 @@ include_directories(./include/differentiation)
 include_directories(./include/numc)
 include_directories(./include/kalman_filter)
 include_directories(./include/utils)
+include_directories(./include/controller)
 
 add_executable(FYDP tests.cpp
         src/kalman_filter/SensorFilter.cpp
@@ -46,4 +47,5 @@ add_executable(FYDP tests.cpp
         test/TestDifferentiation.cpp
         test/TestPrimes.cpp
         test/TestFourier.cpp
+        test/TestDubinsPath.cpp
         src/PID.cpp)
