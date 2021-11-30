@@ -205,6 +205,3 @@ const Matrix<T, 2, 2> DubinsPath<T>::ROT_90_CW{0, 1,
 template<typename T>
 const Matrix<T, 2, 2> DubinsPath<T>::ROT_90_CCW{0, -1,
                                                 1, 0};
-template<typename T>
-const Matrix<T, 2, 2> DubinsPath<T>::ROT_180{-1, 0,
-                                             0, -1};
