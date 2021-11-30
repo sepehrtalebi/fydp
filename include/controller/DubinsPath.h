@@ -35,6 +35,8 @@ template<typename T>
 class DubinsPath {
 public:
     static DubinsPath create(const State<T> &start, const State<T> &goal, const T &radius) {
+        // Based on: https://gieseanw.wordpress.com/2012/10/21/a-comprehensive-step-by-step-tutorial-to-computing-dubins-paths/
+
         // start with the shorter between the RSR and LSL path, since they are always possible
         DubinsPath best_path = std::min(getCSCOuterTangent(start, goal, radius, true), // RSR
                                         getCSCOuterTangent(start, goal, radius, false)); // LSL
