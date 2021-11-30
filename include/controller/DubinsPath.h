@@ -7,6 +7,8 @@
 #include <algorithm>
 #include <string>
 #include <sstream>
+#include <utility>
+#include <tuple>
 
 template<typename T>
 struct Curve {
@@ -38,20 +40,20 @@ public:
                                         getCSCOuterTangent(start, goal, radius, false)); // LSL
 
         // try RSL path
-        DubinsPath path = getCSCInnerTangent(start, goal, radius, true);
-        if (path) best_path = std::min(best_path, path);
+        auto [is_valid, path] = getCSCInnerTangent(start, goal, radius, true);
+        if (is_valid) best_path = std::min(best_path, path);
 
         // try LSR path
-        path = getCSCInnerTangent(start, goal, radius, false);
-        if (path) best_path = std::min(best_path, path);
+        std::tie(is_valid, path) = getCSCInnerTangent(start, goal, radius, false);
+        if (is_valid) best_path = std::min(best_path, path);
 
         // try RLR path
-        path = getCCC(start, goal, radius, true);
-        if (path) best_path = std::min(best_path, path);
+        std::tie(is_valid, path) = getCCC(start, goal, radius, true);
+        if (is_valid) best_path = std::min(best_path, path);
 
         // try LRL path
-        path = getCCC(start, goal, radius, false);
-        if (path) best_path = std::min(best_path, path);
+        std::tie(is_valid, path) = getCCC(start, goal, radius, false);
+        if (is_valid) best_path = std::min(best_path, path);
 
         return best_path;
     }
@@ -72,12 +74,7 @@ public:
         return getLength() < other.getLength();
     }
 
-    explicit operator bool() const {
-        return is_valid;
-    }
-
     [[nodiscard]] std::string toStr() const {
-        if (!is_valid) return "Invalid!";
         std::stringstream out;
         out << path[0].toStr() << ", " << path[1].toStr() << ", " << path[2].toStr();
         return out.str();
@@ -90,12 +87,11 @@ private:
     static const Matrix<T, 2, 2> ROT_90_CCW;
     static const Matrix<T, 2, 2> ROT_180;
 
-    std::array<Curve<T>, 3> path;
-    bool is_valid = true;
+    std::array<Curve<T>, 3> path; // only valid if is_valid
 
-    DubinsPath() : is_valid(false) {}
+    DubinsPath() = default;
 
-    explicit DubinsPath(const Path &p) : is_valid(true), path(p) {}
+    explicit DubinsPath(const Path &path) : path(path) {}
 
     /**
      *
@@ -105,7 +101,7 @@ private:
      * @param right If true, then the RSR path will be returned, otherwise the LSL path will be returned.
      * @return
      */
-    static DubinsPath getCSCOuterTangent(const State<T> &start, const State<T> &goal, const T &radius, const bool& right) {
+    static DubinsPath getCSCOuterTangent(const State<T> &start, const State<T> &goal, const T &radius, const bool &right) {
         Vector2 p1 = getCenter(start, radius, right);
         Vector2 p2 = getCenter(goal, radius, right);
         Vector2 v1 = p2 - p1;
@@ -128,7 +124,7 @@ private:
      * @param right If true, then the RSL path will be returned, otherwise the LSR path will be returned.
      * @return
      */
-    static DubinsPath getCSCInnerTangent(const State<T> &start, const State<T> &goal, const T &radius, const bool &right) {
+    static std::pair<bool, DubinsPath> getCSCInnerTangent(const State<T> &start, const State<T> &goal, const T &radius, const bool &right) {
         Vector2 p1 = getCenter(start, radius, right);
         Vector2 p2 = getCenter(goal, radius, !right);
         Vector2 v1 = p2 - p1;
@@ -136,7 +132,7 @@ private:
         T d = v1.magnitude();
         if (d < 2 * radius) {
             // not possible to create RSL trajectory since the circles intersect, return invalid DubinsPath
-            return DubinsPath{};
+            return {false, DubinsPath{}};
         }
         T cos = 2 * radius / d;
         T sin = std::sqrt(1 - cos * cos);
@@ -147,9 +143,9 @@ private:
         Vector2 p1_tangent = p1 + normal;
         Vector2 p2_tangent = p2 - normal;
 
-        return DubinsPath{{Curve<T>{true, right, radius * getArcAngle(start.pos - p1, normal, right)},
-                           Curve<T>{false, false, d},
-                           Curve<T>{true, !right, radius * getArcAngle(goal.pos - p2, -normal, !right)}}};
+        return {true, DubinsPath{{Curve<T>{true, right, radius * getArcAngle(start.pos - p1, normal, right)},
+                                  Curve<T>{false, false, d},
+                                  Curve<T>{true, !right, radius * getArcAngle(goal.pos - p2, -normal, !right)}}}};
     }
 
     /**
@@ -160,7 +156,7 @@ private:
      * @param right If true, then the RLR path will be returned, otherwise the LRL path will be returned.
      * @return
      */
-    static DubinsPath getCCC(const State<T> &start, const State<T> &goal, const T &radius, const bool &right) {
+    static std::pair<bool, DubinsPath> getCCC(const State<T> &start, const State<T> &goal, const T &radius, const bool &right) {
         Vector2 p1 = getCenter(start, radius, right);
         Vector2 p2 = getCenter(goal, radius, right);
         Vector2 v1 = p2 - p1;
@@ -169,7 +165,7 @@ private:
         if (d >= 4 * radius) {
             // not possible to create RLR trajectory, return invalid DubinsPath
             // technically, if d >= 4 * radius then a RLR trajectory is possible, however it will always be suboptimal
-            return DubinsPath{};
+            return {false, DubinsPath{}};
         }
         T h = std::sqrt(4 * radius * radius - d * d / 4);
         Vector2 normal = (h / d) * ((right ? ROT_90_CCW : ROT_90_CW) * v1);
@@ -177,9 +173,9 @@ private:
 
         Vector2 p_first_stop = (p1 + p3) / 2;
         Vector2 p_second_stop = (p2 + p3) / 2;
-        return DubinsPath{{Curve<T>{true, right, radius * getArcAngle(start.pos - p1, p_first_stop - p1, right)},
-                           Curve<T>{true, !right, radius * getArcAngle(p_first_stop - p3, p_second_stop - p3, !right)},
-                           Curve<T>{true, right, radius * getArcAngle(p_second_stop - p2, goal.pos - p2, right)}}};
+        return {true, DubinsPath{{Curve<T>{true, right, radius * getArcAngle(start.pos - p1, p_first_stop - p1, right)},
+                                  Curve<T>{true, !right, radius * getArcAngle(p_first_stop - p3, p_second_stop - p3, !right)},
+                                  Curve<T>{true, right, radius * getArcAngle(p_second_stop - p2, goal.pos - p2, right)}}}};
     }
 
     static Vector2 getCenter(const State<T> &state, const T &radius, const bool &right) {
