@@ -8,9 +8,10 @@
 template<typename T, size_t n>
 class Vector {
 public:
-    std::array<T, n> data{};
     using iterator = typename std::array<T, n>::iterator;
     using const_iterator = typename std::array<T, n>::const_iterator;
+protected:
+    std::array<T, n> data{};
 public:
     Vector() = default;
 
