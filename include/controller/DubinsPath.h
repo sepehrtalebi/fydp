@@ -34,17 +34,24 @@ class DubinsPath {
 public:
     static DubinsPath create(const State<T> &start, const State<T> &goal, const T &radius) {
         // start with the shorter between the RSR and LSL path, since they are always possible
-        DubinsPath best_path = std::min(getRSR(start, goal, radius), getLSL(start, goal, radius));
+        DubinsPath best_path = std::min(getCSCOuterTangent(start, goal, radius, true), // RSR
+                                        getCSCOuterTangent(start, goal, radius, false)); // LSL
 
         // try RSL path
-        DubinsPath rsl = getRSR(start, goal, radius);
-        if (rsl) best_path = std::min(best_path, rsl);
+        DubinsPath path = getCSCInnerTangent(start, goal, radius, true);
+        if (path) best_path = std::min(best_path, path);
 
         // try LSR path
+        path = getCSCInnerTangent(start, goal, radius, false);
+        if (path) best_path = std::min(best_path, path);
 
         // try RLR path
+        path = getCCC(start, goal, radius, true);
+        if (path) best_path = std::min(best_path, path);
 
         // try LRL path
+        path = getCCC(start, goal, radius, false);
+        if (path) best_path = std::min(best_path, path);
 
         return best_path;
     }
@@ -90,54 +97,89 @@ private:
 
     explicit DubinsPath(const Path &p) : is_valid(true), path(p) {}
 
-    static DubinsPath getRSR(const State<T> &start, const State<T> &goal, const T &radius) {
-        Vector2 p1 = getCenter(start, radius, true);
-        Vector2 p2 = getCenter(goal, radius, true);
+    /**
+     *
+     * @param start
+     * @param goal
+     * @param radius
+     * @param right If true, then the RSR path will be returned, otherwise the LSL path will be returned.
+     * @return
+     */
+    static DubinsPath getCSCOuterTangent(const State<T> &start, const State<T> &goal, const T &radius, const bool& right) {
+        Vector2 p1 = getCenter(start, radius, right);
+        Vector2 p2 = getCenter(goal, radius, right);
         Vector2 v1 = p2 - p1;
 
         T d = v1.magnitude();
-        Vector2 normal = (radius / d) * (ROT_90_CCW * v1); // extra brackets to reduce multiplications
+        Vector2 normal = (radius / d) * ((right ? ROT_90_CCW : ROT_90_CW) * v1); // extra brackets to reduce multiplications
         Vector2 p1_tangent = p1 + normal;
         Vector2 p2_tangent = p2 + normal;
 
-        return DubinsPath{{Curve<T>{true, true, radius * getArcAngle(start.pos - p1, normal, true)},
+        return DubinsPath{{Curve<T>{true, right, radius * getArcAngle(start.pos - p1, normal, right)},
                            Curve<T>{false, false, d},
-                           Curve<T>{true, true, radius * getArcAngle(goal.pos - p2, normal, true)}}};
+                           Curve<T>{true, right, radius * getArcAngle(goal.pos - p2, normal, right)}}};
     }
 
-    static DubinsPath getLSL(const State<T> &start, const State<T> &goal, const T &radius) {
-        Vector2 p1 = getCenter(start, radius, false);
-        Vector2 p2 = getCenter(goal, radius, false);
+    /**
+     *
+     * @param start
+     * @param goal
+     * @param radius
+     * @param right If true, then the RSL path will be returned, otherwise the LSR path will be returned.
+     * @return
+     */
+    static DubinsPath getCSCInnerTangent(const State<T> &start, const State<T> &goal, const T &radius, const bool &right) {
+        Vector2 p1 = getCenter(start, radius, right);
+        Vector2 p2 = getCenter(goal, radius, !right);
         Vector2 v1 = p2 - p1;
 
         T d = v1.magnitude();
-        Vector2 normal = (radius / d) * (ROT_90_CW * v1); // extra brackets to reduce multiplications
-        Vector2 p1_tangent = p1 + normal;
-        Vector2 p2_tangent = p2 + normal;
-
-        return DubinsPath{{Curve<T>{true, false, radius * getArcAngle(start.pos - p1, normal, false)},
-                           Curve<T>{false, false, d},
-                           Curve<T>{true, false, radius * getArcAngle(goal.pos - p2, normal, false)}}};
-    }
-
-    static DubinsPath getRSL(const State<T> &start, const State<T> &goal, const T &radius) {
-        Vector2 p1 = getCenter(start, radius, true);
-        Vector2 p2 = getCenter(goal, radius, false);
-        Vector2 v1 = p2 - p1;
-
-        T D = v1.magnitude();
-        if (true || D < 2 * radius) {
-            // not possible to create RSL trajectory, return invalid DubinsPath
+        if (d < 2 * radius) {
+            // not possible to create RSL trajectory since the circles intersect, return invalid DubinsPath
             return DubinsPath{};
         }
-        // TODO: implement
-        Vector2 normal = (radius / D) * (ROT_90_CW * v1); // extra brackets to reduce multiplications
+        T cos = 2 * radius / d;
+        T sin = std::sqrt(1 - cos * cos);
+        Matrix<T, 2, 2> rot{cos, -sin,
+                            sin, cos};
+        if (!right) rot = rot.transpose(); // transposing rotation matrix is the same as taking the inverse
+        Vector2 normal = (radius / d) * (rot * v1); // extra brackets to reduce multiplications
         Vector2 p1_tangent = p1 + normal;
-        Vector2 p2_tangent = p2 + normal;
+        Vector2 p2_tangent = p2 - normal;
 
-        return DubinsPath{{Curve<T>{true, true, radius * getArcAngle(start.pos - p1, normal, true)},
-                           Curve<T>{false, false, D},
-                           Curve<T>{true, false, radius * getArcAngle(goal.pos - p2, normal, false)}}};
+        return DubinsPath{{Curve<T>{true, right, radius * getArcAngle(start.pos - p1, normal, right)},
+                           Curve<T>{false, false, d},
+                           Curve<T>{true, !right, radius * getArcAngle(goal.pos - p2, -normal, !right)}}};
+    }
+
+    /**
+     *
+     * @param start
+     * @param goal
+     * @param radius
+     * @param right If true, then the RLR path will be returned, otherwise the LRL path will be returned.
+     * @return
+     */
+    static DubinsPath getCCC(const State<T> &start, const State<T> &goal, const T &radius, const bool &right) {
+        Vector2 p1 = getCenter(start, radius, right);
+        Vector2 p2 = getCenter(goal, radius, right);
+        Vector2 v1 = p2 - p1;
+
+        T d = v1.magnitude();
+        if (d >= 4 * radius) {
+            // not possible to create RLR trajectory, return invalid DubinsPath
+            // technically, if d >= 4 * radius then a RLR trajectory is possible, however it will always be suboptimal
+            return DubinsPath{};
+        }
+        T h = std::sqrt(4 * radius * radius - d * d / 4);
+        Vector2 normal = (h / d) * ((right ? ROT_90_CCW : ROT_90_CW) * v1);
+        Vector2 p3 = p1 + v1 / 2 + normal;
+
+        Vector2 p_first_stop = (p1 + p3) / 2;
+        Vector2 p_second_stop = (p2 + p3) / 2;
+        return DubinsPath{{Curve<T>{true, right, radius * getArcAngle(start.pos - p1, p_first_stop - p1, right)},
+                           Curve<T>{true, !right, radius * getArcAngle(p_first_stop - p3, p_second_stop - p3, !right)},
+                           Curve<T>{true, right, radius * getArcAngle(p_second_stop - p2, goal.pos - p2, right)}}};
     }
 
     static Vector2 getCenter(const State<T> &state, const T &radius, const bool &right) {
