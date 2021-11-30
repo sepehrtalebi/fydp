@@ -89,6 +89,12 @@ public:
         for (size_t i = 0; i < n; i++) data[i] += scalar;
     }
 
+    Vector<T, n> operator-() const {
+        Vector<T, n> negative;
+        for (size_t i = 0; i < n; i++) negative[i] = -data[i];
+        return negative;
+    }
+
     Vector<T, n> operator-(const Vector<T, n> &other) const {
         Vector<T, n> sum;
         for (size_t i = 0; i < n; i++) sum[i] = data[i] - other[i];
