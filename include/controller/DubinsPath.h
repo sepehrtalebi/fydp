@@ -2,6 +2,7 @@
 
 #include "Vector.h"
 #include "Matrix.h"
+#include "MathUtils.h"
 #include <array>
 #include <vector>
 #include <algorithm>
@@ -9,32 +10,56 @@
 #include <sstream>
 #include <utility>
 #include <tuple>
-
-template<typename T>
-struct Curve {
-    bool is_turning;
-    bool turn_right; // only valid if is_turning is true
-    T length;
-
-    [[nodiscard]] std::string toStr() const {
-        std::stringstream out;
-        if (!is_turning) out << "Straight for: ";
-        else out << "Turn " << (turn_right ? "right" : "left") << " for: ";
-        out << length;
-        return out.str();
-    }
-};
-
-template<typename T>
-struct State {
-    Vector<T, 2> pos;
-    Vector<T, 2> vel;
-};
+#include <fstream>
 
 template<typename T>
 class DubinsPath {
 public:
-    static DubinsPath create(const State<T> &start, const State<T> &goal, const T &radius) {
+    struct State {
+        Vector<T, 2> pos;
+        Vector<T, 2> vel;
+    };
+
+    struct Curve {
+        bool is_turning;
+        bool turn_right; // only valid if is_turning is true
+        T length;
+
+        [[nodiscard]] std::string toStr() const {
+            std::stringstream out;
+            if (!is_turning) out << "Straight for: ";
+            else out << "Turn " << (turn_right ? "right" : "left") << " for: ";
+            out << length;
+            return out.str();
+        }
+
+        /**
+         * @param start_state Must have a velocity with a magnitude of 1.
+         * @return The resulting State
+         */
+        State toCSV(std::ofstream& out, const State& start_state, const T& radius) const {
+            if (!is_turning) {
+                for (int i = 0; i < 100; i++) {
+                    Vector<T, 2> pos = start_state.pos + (length * (i / 100.0)) * start_state.vel;
+                    out << pos[0] << "," << pos[1] << std::endl;
+                }
+                return {start_state.pos + length * start_state.vel, start_state.vel};
+            }
+
+            Vector<T, 2> center = getCenter(start_state, radius, turn_right);
+            T delta_theta = length / radius;
+            Vector<T, 2> displacement_0 = start_state.pos - center;
+            for (int i = 0; i < 100; i++) {
+                T theta = (turn_right ? -1 : 1) * delta_theta * (i / 100.0);
+                Vector<T, 2> pos = center + getRotationMatrix(theta) * displacement_0;
+                out << pos[0] << "," << pos[1] << std::endl;
+            }
+            Matrix<T, 2, 2> rot = getRotationMatrix(delta_theta);
+            return {center + rot * displacement_0, rot * start_state.vel};
+        }
+    };
+
+    static DubinsPath create(const State &start, const State &goal, const T &radius) {
         // Based on: https://gieseanw.wordpress.com/2012/10/21/a-comprehensive-step-by-step-tutorial-to-computing-dubins-paths/
 
         // start with the shorter between the RSR and LSL path, since they are always possible
@@ -60,11 +85,11 @@ public:
         return best_path;
     }
 
-    const Curve<T> &operator[](const size_t &index) const {
+    const Curve &operator[](const size_t &index) const {
         return path[index];
     }
 
-    Curve<T> &operator[](const size_t &index) {
+    Curve &operator[](const size_t &index) {
         return path[index];
     }
 
@@ -82,14 +107,19 @@ public:
         return out.str();
     }
 
+    void toCSV(std::ofstream& out, const State& start, const T& radius) const {
+        State state = path[0].toCSV(out, start, radius);
+        state = path[1].toCSV(out, state, radius);
+        path[2].toCSV(out, state, radius);
+    }
+
 private:
     using Vector2 = Vector<T, 2>;
-    using Path = std::array<Curve<T>, 3>;
+    using Path = std::array<Curve, 3>;
     static const Matrix<T, 2, 2> ROT_90_CW;
     static const Matrix<T, 2, 2> ROT_90_CCW;
-    static const Matrix<T, 2, 2> ROT_180;
 
-    std::array<Curve<T>, 3> path; // only valid if is_valid
+    std::array<Curve, 3> path;
 
     DubinsPath() = default;
 
@@ -103,7 +133,7 @@ private:
      * @param right If true, then the RSR path will be returned, otherwise the LSL path will be returned.
      * @return
      */
-    static DubinsPath getCSCOuterTangent(const State<T> &start, const State<T> &goal, const T &radius, const bool &right) {
+    static DubinsPath getCSCOuterTangent(const State &start, const State &goal, const T &radius, const bool &right) {
         Vector2 p1 = getCenter(start, radius, right);
         Vector2 p2 = getCenter(goal, radius, right);
         Vector2 v1 = p2 - p1;
@@ -113,9 +143,9 @@ private:
         Vector2 p1_tangent = p1 + normal;
         Vector2 p2_tangent = p2 + normal;
 
-        return DubinsPath{{Curve<T>{true, right, radius * getArcAngle(start.pos - p1, normal, right)},
-                           Curve<T>{false, false, d},
-                           Curve<T>{true, right, radius * getArcAngle(goal.pos - p2, normal, right)}}};
+        return DubinsPath{{Curve{true, right, radius * getArcAngle(start.pos - p1, normal, right)},
+                           Curve{false, false, d},
+                           Curve{true, right, radius * getArcAngle(goal.pos - p2, normal, right)}}};
     }
 
     /**
@@ -126,7 +156,7 @@ private:
      * @param right If true, then the RSL path will be returned, otherwise the LSR path will be returned.
      * @return
      */
-    static std::pair<bool, DubinsPath> getCSCInnerTangent(const State<T> &start, const State<T> &goal, const T &radius, const bool &right) {
+    static std::pair<bool, DubinsPath> getCSCInnerTangent(const State &start, const State &goal, const T &radius, const bool &right) {
         Vector2 p1 = getCenter(start, radius, right);
         Vector2 p2 = getCenter(goal, radius, !right);
         Vector2 v1 = p2 - p1;
@@ -145,9 +175,9 @@ private:
         Vector2 p1_tangent = p1 + normal;
         Vector2 p2_tangent = p2 - normal;
 
-        return {true, DubinsPath{{Curve<T>{true, right, radius * getArcAngle(start.pos - p1, normal, right)},
-                                  Curve<T>{false, false, d},
-                                  Curve<T>{true, !right, radius * getArcAngle(goal.pos - p2, -normal, !right)}}}};
+        return {true, DubinsPath{{Curve{true, right, radius * getArcAngle(start.pos - p1, normal, right)},
+                                  Curve{false, false, d},
+                                  Curve{true, !right, radius * getArcAngle(goal.pos - p2, -normal, !right)}}}};
     }
 
     /**
@@ -158,7 +188,7 @@ private:
      * @param right If true, then the RLR path will be returned, otherwise the LRL path will be returned.
      * @return
      */
-    static std::pair<bool, DubinsPath> getCCC(const State<T> &start, const State<T> &goal, const T &radius, const bool &right) {
+    static std::pair<bool, DubinsPath> getCCC(const State &start, const State &goal, const T &radius, const bool &right) {
         Vector2 p1 = getCenter(start, radius, right);
         Vector2 p2 = getCenter(goal, radius, right);
         Vector2 v1 = p2 - p1;
@@ -175,12 +205,12 @@ private:
 
         Vector2 p_first_stop = (p1 + p3) / 2;
         Vector2 p_second_stop = (p2 + p3) / 2;
-        return {true, DubinsPath{{Curve<T>{true, right, radius * getArcAngle(start.pos - p1, p_first_stop - p1, right)},
-                                  Curve<T>{true, !right, radius * getArcAngle(p_first_stop - p3, p_second_stop - p3, !right)},
-                                  Curve<T>{true, right, radius * getArcAngle(p_second_stop - p2, goal.pos - p2, right)}}}};
+        return {true, DubinsPath{{Curve{true, right, radius * getArcAngle(start.pos - p1, p_first_stop - p1, right)},
+                                  Curve{true, !right, radius * getArcAngle(p_first_stop - p3, p_second_stop - p3, !right)},
+                                  Curve{true, right, radius * getArcAngle(p_second_stop - p2, goal.pos - p2, right)}}}};
     }
 
-    static Vector2 getCenter(const State<T> &state, const T &radius, const bool &right) {
+    static Vector2 getCenter(const State &state, const T &radius, const bool &right) {
         Vector2 normal = (right ? ROT_90_CW : ROT_90_CCW) * state.vel;
         normal *= radius / normal.magnitude();
         return state.pos + normal;
