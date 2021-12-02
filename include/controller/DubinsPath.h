@@ -55,7 +55,7 @@ public:
                 Vector<T, 2> pos = center + getRotationMatrix(theta) * displacement_0;
                 out << pos[0] << "," << pos[1] << std::endl;
             }
-            Matrix<T, 2, 2> rot = getRotationMatrix(delta_theta);
+            Matrix<T, 2, 2> rot = getRotationMatrix((turn_right ? -1 : 1) * delta_theta);
             return {center + rot * displacement_0, rot * start_state.vel};
         }
     };
@@ -147,7 +147,7 @@ private:
 
         return DubinsPath{{Curve{true, right, radius * getArcAngle(start.pos - p1, normal, right)},
                            Curve{false, false, d},
-                           Curve{true, right, radius * getArcAngle(goal.pos - p2, normal, right)}}};
+                           Curve{true, right, radius * getArcAngle(normal, goal.pos - p2, right)}}};
     }
 
     /**
@@ -179,7 +179,7 @@ private:
 
         return {true, DubinsPath{{Curve{true, right, radius * getArcAngle(start.pos - p1, normal, right)},
                                   Curve{false, false, d},
-                                  Curve{true, !right, radius * getArcAngle(goal.pos - p2, -normal, !right)}}}};
+                                  Curve{true, !right, radius * getArcAngle(-normal, goal.pos - p2, !right)}}}};
     }
 
     /**
