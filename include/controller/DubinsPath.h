@@ -37,7 +37,8 @@ public:
          * @param start_state Must have a velocity with a magnitude of 1.
          * @return The resulting State
          */
-        State toCSV(std::ofstream& out, const State& start_state, const T& radius) const {
+         template<typename OStream>
+        State toCSV(OStream& out, const State& start_state, const T& radius) const {
             if (!is_turning) {
                 for (int i = 0; i < 100; i++) {
                     Vector<T, 2> pos = start_state.pos + (length * (i / 100.0)) * start_state.vel;
@@ -107,7 +108,8 @@ public:
         return out.str();
     }
 
-    void toCSV(std::ofstream& out, const State& start, const T& radius) const {
+    template<typename OStream>
+    void toCSV(OStream& out, const State& start, const T& radius) const {
         State state = path[0].toCSV(out, start, radius);
         state = path[1].toCSV(out, state, radius);
         path[2].toCSV(out, state, radius);
