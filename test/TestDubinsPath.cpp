@@ -1,5 +1,7 @@
 #include "TestDubinsPath.h"
 #include "DubinsPath.h"
+#include <cassert>
+#include <fstream>
 #include <iostream>
 
 void testDubinsPath() {
@@ -9,6 +11,11 @@ void testDubinsPath() {
     double radius = 1;
     DubinsPath<double> path = DubinsPath<double>::create(start, goal, radius);
     std::cout << path.toStr() << std::endl;
+
+    std::ofstream out("test/output/dubins_path1.csv");
+    assert(out);
+    path.toCSV(out, start, radius);
+    out.close();
 
     std::cout << "Passed all tests for DubinsPath!" << std::endl;
 }
