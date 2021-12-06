@@ -121,7 +121,7 @@ private:
     static const Matrix<T, 2, 2> ROT_90_CW;
     static const Matrix<T, 2, 2> ROT_90_CCW;
 
-    std::array<Curve, 3> path;
+    Path path;
 
     DubinsPath() = default;
 
