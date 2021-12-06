@@ -49,4 +49,4 @@ add_executable(FYDP tests.cpp
         test/TestFourier.cpp
         test/TestPolynomial.cpp
         test/TestRationalFunction.cpp
-        src/controller/Controller.cpp)
+        src/controller/Controller.cpp test/TestTransferFunction.h test/TestTransferFunction.cpp)

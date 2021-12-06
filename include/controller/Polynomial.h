@@ -1,6 +1,5 @@
 #pragma once
 #include <iostream>
-//#include <vector>
 #include "Vector.h"
 #include <iostream>
 #include <algorithm>
@@ -32,6 +31,9 @@ class Polynomial: public Vector<T, n> {
             factor *= factor;
         }
     }
+
+    template<typename, size_t, size_t>
+    friend class RationalFunction;
 public:
     Polynomial() = default;
 
@@ -76,7 +78,7 @@ public:
         else std::cout << this->data[0] << std::endl;
     }
 
-    template<int m>
+    template<size_t m>
     auto operator*(const Polynomial<T, m> &other) {
         std::array<T, m + n - 1> foil;
         for (int i = 0; i < n; i++)
@@ -84,7 +86,6 @@ public:
                 foil[i + j] += other.data[j] * this->data[i];
         return Polynomial{foil};
     }
-
 
     template<size_t m>
     auto operator+(const Polynomial<T, m> &other) {

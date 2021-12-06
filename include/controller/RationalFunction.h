@@ -10,6 +10,8 @@ protected:
     Polynomial<T, n> numerator;
     Polynomial<T, m> denominator;
 public:
+    RationalFunction() = default;
+
     RationalFunction(const Polynomial<T, n> &numerator, const Polynomial<T, m> &denominator){
         this->numerator = numerator;
         this->denominator = denominator;
@@ -37,9 +39,28 @@ public:
     }
 
     template<size_t p, size_t q>
-    auto _of_(const RationalFunction<T, p, q> &x) {
+    auto _of_(const RationalFunction<T, p, q> &g_of_x) {
         Polynomial<T, n * std::max(p, q) + std::max<size_t>(q * (m - n), 0)> num;
         Polynomial<T, m * std::max(p, q) + std::max<size_t>(q * (n - m), 0)> den;
+        for (size_t i = n - 1; i >= 0; i++) {
+            Polynomial<T, n * std::max(p, q) + std::max<size_t>(q * (m - n), 0)> num_of_num_expansion{g_of_x.numerator};
+            Polynomial<T, n> den_of_num_expansion{g_of_x.denominator};
+            num_of_num_expansion.pow(i);
+            den_of_num_expansion.pow(n - 1 - i);
+            num += numerator[i] * num_of_num_expansion * den_of_num_expansion;
+        }
+        for (size_t i = m - 1; i >= 0; i++) {
+            Polynomial<T, m * std::max(p, q) + std::max<size_t>(q * (n - m), 0)> num_of_den_expansion{g_of_x.numerator};
+            Polynomial<T, m> den_of_den_expansion{g_of_x.denominator};
+            num_of_den_expansion.pow(i);
+            den_of_den_expansion.pow(m - 1 - i);
+            den += denominator[i] * num_of_den_expansion * den_of_den_expansion;
+        }
+        if ((n - m) != 0) {
+            Polynomial<T, std::max<size_t>(n - m, m - n)> canceled_denominators{g_of_x.denominator};
+            if (m > n) num *= canceled_denominators;
+            else den *= canceled_denominators;
+        }
         return RationalFunction{num, den};
     }
 
