@@ -1,5 +1,4 @@
 #pragma once
-#include <iostream>
 #include "Vector.h"
 #include <iostream>
 #include <algorithm>
@@ -37,12 +36,6 @@ class Polynomial: public Vector<T, n> {
 public:
     Polynomial() = default;
 
-    static Polynomial<T, n> identity() {
-        Polynomial<T, n> p;
-        p[0] = 1;
-        return p;
-    }
-
     Polynomial(const Polynomial<T, n> &other) {
         *this = other;
     }
@@ -52,11 +45,27 @@ public:
         *this = other;
     }
 
+    Polynomial(std::initializer_list<T> elements): Vector<T, n>{elements} {}
+
+    explicit Polynomial(const std::array<T, n> &arr) {
+        for (int i = 0; i < n; i++) this->data[i] = arr[i];
+    }
+
+    Polynomial(const Vector<T, n> &vec) { // NOLINT(google-explicit-constructor)
+        for (int i = 0; i < n; i++) this->data[i] = vec.data[i];
+    }
+
     template<size_t m>
     Polynomial& operator=(const Polynomial<T, m> &other) {
         if (m > n) throw std::invalid_argument("Cannot add dimensions to a constant size array");
         for (size_t i = 0; i < m; i++) this->data[i] = other[i];
         return *this;
+    }
+
+    static Polynomial<T, n> identity() {
+        Polynomial<T, n> p;
+        p[0] = 1;
+        return p;
     }
 
     template<int m>
@@ -78,13 +87,33 @@ public:
         else std::cout << this->data[0] << std::endl;
     }
 
+    auto operator*(const Polynomial<T, n> &other) {
+        Polynomial<T, 2 * n - 1> foil;
+        for (int i = 0; i < n; i++)
+            for (int j = 0; j < n; j++)
+                foil[i + j] += other.data[j] * this->data[i];
+        return foil;
+    }
+
     template<size_t m>
     auto operator*(const Polynomial<T, m> &other) {
-        std::array<T, m + n - 1> foil;
+        Polynomial<T, m + n - 1> foil;
         for (int i = 0; i < n; i++)
             for (int j = 0; j < m; j++)
                 foil[i + j] += other.data[j] * this->data[i];
-        return Polynomial{foil};
+        return foil;
+    }
+
+    auto operator+(T &scalar) {
+        auto sum = this;
+        sum[0] += scalar;
+        return sum;
+    }
+
+    auto operator+(const Polynomial<T, n> &other) {
+        Polynomial<T, n> sum;
+        for (size_t i = 0; i < n; i++) sum[i] = this->data[i] + other.data[i];
+        return sum;
     }
 
     template<size_t m>
@@ -95,6 +124,11 @@ public:
         return sum;
     }
 
+    void operator+=(const Polynomial<T, n> &other) {
+        for (int i = 0; i < n; i++)
+            this->data[i] += other.data[i];
+    }
+
     template<size_t m>
     void operator+=(const Polynomial<T, m> &other) {
         if (m > n) throw std::invalid_argument("Cannot add dimensions to a constant size array");
@@ -103,11 +137,23 @@ public:
     }
 
     template<size_t m>
+    auto operator-(const Polynomial<T, n> &other) {
+        Polynomial<T, n> diff;
+        for (size_t i = 0; i < n; i++) diff[i] = this->data[i] - other.data;
+        return diff;
+    }
+
+    template<size_t m>
     auto operator-(const Polynomial<T, m> &other) {
-        Polynomial<T, std::max(n, m)> sum;
-        for (size_t i = 0; i < n; i++) sum[i] -= this->data[i];
-        for (size_t i = 0; i < m; i++) sum[i] -= other.data[i];
-        return sum;
+        Polynomial<T, std::max(n, m)> diff;
+        for (size_t i = 0; i < n; i++) diff[i] -= this->data[i];
+        for (size_t i = 0; i < m; i++) diff[i] -= other.data[i];
+        return diff;
+    }
+
+    Polynomial<T, n> operator-=(const Polynomial<T, n> &other) {
+        for (int i = 0; i < n; i++)
+            this->data[i] -= other.data[i];
     }
 
     template<size_t m>
