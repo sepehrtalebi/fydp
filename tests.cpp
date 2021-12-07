@@ -19,6 +19,6 @@ int main() {
 //    testFourier();
 //    std::cout << "Passed All Tests!" << std::endl;
     testPolynomial();
-    testRationalFunction();
+//    testRationalFunction();
     return 0;
 }
