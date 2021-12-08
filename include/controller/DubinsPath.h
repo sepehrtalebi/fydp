@@ -162,6 +162,15 @@ public:
         static constexpr size_t NUM_SAMPLES = 100;
     };
 
+    DubinsPath(const DubinsPath<T>& other) {
+        (*this) = other;
+    }
+
+    DubinsPath& operator=(const DubinsPath<T>& other) {
+        for (size_t i = 0; i < 3; i++) path[i] = other[i];
+        return *this;
+    }
+
     static DubinsPath create(const State &start, const State &goal, const T &radius) {
         // Based on: https://gieseanw.wordpress.com/2012/10/21/a-comprehensive-step-by-step-tutorial-to-computing-dubins-paths/
 
@@ -233,15 +242,6 @@ private:
     DubinsPath() = default;
 
     explicit DubinsPath(const Path &path) : path(path) {}
-
-    DubinsPath(const DubinsPath<T>& other) {
-        (*this) = other;
-    }
-
-    DubinsPath& operator=(const DubinsPath<T>& other) {
-        for (size_t i = 0; i < 3; i++) path[i] = other[i];
-        return *this;
-    }
 
     /**
      *
