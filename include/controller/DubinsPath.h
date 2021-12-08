@@ -77,7 +77,7 @@ public:
          * Return value is unspecified if !is_turning
          */
         [[nodiscard]] bool isRightTurn() const {
-            return std::fabs(delta_angle) < 0;
+            return delta_angle < 0;
         }
 
         /**
@@ -100,11 +100,11 @@ public:
                 if (relative_angle > 0) relative_angle -= 2 * M_PI;
                 else if (relative_angle < -2 * M_PI) relative_angle += 2 * M_PI;
 
-                if (angle > delta_angle) {
+                if (relative_angle > delta_angle) {
                     // closest point on the circle to p is within the delta_angle range
                     return center + disp * (radius / disp.magnitude());
                 }
-                if (angle > delta_angle / 2 - M_PI) {
+                else if (relative_angle > delta_angle / 2 - M_PI) {
                     // closest point is the end point
                     return center + getRotationMatrix(start_angle + delta_angle) * Vector2{radius, 0};
                 } else {
@@ -116,11 +116,11 @@ public:
                 if (relative_angle > 2 * M_PI) relative_angle -= 2 * M_PI;
                 else if (relative_angle < 0) relative_angle += 2 * M_PI;
 
-                if (angle < delta_angle) {
+                if (relative_angle < delta_angle) {
                     // closest point on the circle to p is within the delta_angle range
                     return center + disp * (radius / disp.magnitude());
                 }
-                if (angle < delta_angle / 2 + M_PI) {
+                else if (relative_angle < delta_angle / 2 + M_PI) {
                     // closest point is the end point
                     return center + getRotationMatrix(start_angle + delta_angle) * Vector2{radius, 0};
                 } else {
@@ -139,20 +139,19 @@ public:
         }
 
         /**
-         * @param start_state Must have a velocity with a magnitude of 1.
          * @return The resulting State
          */
         template<typename OStream>
         void toCSV(OStream &out) const {
             if (!is_turning) {
                 for (size_t i = 0; i < NUM_SAMPLES; i++) {
-                    Vector<T, 2> pos = (static_cast<T>(i) * start_pos + static_cast<T>(NUM_SAMPLES - i) * end_pos) /
+                    Vector<T, 2> pos = (static_cast<T>(NUM_SAMPLES - i) * start_pos + static_cast<T>(i) * end_pos) /
                                        static_cast<T>(NUM_SAMPLES);
                     out << pos[0] << "," << pos[1] << std::endl;
                 }
             } else {
                 for (size_t i = 0; i < NUM_SAMPLES; i++) {
-                    T theta = start_angle + delta_theta * (i / static_cast<T>(NUM_SAMPLES));
+                    T theta = start_angle + delta_angle * (i / static_cast<T>(NUM_SAMPLES));
                     Vector<T, 2> pos = center + getRotationMatrix(theta) * Vector2{radius, 0};
                     out << pos[0] << "," << pos[1] << std::endl;
                 }
