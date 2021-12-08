@@ -284,6 +284,8 @@ private:
     }
 
     /**
+     * The start angle will be in the range [-pi, pi]
+     * delta_angle will be in the range [-2 * pi, 2 * pi], where positive indicates counterclockwise (turning left)
      * The returned total angle traversed will be positive if it is a left turn, and negative if it is a right turn.
      * @return A std::pair consisting of the starting angle and the total angle traversed
      */
