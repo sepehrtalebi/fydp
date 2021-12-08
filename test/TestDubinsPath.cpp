@@ -1,6 +1,7 @@
 #include "TestDubinsPath.h"
 #include "DubinsPath.h"
 #include <cassert>
+#include <cmath>
 #include <fstream>
 #include <iostream>
 
@@ -11,6 +12,7 @@ void testDubinsPath() {
     double radius = 1;
     DubinsPath<double> path = DubinsPath<double>::create(start, goal, radius);
     assert(path[0].is_turning && path[0].isRightTurn() && !path[1].is_turning && path[2].is_turning && path[2].isRightTurn());
+    assert(std::fabs((path.closestPoint(Vector2{4.5, 1}) - Vector2{4.5, 1}).magnitude()) < 0.001);
 
     std::ofstream out1("test/output/dubins_path1.csv");
     assert(out1);
