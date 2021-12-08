@@ -80,6 +80,56 @@ public:
             return std::fabs(delta_angle) < 0;
         }
 
+        /**
+         * @return The point on this Curve closest to the specified point
+         */
+        [[nodiscard]] Vector<T, 2> closestPoint(const Vector<T, 2> &p) {
+            if (!is_turning) {
+                Vector2 d = end_pos - start_pos;
+                T projection_fraction = (p - start_pos).dot(d) / d.dot(d);
+                if (projection_fraction < 0) return start_pos;
+                if (projection_fraction > 1) return end_pos;
+                return start_pos + projection_fraction * d;
+            }
+
+            // otherwise, we are turning
+            Vector2 disp = p - center;
+            T relative_angle = std::atan2(disp[1], disp[0]) - start_angle;
+            if (isRightTurn()) {
+                // remap angle to [-2 * PI, 0]
+                if (relative_angle > 0) relative_angle -= 2 * M_PI;
+                else if (relative_angle < -2 * M_PI) relative_angle += 2 * M_PI;
+
+                if (angle > delta_angle) {
+                    // closest point on the circle to p is within the delta_angle range
+                    return center + disp * (radius / disp.magnitude());
+                }
+                if (angle > delta_angle / 2 - M_PI) {
+                    // closest point is the end point
+                    return center + getRotationMatrix(start_angle + delta_angle) * Vector2{radius, 0};
+                } else {
+                    // closest point is the start point
+                    return center + getRotationMatrix(start_angle) * Vector2{radius, 0};
+                }
+            } else {
+                // remap angle to [0, 2 * PI]
+                if (relative_angle > 2 * M_PI) relative_angle -= 2 * M_PI;
+                else if (relative_angle < 0) relative_angle += 2 * M_PI;
+
+                if (angle < delta_angle) {
+                    // closest point on the circle to p is within the delta_angle range
+                    return center + disp * (radius / disp.magnitude());
+                }
+                if (angle < delta_angle / 2 + M_PI) {
+                    // closest point is the end point
+                    return center + getRotationMatrix(start_angle + delta_angle) * Vector2{radius, 0};
+                } else {
+                    // closest point is the start point
+                    return center + getRotationMatrix(start_angle) * Vector2{radius, 0};
+                }
+            }
+        }
+
         [[nodiscard]] std::string toStr() const {
             std::stringstream out;
             if (!is_turning) out << "Straight for: " << getLength() << "m";
@@ -153,6 +203,13 @@ public:
 
     bool operator<(const DubinsPath<T> &other) const {
         return getLength() < other.getLength();
+    }
+
+    Vector<T, 2> closestPoint(const Vector<T, 2> &p) {
+        return std::min({path[0].closestPoint(p), path[1].closestPoint(p), path[2].closestPoint(p)},
+                        [&p](const Vector2 &first, const Vector2 &second) {
+                            return (first - p).magnitudeSquared() < (second - p).magnitudeSquared();
+                        });
     }
 
     [[nodiscard]] std::string toStr() const {
