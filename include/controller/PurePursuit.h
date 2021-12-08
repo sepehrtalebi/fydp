@@ -30,7 +30,7 @@ public:
 
         // readjust to a coordinate system where we are at the origin and moving in the direction of the x-axis
         target -= state.pos;
-        target = getRotationMatrix(std::atan2(state.vel[1], state.vel[0])).transpose() * target;
+        target = getRotationMatrix(state.vel).transpose() * target;
 
         if (target[0] <= 0) {
             // target is behind us (or to the side of us)
