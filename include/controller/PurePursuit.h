@@ -1,6 +1,7 @@
 #pragma once
 
 #include "DubinsPath.h"
+#include <cmath>
 
 template<typename T>
 class PurePursuit {
@@ -10,9 +11,10 @@ public:
         T angular_vel;
     };
 
-    explicit PurePursuit(const T& lookahead_time) : lookahead_time(lookahead_time) {}
+    explicit PurePursuit(const T &lookahead_time, const T &min_radius) :
+            lookahead_time(lookahead_time), min_radius(min_radius) {}
 
-    void updatePath(const DubinsPath<T>& new_path) {
+    void updatePath(const DubinsPath<T> &new_path) {
         this->path = new_path;
     }
 
@@ -21,7 +23,7 @@ public:
      * @param state
      * @return Commanded angular velocity. Positive indicates a turn to the left
      */
-    Result pursue(const typename DubinsPath<T>::State& state) {
+    Result pursue(const typename DubinsPath<T>::State &state) {
         Vector2 ideal_target = state.pos + state.vel * lookahead_time;
         Vector2 target = path.closestPoint(ideal_target);
         // TODO: add check to see if we are too far off course
@@ -40,11 +42,18 @@ public:
         // simple geometry shows that the y coordinate where this occurs is given by the following
         // note that this will be negative if target[1] < 0, as it should be in that case to indicate a right turn
         T radius = target.magnitudeSquared() / (2 * target[1]);
+
+        if (std::fabs(radius) < min_radius) {
+            // required turn is too sharp, request replan
+            return {true, 0};
+        }
+
         return {false, state.vel.magnitude() / radius};
     }
 
 private:
     using Vector2 = Vector<T, 2>;
     T lookahead_time;
+    T min_radius;
     DubinsPath<T> path;
 };
