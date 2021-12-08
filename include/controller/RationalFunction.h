@@ -9,8 +9,23 @@ class RationalFunction {
 protected:
     Polynomial<T, n> numerator;
     Polynomial<T, m> denominator;
+
+    template<typename, size_t, size_t>
+    friend class RationalFunction;
 public:
     RationalFunction() = default;
+
+    RationalFunction(std::initializer_list<T> elements) {
+        // Function caller must ensure the number of arguments matches the template argument
+        // Excess arguments will be ignored
+        size_t i = 0;
+        for (auto it = elements.begin(); i < n && it != elements.end(); it++)
+            numerator[i++] = *it;
+        for (auto it = elements.begin() + i; i < m + n && it != elements.end(); it++) {
+            denominator[i - n] = *it;
+            i++;
+        }
+    }
 
     RationalFunction(const Polynomial<T, n> &numerator, const Polynomial<T, m> &denominator){
         this->numerator = numerator;
@@ -18,38 +33,52 @@ public:
     }
 
     RationalFunction(const RationalFunction<T, n, m> &other) {
+        (*this) = other;
+    }
+
+    RationalFunction& operator=(const RationalFunction<T, n, m> &other) {
         this->numerator = other.numerator;
         this->denominator = other.denominator;
+        return (*this);
     }
 
     void print() {
         numerator.print();
-        for (int i = 0; i < std::max(numerator.get_size(), denominator.get_size()); i++) {
-            std::cout << " - ";
+        for (int i = 0; i < std::max(n, m); i++) {
+            std::cout << "-----";
         }
         std::cout << std::endl;
         denominator.print();
     }
 
+    T numerator_data(size_t num_index) {
+        return numerator[num_index];
+    }
+
+    T denominator_data(size_t den_index) {
+        return denominator[den_index];
+    }
+
     template<size_t p>
-    auto _of_(const Polynomial<T, p> &p_of_x) {
+    RationalFunction<T, (n - 1) * (p - 1) + 1, (m - 1) * (p - 1) + 1> _of_(const Polynomial<T, p> &p_of_x) {
         auto num = numerator._of_(p_of_x);
         auto den = denominator._of_(p_of_x);
-        return RationalFunction{num, den};
+        return {num, den};
     }
 
     template<size_t p, size_t q>
-    auto _of_(const RationalFunction<T, p, q> &g_of_x) {
+    RationalFunction<T, n * std::max(p, q) + std::max<size_t>(q * (m - n), 0), m * std::max(p, q) + std::max<size_t>(q * (n - m), 0)>
+    _of_(const RationalFunction<T, p, q> &g_of_x) {
         Polynomial<T, n * std::max(p, q) + std::max<size_t>(q * (m - n), 0)> num;
         Polynomial<T, m * std::max(p, q) + std::max<size_t>(q * (n - m), 0)> den;
-        for (size_t i = n - 1; i >= 0; i++) {
+        for (size_t i = n - 1; i >= 0; i--) {
             Polynomial<T, n * std::max(p, q) + std::max<size_t>(q * (m - n), 0)> num_of_num_expansion{g_of_x.numerator};
             Polynomial<T, n> den_of_num_expansion{g_of_x.denominator};
             num_of_num_expansion.pow(i);
             den_of_num_expansion.pow(n - 1 - i);
             num += numerator[i] * num_of_num_expansion * den_of_num_expansion;
         }
-        for (size_t i = m - 1; i >= 0; i++) {
+        for (size_t i = m - 1; i >= 0; i--) {
             Polynomial<T, m * std::max(p, q) + std::max<size_t>(q * (n - m), 0)> num_of_den_expansion{g_of_x.numerator};
             Polynomial<T, m> den_of_den_expansion{g_of_x.denominator};
             num_of_den_expansion.pow(i);
@@ -61,20 +90,20 @@ public:
             if (m > n) num *= canceled_denominators;
             else den *= canceled_denominators;
         }
-        return RationalFunction{num, den};
+        return {num, den};
     }
 
     template<size_t p, size_t q>
-    auto operator*(const RationalFunction<T, p, q> &other) {
+    RationalFunction<T, n + p - 1, m + q - 1> operator*(const RationalFunction<T, p, q> &other) {
         auto num = numerator * other.numerator;
         auto den = denominator * other.denominator;
-        return RationalFunction{num, den};
+        return {num, den};
     }
 
     template<size_t p>
-    auto operator*(const Polynomial<T, p> &other) {
-        auto num = numerator * other.numerator;
-        return RationalFunction{num, this->denominator};
+    RationalFunction<T, n + p - 1, m> operator*(const Polynomial<T, p> &poly) {
+        auto num = numerator * poly;
+        return {num, this->denominator};
     }
 
     RationalFunction<T, n, m> operator*(const T &scalar) {
@@ -86,32 +115,34 @@ public:
     }
 
     template<size_t p, size_t q>
-    auto operator+(const RationalFunction<T, p, q> &other) {
+    RationalFunction<T, std::max(n + q - 1, m + p - 1), m + q - 1>
+            operator+(const RationalFunction<T, p, q> &other) {
         Polynomial<T, std::max(n + q - 1, m + p - 1)> num;
         Polynomial<T, m + q - 1> den;
         den = denominator * other.denominator;
         num = numerator * other.denominator;
         num += denominator * other.numerator;
-        return RationalFunction{num, den};
+        return {num, den};
     }
 
     template<size_t p, size_t q>
-    auto operator-(const RationalFunction<T, p, q> &other) {
+    RationalFunction<T, std::max(n + q - 1, m + p - 1), m + q - 1>
+    operator-(const RationalFunction<T, p, q> &other) {
         Polynomial<T, std::max(n + q - 1, m + p - 1)> num;
         Polynomial<T, m + q - 1> den;
         den = denominator * other.denominator;
         num = numerator * other.denominator;
         num -= denominator * other.numerator;
-        return RationalFunction{num, den};
+        return {num, den};
     }
 
     template<size_t p, size_t q>
-    auto operator/(const RationalFunction<T, p, q> &other) {
+    RationalFunction<T, n + q - 1, m + p - 1> operator/(const RationalFunction<T, p, q> &other) {
         Polynomial<T, n + q - 1> num;
         Polynomial<T, m + p - 1> den;
         num = numerator * other.denominator;
         den = denominator * other.numerator;
-        return RationalFunction{num, den};
+        return {num, den};
     }
 };
 
@@ -125,7 +156,7 @@ RationalFunction<T, n, m> operator*(const T &scalar, const RationalFunction<T, n
 }
 
 template<typename T, size_t n, size_t m, size_t p>
-auto operator*(const Polynomial<T, p> &poly, const RationalFunction<T, n, m> &rf) {
-    auto num = rf.numerator * poly.numerator;
-    return RationalFunction{num, rf.denominator};
+RationalFunction<T, n + p - 1, m> operator*(const Polynomial<T, p> &poly, const RationalFunction<T, n, m> &rf) {
+    auto num = rf.numerator * poly;
+    return {num, rf.denominator};
 }

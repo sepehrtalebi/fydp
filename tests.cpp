@@ -18,7 +18,7 @@ int main() {
 //    testPrimes();
 //    testFourier();
 //    std::cout << "Passed All Tests!" << std::endl;
-    testPolynomial();
-//    testRationalFunction();
+//    testPolynomial();
+    testRationalFunction();
     return 0;
 }

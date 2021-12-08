@@ -111,7 +111,7 @@ public:
             if (this->data[i] != 0)
                 std::cout << this->data[i] << "s^" << i << " + "; //TODO: setw
         }
-        if ((n > 0) && (this->data[1] != 0)) std::cout << this->data[1] << "s + " << this->data[0] << std::endl;
+        if ((n > 1) && (this->data[1] != 0)) std::cout << this->data[1] << "s + " << this->data[0] << std::endl;
         else std::cout << this->data[0] << std::endl;
     }
 
@@ -125,8 +125,6 @@ public:
         return foil;
     }
 
-    using Vector<T, n>::operator*=;
-
     template<size_t m>
     auto operator*(const Polynomial<T, m> &other) {
         Polynomial<T, m + n - 1> foil;
@@ -135,6 +133,8 @@ public:
                 foil[i + j] += other[j] * this->data[i];
         return foil;
     }
+
+    using Vector<T, n>::operator*=;
 
     using Vector<T, n>::operator+;
 
@@ -199,3 +199,11 @@ public:
             this->data[i] -= other[i];
     }
 };
+
+template<typename T, size_t n>
+Polynomial<T, n> operator*(const T &scalar, const Polynomial<T, n> &poly) {
+    Polynomial<T, n> prod;
+    for (size_t i = 0; i < n; i++)
+        prod[i] = scalar * prod[i]; // respect operator order in case underlying type is non-commutative
+    return prod;
+}
