@@ -38,10 +38,14 @@ public:
         *this = other;
     }
 
-    T magnitude() const {
+    T magnitudeSquared() const {
         T sum{};
         for (size_t i = 0; i < n; i++) sum += data[i] * data[i];
-        return sqrt(sum);
+        return sum;
+    }
+
+    T magnitude() const {
+        return sqrt(magnitudeSquared());
     }
 
     void normalize() {
