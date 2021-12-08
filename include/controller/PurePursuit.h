@@ -10,7 +10,7 @@ public:
         T angular_vel;
     };
 
-    PurePursuit(const T& lookahead_time) : lookahead_time(lookahead_time) {}
+    explicit PurePursuit(const T& lookahead_time) : lookahead_time(lookahead_time) {}
 
     void updatePath(const DubinsPath<T>& new_path) {
         this->path = new_path;
