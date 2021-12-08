@@ -4,6 +4,16 @@
 #include "Polynomial.h"
 #include <algorithm>
 
+template<typename T>
+static constexpr T abs_difference(const T& a, const T&b) {
+    return a > b ? a - b : b - a;
+}
+
+template<typename T>
+static constexpr T heaviside_difference(const T& a, const T&b) {
+    return a > b ? a - b : 0;
+}
+
 template <typename T, size_t n, size_t m>
 class RationalFunction {
 protected:
@@ -67,26 +77,42 @@ public:
     }
 
     template<size_t p, size_t q>
-    RationalFunction<T, n * std::max(p, q) + std::max<size_t>(q * (m - n), 0), m * std::max(p, q) + std::max<size_t>(q * (n - m), 0)>
+    RationalFunction<T, (n - 1) * std::max(p - 1, q - 1) + (q - 1) * heaviside_difference(m, n) + 1,
+    (m - 1) * std::max(p - 1, q - 1) + (q - 1) * heaviside_difference(n, m) + 1>
     _of_(const RationalFunction<T, p, q> &g_of_x) {
-        Polynomial<T, n * std::max(p, q) + std::max<size_t>(q * (m - n), 0)> num;
-        Polynomial<T, m * std::max(p, q) + std::max<size_t>(q * (n - m), 0)> den;
-        for (size_t i = n - 1; i >= 0; i--) {
-            Polynomial<T, n * std::max(p, q) + std::max<size_t>(q * (m - n), 0)> num_of_num_expansion{g_of_x.numerator};
-            Polynomial<T, n> den_of_num_expansion{g_of_x.denominator};
+        Polynomial<T, (n - 1) * std::max(p - 1, q - 1) + (q - 1) * heaviside_difference(m, n) + 1> num;
+        Polynomial<T, (m - 1) * std::max(p - 1, q - 1) + (q - 1) * heaviside_difference(n, m) + 1> den;
+
+        for (size_t i = 0; i < n; i++) { //this is how you add the rational functions in the numerator
+            Polynomial<T, (n - 1) * (p - 1) + 1> num_of_num_expansion{g_of_x.numerator};
+            Polynomial<T, (n - 1) * (q - 1) + 1> den_of_num_expansion; //edge n = 1
+            if (n > 1) den_of_num_expansion = {g_of_x.denominator};
+            else den_of_num_expansion.identity();
             num_of_num_expansion.pow(i);
             den_of_num_expansion.pow(n - 1 - i);
-            num += numerator[i] * num_of_num_expansion * den_of_num_expansion;
+            auto hacky_product = Polynomial<T, std::max((n - 1) * (p - 1) + 1, (n - 1) * (q - 1) + 1)>::hacky_product(
+                    num_of_num_expansion, den_of_num_expansion
+                    ); //* usually creates a larger size polynomial based on sizes of the operands. We don't want this.
+            num += numerator[i] * hacky_product;
         }
-        for (size_t i = m - 1; i >= 0; i--) {
-            Polynomial<T, m * std::max(p, q) + std::max<size_t>(q * (n - m), 0)> num_of_den_expansion{g_of_x.numerator};
-            Polynomial<T, m> den_of_den_expansion{g_of_x.denominator};
+
+        for (size_t i = 0; i < m; i++) { //this is how you add the rational functions in the denominator
+            Polynomial<T, (m - 1) * (p - 1) + 1> num_of_den_expansion{g_of_x.numerator};
+            Polynomial<T, (m - 1) * (q - 1) + 1> den_of_den_expansion; //edge m = 1
+            if (m > 1) den_of_den_expansion = {g_of_x.denominator};
+            else den_of_den_expansion.identity();
             num_of_den_expansion.pow(i);
             den_of_den_expansion.pow(m - 1 - i);
-            den += denominator[i] * num_of_den_expansion * den_of_den_expansion;
+            auto hacky_product = Polynomial<T, std::max((n - 1) * (p - 1) + 1, (n - 1) * (q - 1) + 1)>::hacky_product(
+                    num_of_den_expansion, den_of_den_expansion
+            ); //* usually creates a larger size polynomial based on sizes of the operands. We don't want this.
+            den += denominator[i] * hacky_product;
         }
-        if ((n - m) != 0) {
-            Polynomial<T, std::max<size_t>(n - m, m - n)> canceled_denominators{g_of_x.denominator};
+
+        if ((n > m) || (m > n)) { //because the denominators of the numerator and denominator are the same, they will cancel
+            constexpr size_t abs_diff = abs_difference(m, n);
+            Polynomial<T, abs_diff + 1> canceled_denominators{g_of_x.denominator};
+            canceled_denominators.pow(abs_diff);
             if (m > n) num *= canceled_denominators;
             else den *= canceled_denominators;
         }

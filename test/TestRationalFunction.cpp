@@ -34,7 +34,7 @@ void testRationalFunction() {
         assert(subtract.denominator_data(i) == truth3.denominator_data(i));
     auto g_of_f = g._of_(f);
     g_of_f.print();
-    RationalFunction<double, 3, 3> truth4 = {36, 24, 4, 13, 6, 5};
+    RationalFunction<double, 3, 3> truth4 = {36, 24, 4, 49, 30, 5};
     for (int i = 0; i < 3; i++)
         assert(g_of_f.numerator_data(i) == truth4.numerator_data(i));
     for (int i = 0; i < 3; i++)

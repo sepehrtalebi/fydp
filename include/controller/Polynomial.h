@@ -43,6 +43,16 @@ class Polynomial: public Vector<T, n> {
             factor *= factor;
         }
     }
+
+    template<size_t m>
+    static const Polynomial<T, std::max(n, m)> hacky_product(Polynomial<T, n> first, Polynomial<T, m> other) {
+        Polynomial<T, std::max(n, m)> foil;
+        for (int i = 0; i < n; i++)
+            for (int j = 0; j < m; j++)
+                if ((i + j) < std::max(n, m)) foil[i + j] += other[j] * first[i];
+        return foil;
+    }
+
     template<typename, size_t>
     friend class Polynomial;
     template<typename, size_t, size_t>
@@ -76,6 +86,7 @@ public:
     Polynomial& operator=(const Polynomial<T, m> &other) {
         if (m > n) throw std::invalid_argument("Cannot add dimensions to a constant size array");
         for (size_t i = 0; i < m; i++) this->data[i] = other[i];
+        for (size_t i = m; i < n; i++) this->data[i] = 0;
         return *this;
     }
 
@@ -204,6 +215,6 @@ template<typename T, size_t n>
 Polynomial<T, n> operator*(const T &scalar, const Polynomial<T, n> &poly) {
     Polynomial<T, n> prod;
     for (size_t i = 0; i < n; i++)
-        prod[i] = scalar * prod[i]; // respect operator order in case underlying type is non-commutative
+        prod[i] = scalar * poly[i]; // respect operator order in case underlying type is non-commutative
     return prod;
 }
