@@ -19,7 +19,7 @@ public:
     /**
      *
      * @param state
-     * @return Commanded angular velocity
+     * @return Commanded angular velocity. Positive indicates a turn to the left
      */
     Result pursue(const typename DubinsPath<T>::State& state) {
         Vector2 ideal_target = state.pos + state.vel * lookahead_time;
@@ -30,9 +30,15 @@ public:
         target -= state.pos;
         target = getRotationMatrix(std::atan2(state.vel[1], state.vel[0])).transpose() * target;
 
+        if (target[0] <= 0) {
+            // target is behind us (or to the side of us)
+            return {true, 0};
+        }
+
         // now the center of rotation must be at the point of intersection of the y-axis and
         // the perpendicular bisector of the line segment connecting target to the origin
         // simple geometry shows that the y coordinate where this occurs is given by the following
+        // note that this will be negative if target[1] < 0, as it should be in that case to indicate a right turn
         T radius = target.magnitudeSquared() / (2 * target[1]);
         return {false, state.vel.magnitude() / radius};
     }
