@@ -6,6 +6,7 @@
 #include "test/TestPrimes.h"
 #include "test/TestFourier.h"
 #include "test/TestDubinsPath.h"
+#include "test/TestPurePursuit.h"
 #include <iostream>
 
 int main() {
@@ -17,6 +18,7 @@ int main() {
     testPrimes();
     testFourier();
     testDubinsPath();
+    testPurePursuit();
     std::cout << "Passed All Tests!" << std::endl;
     return 0;
 }

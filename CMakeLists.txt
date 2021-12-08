@@ -48,4 +48,5 @@ add_executable(FYDP tests.cpp
         test/TestPrimes.cpp
         test/TestFourier.cpp
         test/TestDubinsPath.cpp
+        test/TestPurePursuit.cpp
         src/PID.cpp)
