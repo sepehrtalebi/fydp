@@ -51,8 +51,30 @@ public:
         return {false, state.vel.magnitude() / radius};
     }
 
+    /**
+     * Outputs the anticipated trajectory that will be followed based on the current applied settings and path.
+     * The state will be integrated forwards in time with a step size of STEP_SIZE in time.
+     * Integration will be stopped once a replan is requested.
+     */
+    template<typename OStream>
+    void toCSV(OStream &out, const typename DubinsPath<T>::State& start) const {
+        State state = start;
+        out << state.pos[0] << ", " << state.pos[1] << std::endl;
+
+        while (true) {
+            auto [should_replan, ang_vel] = pursue(state);
+            if (should_replan) break;
+
+            state.pos += state.vel * STEP_SIZE;
+            state.vel = getRotationMatrix(ang_vel * STEP_SIZE) * state.vel;
+            out << state.pos[0] << ", " << state.pos[1] << std::endl;
+        }
+    }
+
 private:
     using Vector2 = Vector<T, 2>;
+    using State = typename DubinsPath<T>::State;
+    static constexpr T STEP_SIZE = static_cast<T>(0.01);
     T lookahead_time;
     T min_radius;
     DubinsPath<T> path;
