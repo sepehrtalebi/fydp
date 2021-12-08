@@ -4,6 +4,8 @@
 #include <initializer_list>
 #include <cmath>
 #include <functional>
+#include <string>
+#include <sstream>
 
 template<typename T, size_t n>
 class Vector {
@@ -187,6 +189,15 @@ public:
 
     const_iterator end() const {
         return data.end();
+    }
+
+    [[nodiscard]] std::string toStr() const {
+        if (n == 0) return "{}";
+        std::stringstream out;
+        out << "{" << data[0];
+        for (size_t i = 1; i < n; i++) out << ", " << data[i];
+        out << "}";
+        return out.str();
     }
 };
 
