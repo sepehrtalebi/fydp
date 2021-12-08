@@ -234,6 +234,15 @@ private:
 
     explicit DubinsPath(const Path &path) : path(path) {}
 
+    DubinsPath(const DubinsPath<T>& other) {
+        (*this) = other;
+    }
+
+    DubinsPath& operator=(const DubinsPath<T>& other) {
+        for (size_t i = 0; i < 3; i++) path[i] = other[i];
+        return *this;
+    }
+
     /**
      *
      * @param start
