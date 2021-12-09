@@ -57,6 +57,8 @@ class Polynomial: public Vector<T, n> {
     friend class Polynomial;
     template<typename, size_t, size_t>
     friend class RationalFunction;
+    template<typename, size_t, size_t>
+    friend class TransferFunction;
 public:
     using Vector<T, n>::Vector;
 
