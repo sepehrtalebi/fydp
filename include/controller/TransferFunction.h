@@ -16,19 +16,24 @@ class TransferFunction: public RationalFunction<T, n, m> {
     }
 
     template<size_t p>
-    static Vector<T, p> reallocate_push(const Vector<T, p> &other, T val) {
+    static Vector<T, p> reallocate_push(const Vector<T, p> &other, T val) { //deletes pth element, inserts 0th element
         Vector<T, p> copy;
         for (int i = 1; i < p; i++) copy[i] = other[i - 1];
         copy[0] = val;
         return copy;
     }
+
+    template<typename, size_t, size_t>
+    friend class TransferFunction;
 public:
     TransferFunction() = default;
 
     TransferFunction(const Polynomial<T, n> &numerator, const Polynomial<T, m> &denominator):
-            RationalFunction<T, n, m>(numerator, denominator) {}
+            RationalFunction<T, n, m>(numerator, denominator), past_inputs(), past_outputs() {}
 
-    explicit TransferFunction(RationalFunction<T, n, m> &rf): TransferFunction(rf.numerator, rf.denominator) {}
+    using RationalFunction<T, n, m>::RationalFunction;
+
+    TransferFunction(RationalFunction<T, n, m> rf): TransferFunction(rf.numerator, rf.denominator) {}  // NOLINT(google-explicit-constructor)
 
     TransferFunction& operator=(const TransferFunction<T, n, m> &other) {
         this->numerator = other.numerator;
@@ -42,24 +47,20 @@ public:
         *this = other;
     }
 
-    template<size_t p, size_t q, size_t r, size_t s>
-    static TransferFunction<T, p + r, std::max(p+r, q+s)> feedbackLoop(TransferFunction<T, p, q> controller, TransferFunction<T, r, s> plant) {
-        TransferFunction<T, p + r, q + s> CP = controller * plant;
-        return {CP.numerator, CP.numerator + CP.denominator};
-    }
-
-    static auto discretize(const TransferFunction<T, n, m> &tf, T dt) {
+    static TransferFunction<T, (n - 1) + heaviside_difference(m, n) + 1, (m - 1) + heaviside_difference(n, m) + 1>
+            discretize(const TransferFunction<T, n, m> &tf, T dt) {
         //trapezoidal method, SCH looks hard
         RationalFunction<T, 2, 2> trapezoidal{Polynomial<T, 2>{2, -2}, Polynomial<T, 2>{dt, dt}};
         auto discretized = tf._of_(trapezoidal);
-        return TransferFunction{discretized};
+        return discretized;
     }
 
-    auto discretize(T dt) {
+    TransferFunction<T, (n - 1) + heaviside_difference(m, n) + 1, (m - 1) + heaviside_difference(n, m) + 1>
+            discretize(T dt) {
         //trapezoidal method, SCH looks hard
         RationalFunction<T, 2, 2> trapezoidal{Polynomial<T, 2>{2, -2}, Polynomial<T, 2>{dt, dt}};
         auto discretized = this->_of_(trapezoidal);
-        return TransferFunction{discretized};
+        return {discretized};
     }
 
     template<size_t output_size>
@@ -74,4 +75,21 @@ public:
         }
         return step_response;
     }
+
+    using RationalFunction<T, n, m>::operator*=;
 };
+
+template<typename T, size_t p, size_t q, size_t r, size_t s>
+static TransferFunction<T, p + r - 1, std::max(p+r - 1, q + s - 1)>
+feedbackLoop(TransferFunction<T, p, q> controller, TransferFunction<T, r, s> plant) {
+    const TransferFunction<T, p + r - 1, q + s - 1> CP = controller * plant;
+    return {CP.numerator, CP.numerator + CP.denominator};
+}
+
+template<typename T, size_t p, size_t q>
+static TransferFunction<T, p, std::max(p, q)>
+feedbackLoop(const TransferFunction<T, p, std::max(p, q)> &CP) {
+    Polynomial<T, std::max(p, q)> den;
+    den += CP.numerator + CP.denominator;
+    return {CP.numerator, den};
+}

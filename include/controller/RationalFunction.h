@@ -22,6 +22,8 @@ protected:
 
     template<typename, size_t, size_t>
     friend class RationalFunction;
+    template<typename, size_t, size_t>
+    friend class TransferFunction;
 public:
     RationalFunction() = default;
 
@@ -138,6 +140,11 @@ public:
         num = numerator * scalar;
         den = denominator * scalar;
         return {num, den};
+    }
+
+    void operator*=(const T &scalar) {
+        numerator *= scalar;
+        denominator *= scalar;
     }
 
     template<size_t p, size_t q>

@@ -117,12 +117,12 @@ public:
         return f_of_g;
     }
 
-    void print() {
+    void print(char independent_var = 's') {
         for (int i = n - 1; i > 1; i--) {
             if (this->data[i] != 0)
-                std::cout << this->data[i] << "s^" << i << " + "; //TODO: setw
+                std::cout << this->data[i] << independent_var << "^" << i << " + "; //TODO: setw
         }
-        if ((n > 1) && (this->data[1] != 0)) std::cout << this->data[1] << "s + " << this->data[0] << std::endl;
+        if ((n > 1) && (this->data[1] != 0)) std::cout << this->data[1] << independent_var << " + " << this->data[0] << std::endl;
         else std::cout << this->data[0] << std::endl;
     }
 

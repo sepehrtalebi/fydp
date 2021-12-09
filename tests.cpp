@@ -7,6 +7,7 @@
 #include "test/TestFourier.h"
 #include "test/TestPolynomial.h"
 #include "test/TestRationalFunction.h"
+#include "test/TestTransferFunction.h"
 #include <iostream>
 
 int main() {
@@ -19,6 +20,7 @@ int main() {
 //    testFourier();
 //    std::cout << "Passed All Tests!" << std::endl;
 //    testPolynomial();
-    testRationalFunction();
+//    testRationalFunction();
+    testTransferFunction();
     return 0;
 }
