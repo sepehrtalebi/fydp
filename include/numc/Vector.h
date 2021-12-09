@@ -38,6 +38,16 @@ public:
         *this = other;
     }
 
+    void range(T start, T end) {
+        double interval = (end - start)/n;
+        for (int i = 0; i < n; i++) data[i] = interval * i;
+    }
+
+    std::array<T, n> data_to_array() {
+        std::array<T, n> output = data;
+        return output;
+    }
+
     T magnitude() const {
         T sum{};
         for (size_t i = 0; i < n; i++) sum += data[i] * data[i];
