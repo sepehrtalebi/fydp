@@ -10,7 +10,7 @@ void testPurePursuit() {
     DubinsPath<double>::State goal = {Vector2{5, 3}, Vector2{-1, 2}};
     const double min_dubins_radius = 5;
     DubinsPath<double> path = DubinsPath<double>::create(start, goal, min_dubins_radius);
-    PurePursuit<double> pursuer{2, 7};
+    PurePursuit<double> pursuer{2, 7, path};
 
     std::ofstream out1("test/output/pure_pursuit1.csv");
     assert(out1);

@@ -2,28 +2,24 @@
 
 #include "DubinsPath.h"
 #include <cmath>
+#include <utility>
 
 template<typename T>
 class PurePursuit {
 public:
-    struct Result {
-        bool should_replan;
-        T angular_vel;
-    };
-
-    explicit PurePursuit(const T &lookahead_time, const T &min_radius) :
-            lookahead_time(lookahead_time), min_radius(min_radius) {}
+    PurePursuit(const T &lookahead_time, const T &min_radius, const DubinsPath<T> &path) :
+            lookahead_time(lookahead_time), min_radius(min_radius), path(path) {}
 
     void updatePath(const DubinsPath<T> &new_path) {
         this->path = new_path;
     }
 
     /**
+     * A positive returned angular velocity indicates a turn to the left
      *
-     * @param state
-     * @return Commanded angular velocity. Positive indicates a turn to the left
+     * @return An std::pair of a bool indicating whether a re-plan is needed, and the commanded angular velocity
      */
-    Result pursue(const typename DubinsPath<T>::State &state) {
+    std::pair<bool, T> pursue(const typename DubinsPath<T>::State &state) const {
         Vector2 ideal_target = state.pos + state.vel * lookahead_time;
         Vector2 target = path.closestPoint(ideal_target);
         // TODO: add check to see if we are too far off course
@@ -44,7 +40,7 @@ public:
         T radius = target.magnitudeSquared() / (2 * target[1]);
 
         if (std::fabs(radius) < min_radius) {
-            // required turn is too sharp, request replan
+            // required turn is too sharp, request re-plan
             return {true, 0};
         }
 
@@ -57,12 +53,12 @@ public:
      * Integration will be stopped once a replan is requested.
      */
     template<typename OStream>
-    void toCSV(OStream &out, const typename DubinsPath<T>::State& start) const {
+    void toCSV(OStream &out, const typename DubinsPath<T>::State &start) const {
         State state = start;
         out << state.pos[0] << ", " << state.pos[1] << std::endl;
 
         while (true) {
-            auto [should_replan, ang_vel] = pursue(state);
+            auto[should_replan, ang_vel] = pursue(state);
             if (should_replan) break;
 
             state.pos += state.vel * STEP_SIZE;
