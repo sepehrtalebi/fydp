@@ -208,4 +208,5 @@ private:
     }
 
     friend void testFFT(const size_t &N);
+    friend void testMultiplicationCount();
 };
