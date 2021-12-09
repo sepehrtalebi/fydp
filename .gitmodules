@@ -1,3 +1,12 @@
 [submodule "include/utils/Matplotplusplus"]
 	path = include/utils/Matplotplusplus
 	url = https://github.com/alandefreitas/matplotplusplus/
+[submodule "include/utils/include/utils/Matplotplusplus"]
+	path = include/utils/include/utils/Matplotplusplus
+	url = https://github.com/alandefreitas/matplotplusplus/
+[submodule "include/utils/matplotplusplus"]
+	path = include/utils/matplotplusplus
+	url = https://github.com/alandefreitas/matplotplusplus/
+[submodule "include/utils/matplotlib-cpp"]
+	path = include/utils/matplotlib-cpp
+	url = https://github.com/lava/matplotlib-cpp
