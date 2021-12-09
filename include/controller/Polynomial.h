@@ -45,7 +45,7 @@ class Polynomial: public Vector<T, n> {
     }
 
     template<size_t m>
-    static const Polynomial<T, std::max(n, m)> hacky_product(Polynomial<T, n> first, Polynomial<T, m> other) {
+    static Polynomial<T, std::max(n, m)> hacky_product(Polynomial<T, n> first, Polynomial<T, m> other) {
         Polynomial<T, std::max(n, m)> foil;
         for (int i = 0; i < n; i++)
             for (int j = 0; j < m; j++)
@@ -99,7 +99,7 @@ public:
         return p;
     }
 
-    T _of_(T scalar) {
+    T _of_(T scalar) const {
         T f_of_scalar = this->data[0];
         for (size_t i = n - 1; i > 0; i++) {
             f_of_scalar += this->data[i] * std::pow(scalar, i);
@@ -108,7 +108,7 @@ public:
     }
 
     template<size_t m>
-    auto _of_(const Polynomial<T, m> &g_of_x) {
+    auto _of_(const Polynomial<T, m> &g_of_x) const {
         Polynomial<T, (n - 1) * (m - 1) + 1> f_of_g;
         f_of_g[0] = this->data[0];
         for (size_t i = n - 1; i > 0; i--) {
@@ -130,7 +130,7 @@ public:
 
     using Vector<T, n>::operator*;
 
-    auto operator*(const Polynomial<T, n> &other) {
+    auto operator*(const Polynomial<T, n> &other) const {
         Polynomial<T, 2 * n - 1> foil;
         for (int i = 0; i < n; i++)
             for (int j = 0; j < n; j++)
@@ -139,7 +139,7 @@ public:
     }
 
     template<size_t m>
-    auto operator*(const Polynomial<T, m> &other) {
+    auto operator*(const Polynomial<T, m> &other) const {
         Polynomial<T, m + n - 1> foil;
         for (int i = 0; i < n; i++)
             for (int j = 0; j < m; j++)
@@ -151,14 +151,14 @@ public:
 
     using Vector<T, n>::operator+;
 
-    auto operator+(T &scalar) {
+    auto operator+(T &scalar) const {
         auto sum = this;
         sum[0] += scalar;
         return sum;
     }
 
     template<size_t m>
-    auto operator+(const Polynomial<T, m> &other) {
+    auto operator+(const Polynomial<T, m> &other) const {
         Polynomial<T, std::max(n, m)> sum;
         for (size_t i = 0; i < n; i++) sum[i] += this->data[i];
         for (size_t i = 0; i < m; i++) sum[i] += other[i];
@@ -179,21 +179,21 @@ public:
 
     using Vector<T, n>::operator-;
 
-    auto operator-(T &scalar) {
+    auto operator-(T &scalar) const {
         auto diff = this;
         diff[0] -= scalar;
         return diff;
     }
 
     template<size_t m>
-    auto operator-(const Polynomial<T, n> &other) {
+    auto operator-(const Polynomial<T, n> &other) const {
         Polynomial<T, n> diff;
         for (size_t i = 0; i < n; i++) diff[i] = this->data[i] - other[i];
         return diff;
     }
 
     template<size_t m>
-    auto operator-(const Polynomial<T, m> &other) {
+    auto operator-(const Polynomial<T, m> &other) const {
         Polynomial<T, std::max(n, m)> diff;
         for (size_t i = 0; i < n; i++) diff[i] -= this->data[i];
         for (size_t i = 0; i < m; i++) diff[i] -= other[i];
