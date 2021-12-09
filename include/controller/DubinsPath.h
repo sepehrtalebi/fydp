@@ -83,7 +83,7 @@ public:
         /**
          * @return The point on this Curve closest to the specified point
          */
-        [[nodiscard]] Vector<T, 2> closestPoint(const Vector<T, 2> &p) {
+        [[nodiscard]] Vector<T, 2> closestPoint(const Vector<T, 2> &p) const {
             if (!is_turning) {
                 Vector2 d = end_pos - start_pos;
                 T projection_fraction = (p - start_pos).dot(d) / d.dot(d);
@@ -213,7 +213,7 @@ public:
         return getLength() < other.getLength();
     }
 
-    Vector<T, 2> closestPoint(const Vector<T, 2> &p) {
+    Vector<T, 2> closestPoint(const Vector<T, 2> &p) const {
         return std::min({path[0].closestPoint(p), path[1].closestPoint(p), path[2].closestPoint(p)},
                         [&p](const Vector2 &first, const Vector2 &second) {
                             return (first - p).magnitudeSquared() < (second - p).magnitudeSquared();
