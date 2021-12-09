@@ -51,6 +51,10 @@ add_executable(FYDP tests.cpp
         test/TestFourier.cpp
         test/TestPolynomial.cpp
         test/TestRationalFunction.cpp
-        src/controller/Controller.cpp test/TestTransferFunction.h test/TestTransferFunction.cpp)
+        src/controller/Controller.cpp
+        test/TestTransferFunction.h 
+        test/TestTransferFunction.cpp
+        test/TestDubinsPath.cpp
+        src/PID.cpp)
 
 target_link_libraries(FYDP matplotlib_cpp)
