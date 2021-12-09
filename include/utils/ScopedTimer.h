@@ -3,10 +3,11 @@
 #include <string>
 #include <chrono>
 #include <iostream>
+#include <utility>
 
 class ScopedTimer {
 public:
-    ScopedTimer(const std::string& name) : name(name), t_start(std::chrono::high_resolution_clock::now()) {}
+    explicit ScopedTimer(std::string  name) : name(std::move(name)), t_start(std::chrono::high_resolution_clock::now()) {}
 
     ~ScopedTimer() {
         std::chrono::duration<double, std::milli> ms = std::chrono::high_resolution_clock::now() - t_start;

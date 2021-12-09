@@ -7,12 +7,12 @@
 
 template<typename T, size_t n>
 class Vector {
-protected:
-    std::array<T, n> data{};
 public:
     using iterator = typename std::array<T, n>::iterator;
     using const_iterator = typename std::array<T, n>::const_iterator;
-
+protected:
+    std::array<T, n> data{};
+public:
     Vector() = default;
 
     Vector(std::initializer_list<T> elements) {
@@ -88,6 +88,12 @@ public:
 
     void operator+=(const double &scalar) {
         for (size_t i = 0; i < n; i++) data[i] += scalar;
+    }
+
+    Vector<T, n> operator-() const {
+        Vector<T, n> negative;
+        for (size_t i = 0; i < n; i++) negative[i] = -data[i];
+        return negative;
     }
 
     Vector<T, n> operator-(const Vector<T, n> &other) const {
