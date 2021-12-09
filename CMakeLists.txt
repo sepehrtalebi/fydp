@@ -3,6 +3,8 @@ project(FYDP)
 
 set(CMAKE_CXX_STANDARD 20)
 
+add_subdirectory(./include/utils/Matplotplusplus)
+
 include_directories(./include)
 include_directories(./include/differentiation)
 include_directories(./include/numc)
@@ -50,3 +52,6 @@ add_executable(FYDP tests.cpp
         test/TestPolynomial.cpp
         test/TestRationalFunction.cpp
         src/controller/Controller.cpp test/TestTransferFunction.h test/TestTransferFunction.cpp)
+
+add_executable(my_target test/TestTransferFunction.cpp)
+target_link_libraries(my_target PUBLIC Matplotplusplus)
