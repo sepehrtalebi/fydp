@@ -50,7 +50,7 @@ public:
     template<size_t p, size_t q, size_t r, size_t s>
     static TransferFunction<T, p + r - 1, std::max(p+r - 1, q + s - 1)>
     feedbackLoop(TransferFunction<T, p, q> controller, TransferFunction<T, r, s> plant) {
-        const TransferFunction<T, p + r - 1, q + s - 1> CP = controller * plant;
+        TransferFunction<T, p + r - 1, q + s - 1> CP = controller * plant;
         return {CP.numerator, CP.numerator + CP.denominator};
     }
 
@@ -59,6 +59,13 @@ public:
         Polynomial<T, std::max(m, n)> den;
         den = CP.numerator + CP.denominator;
         return {CP.numerator, den};
+    }
+
+    template<size_t p, size_t q>
+    TransferFunction<T, n + p - 1, std::max(n + p - 1, m + q - 1)>
+    feedbackLoop(const TransferFunction<T, p, q> &other) const {
+        TransferFunction<T, n + p - 1, m + q - 1> CP = (*this) * other;
+        return {CP.numerator, CP.numerator + CP.denominator};
     }
 
     static TransferFunction<T, (n - 1) + heaviside_difference(m, n) + 1, (m - 1) + heaviside_difference(n, m) + 1>
