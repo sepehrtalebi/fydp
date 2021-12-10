@@ -10,8 +10,9 @@ class TransferFunction: public RationalFunction<T, n, m> {
 
     T next_output() {
         T next_output = 0;
-        for (int i = 0; i < m - 1; i++) next_output += -this->denominator[i] / this->denominator[0] * past_outputs[m - 1 - i];
-        for (int i = 0; i < n; i++) next_output += this->numerator / this->denominator[0] * past_inputs[n - i];
+        if (m > 1)
+            for (int i = 0; i < m - 1; i++) next_output -= this->denominator[i] / this->denominator[m - 1] * past_outputs[m - 2 - i];
+        for (int i = 0; i < n; i++) next_output += this->numerator[i] / this->denominator[m - 1] * past_inputs[n - 1 - i];
         return next_output;
     }
 
@@ -71,23 +72,23 @@ public:
     static TransferFunction<T, (n - 1) + heaviside_difference(m, n) + 1, (m - 1) + heaviside_difference(n, m) + 1>
             discretize(const TransferFunction<T, n, m> &tf, T dt) {
         //trapezoidal method, SCH looks hard
-        RationalFunction<T, 2, 2> trapezoidal{Polynomial<T, 2>{2, -2}, Polynomial<T, 2>{dt, dt}};
+        RationalFunction<T, 2, 2> trapezoidal{Polynomial<T, 2>{-2, 2}, Polynomial<T, 2>{dt, dt}};
         auto discretized = tf._of_(trapezoidal);
         return discretized;
     }
 
     TransferFunction<T, (n - 1) + heaviside_difference(m, n) + 1, (m - 1) + heaviside_difference(n, m) + 1>
-            discretize(T dt) {
+            discretize(T dt) const {
         //trapezoidal method, SCH looks hard
-        RationalFunction<T, 2, 2> trapezoidal{Polynomial<T, 2>{2, -2}, Polynomial<T, 2>{dt, dt}};
+        RationalFunction<T, 2, 2> trapezoidal{Polynomial<T, 2>{-2, 2}, Polynomial<T, 2>{dt, dt}};
         auto discretized = this->_of_(trapezoidal);
         return {discretized};
     }
 
     template<size_t output_size>
-    Vector<T, output_size> step(const TransferFunction<T, n, m> &tf, T dt = 1E-5) {
-        Vector<T, output_size> step_response;
-        auto discrete = tf.discretize(dt);
+    std::array<T, output_size> step(T dt = 1E-4) {
+        std::array<T, output_size> step_response;
+        auto discrete = this->discretize(dt);
         for (int i = 0; i < n; i++) past_inputs[i] = 1;
         for (int i = 0; i < output_size; i++) {
             step_response[i] = next_output();
@@ -99,18 +100,3 @@ public:
 
     using RationalFunction<T, n, m>::operator*=;
 };
-
-//template<typename T, size_t p, size_t q, size_t r, size_t s>
-//static TransferFunction<T, p + r - 1, std::max(p+r - 1, q + s - 1)>
-//feedbackLoop(TransferFunction<T, p, q> controller, TransferFunction<T, r, s> plant) {
-//    const TransferFunction<T, p + r - 1, q + s - 1> CP = controller * plant;
-//    return {CP.numerator, CP.numerator + CP.denominator};
-//}
-//
-//template<typename T, size_t p, size_t q>
-//static TransferFunction<T, p, std::max(p, q)>
-//feedbackLoop(const TransferFunction<T, p, q> &CP) {
-//    Polynomial<T, std::max(p, q)> den;
-//    den += CP.numerator + CP.denominator;
-//    return {CP.numerator, den};
-//}
