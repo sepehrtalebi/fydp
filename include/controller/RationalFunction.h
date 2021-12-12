@@ -54,13 +54,13 @@ public:
         return (*this);
     }
 
-    void print() {
-        numerator.print();
+    void print(char independent_var = 's') {
+        numerator.print(independent_var);
         for (int i = 0; i < std::max(n, m); i++) {
             std::cout << "-----";
         }
         std::cout << std::endl;
-        denominator.print();
+        denominator.print(independent_var);
     }
 
     T numerator_data(size_t num_index) {
@@ -86,28 +86,40 @@ public:
         Polynomial<T, (m - 1) * std::max(p - 1, q - 1) + (q - 1) * heaviside_difference(n, m) + 1> den;
 
         for (size_t i = 0; i < n; i++) { //this is how you add the rational functions in the numerator
-            Polynomial<T, (n - 1) * (p - 1) + 1> num_of_num_expansion{g_of_x.numerator};
-            Polynomial<T, (n - 1) * (q - 1) + 1> den_of_num_expansion; //edge n = 1
-            if (n > 1) den_of_num_expansion = {g_of_x.denominator};
-            else den_of_num_expansion.identity();
+            Polynomial<T, (n - 1) * (p - 1) + 1> num_of_num_expansion;
+            Polynomial<T, (n - 1) * (q - 1) + 1> den_of_num_expansion;
+            if (n > 1) { //edge n = 1
+                den_of_num_expansion = {g_of_x.denominator};
+                num_of_num_expansion = {g_of_x.numerator};
+            }
+            else {
+                den_of_num_expansion.identity();
+                num_of_num_expansion.identity();
+            }
             num_of_num_expansion.pow(i);
             den_of_num_expansion.pow(n - 1 - i);
             auto hacky_product = Polynomial<T, std::max((n - 1) * (p - 1) + 1, (n - 1) * (q - 1) + 1)>::hacky_product(
                     num_of_num_expansion, den_of_num_expansion
-                    ); //* usually creates a larger size polynomial based on sizes of the operands. We don't want this.
+                    ); // * usually creates a larger size polynomial based on sizes of the operands. We don't want this.
             num += numerator[i] * hacky_product;
         }
 
         for (size_t i = 0; i < m; i++) { //this is how you add the rational functions in the denominator
-            Polynomial<T, (m - 1) * (p - 1) + 1> num_of_den_expansion{g_of_x.numerator};
+            Polynomial<T, (m - 1) * (p - 1) + 1> num_of_den_expansion;
             Polynomial<T, (m - 1) * (q - 1) + 1> den_of_den_expansion; //edge m = 1
-            if (m > 1) den_of_den_expansion = {g_of_x.denominator};
-            else den_of_den_expansion.identity();
+            if (m > 1) {
+                den_of_den_expansion = {g_of_x.denominator};
+                num_of_den_expansion = {g_of_x.numerator};
+            }
+            else {
+                den_of_den_expansion.identity();
+                num_of_den_expansion.identity();
+            }
             num_of_den_expansion.pow(i);
             den_of_den_expansion.pow(m - 1 - i);
-            auto hacky_product = Polynomial<T, std::max((n - 1) * (p - 1) + 1, (n - 1) * (q - 1) + 1)>::hacky_product(
+            auto hacky_product = Polynomial<T, std::max((m - 1) * (p - 1) + 1, (m - 1) * (q - 1) + 1)>::hacky_product(
                     num_of_den_expansion, den_of_den_expansion
-            ); //* usually creates a larger size polynomial based on sizes of the operands. We don't want this.
+            ); // * usually creates a larger size polynomial based on sizes of the operands. We don't want this.
             den += denominator[i] * hacky_product;
         }
 

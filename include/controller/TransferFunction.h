@@ -1,18 +1,21 @@
 #pragma once
 #include <iostream>
 #include <array>
+#include <cassert>
 #include "RationalFunction.h"
 
 template <typename T, size_t n, size_t m>
 class TransferFunction: public RationalFunction<T, n, m> {
     Vector<T, std::max<size_t>(n, 0)> past_inputs;
     Vector<T, std::max<size_t>(m - 1, 0)> past_outputs;
+    bool discretized;
 
     T next_output() {
         T next_output = 0;
         if (m > 1)
-            for (int i = 0; i < m - 1; i++) next_output -= this->denominator[i] / this->denominator[m - 1] * past_outputs[m - 2 - i];
-        for (int i = 0; i < n; i++) next_output += this->numerator[i] / this->denominator[m - 1] * past_inputs[n - 1 - i];
+            for (int i = 0; i < m - 1; i++) next_output -= this->denominator[i] * past_outputs[m - 2 - i];
+        for (int i = 0; i < n; i++) next_output += this->numerator[i] * past_inputs[n - 1 - i];
+        next_output /= this->denominator[m - 1];
         return next_output;
     }
 
@@ -29,8 +32,8 @@ class TransferFunction: public RationalFunction<T, n, m> {
 public:
     TransferFunction() = default;
 
-    TransferFunction(const Polynomial<T, n> &numerator, const Polynomial<T, m> &denominator):
-            RationalFunction<T, n, m>(numerator, denominator), past_inputs(), past_outputs() {}
+    TransferFunction(const Polynomial<T, n> &numerator, const Polynomial<T, m> &denominator, bool discrete = false):
+            RationalFunction<T, n, m>(numerator, denominator), past_inputs(), past_outputs(), discretized(discrete) {}
 
     using RationalFunction<T, n, m>::RationalFunction;
 
@@ -39,6 +42,7 @@ public:
     TransferFunction& operator=(const TransferFunction<T, n, m> &other) {
         this->numerator = other.numerator;
         this->denominator = other.denominator;
+        this->discretized = other.discretized;
         for (int i = 0; i < std::max<size_t>(n, 0); i++) this->past_inputs[i] = other.past_inputs[i];
         for (int i = 0; i < std::max<size_t>(m - 1, 0); i++) this->past_outputs[i] = other.past_outputs[i];
         return *this;
@@ -48,52 +52,60 @@ public:
         *this = other;
     }
 
-    template<size_t p, size_t q, size_t r, size_t s>
-    static TransferFunction<T, p + r - 1, std::max(p+r - 1, q + s - 1)>
-    feedbackLoop(TransferFunction<T, p, q> controller, TransferFunction<T, r, s> plant) {
-        TransferFunction<T, p + r - 1, q + s - 1> CP = controller * plant;
-        return {CP.numerator, CP.numerator + CP.denominator};
-    }
-
-    static TransferFunction<T, n, std::max(n, m)>
-    feedbackLoop(const TransferFunction<T, n, m> &CP) {
-        Polynomial<T, std::max(m, n)> den;
-        den = CP.numerator + CP.denominator;
-        return {CP.numerator, den};
+    void print() {
+        if (this->discretized) RationalFunction<T, n, m>::print('z');
+        else RationalFunction<T, n, m>::print();
     }
 
     template<size_t p, size_t q>
     TransferFunction<T, n + p - 1, std::max(n + p - 1, m + q - 1)>
     feedbackLoop(const TransferFunction<T, p, q> &other) const {
         TransferFunction<T, n + p - 1, m + q - 1> CP = (*this) * other;
-        return {CP.numerator, CP.numerator + CP.denominator};
+        return {CP.numerator, CP.numerator + CP.denominator, this->discretized};
     }
 
-    static TransferFunction<T, (n - 1) + heaviside_difference(m, n) + 1, (m - 1) + heaviside_difference(n, m) + 1>
-            discretize(const TransferFunction<T, n, m> &tf, T dt) {
-        //trapezoidal method, SCH looks hard
-        RationalFunction<T, 2, 2> trapezoidal{Polynomial<T, 2>{-2, 2}, Polynomial<T, 2>{dt, dt}};
-        auto discretized = tf._of_(trapezoidal);
-        return discretized;
+    TransferFunction<T, n, std::max(n, m)>
+    feedbackLoop() const {
+        Polynomial<T, std::max(m, n)> den;
+        den = this->numerator + this->denominator;
+        return {this->numerator, den, this->discretized};
     }
 
-    TransferFunction<T, (n - 1) + heaviside_difference(m, n) + 1, (m - 1) + heaviside_difference(n, m) + 1>
-            discretize(T dt) const {
+    TransferFunction<T, std::max(m, n), std::max(n, m)>
+            discretize(T dt = 1E-4) const {
         //trapezoidal method, SCH looks hard
         RationalFunction<T, 2, 2> trapezoidal{Polynomial<T, 2>{-2, 2}, Polynomial<T, 2>{dt, dt}};
-        auto discretized = this->_of_(trapezoidal);
-        return {discretized};
+        TransferFunction<T, (n - 1) + heaviside_difference(m, n) + 1, (m - 1) + heaviside_difference(n, m) + 1>
+            discrete = this->_of_(trapezoidal);
+        discrete.discretized = true;
+        size_t p = (n - 1) + heaviside_difference(m, n) + 1;
+        size_t q = (m - 1) + heaviside_difference(n, m) + 1;
+        for (int i = 0; i < p; i++) discrete.numerator[i] /= discrete.denominator[q - 1];
+        for (int i = 0; i < q; i++) discrete.denominator[i] /= discrete.denominator[q - 1];
+        discrete.denominator[q - 1] = 1;
+        return {discrete};
     }
 
     template<size_t output_size>
-    std::array<T, output_size> step(T dt = 1E-4) {
-        std::array<T, output_size> step_response;
-        auto discrete = this->discretize(dt);
-        for (int i = 0; i < n; i++) past_inputs[i] = 1;
-        for (int i = 0; i < output_size; i++) {
-            step_response[i] = next_output();
-            past_outputs = reallocate_push(past_outputs, step_response[i]);
-            past_inputs = reallocate_push(past_inputs, past_inputs[0] - step_response[i]);
+    Vector<T, output_size> step(T dt = 1E-4) {
+        Vector<T, output_size> step_response;
+        if (this->discretized) {
+            assert(m >= n);
+            past_inputs[0] = 1;
+            for (int i = 0; i < output_size; i++) {
+                step_response[i] = next_output();
+                past_outputs = reallocate_push(past_outputs, step_response[i]);
+                past_inputs = reallocate_push(past_inputs, 1);
+            }
+        }
+        else {
+            auto discrete = this->discretize(dt);
+            discrete.past_inputs[0] = 1;
+            for (int i = 0; i < output_size; i++) {
+                step_response[i] = discrete.next_output();
+                discrete.past_outputs = reallocate_push(discrete.past_outputs, step_response[i]);
+                discrete.past_inputs = reallocate_push(discrete.past_inputs, 1);
+            }
         }
         return step_response;
     }

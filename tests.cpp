@@ -22,7 +22,7 @@ int main() {
     testDubinsPath();
     testPolynomial();
     testRationalFunction();
-//     testTransferFunction();
+    testTransferFunction();
     std::cout << "Passed All Tests!" << std::endl;
     return 0;
 }
