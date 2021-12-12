@@ -1,26 +1,28 @@
 #pragma once
 
-// TODO: make sure this works
 template<typename T>
 class PID {
+    T last_error, error_area;
+    const T K_P, K_I, K_D;
 public:
-    /**
-     * @brief Basic PID controller, which assumes a constant update rate.
-     */
-    PID(const T &k_p, const T &k_i, const T &k_d, const T &dt) : k_p(k_p), k_i(k_i), k_d(k_d), dt(dt) {}
+    PID(T K_P, T K_I, T K_D): K_P(K_P), K_I(K_I), K_D(K_D), last_error(0), error_area(0) {}
+    PID() =default;
 
-    T update(const T &pos) {
-        integral += last_pos * dt;
-        T result = k_p * pos + k_i * integral + k_d * (pos - last_pos) / dt;
-        last_pos = pos;
-        return result;
+    T update(T error, T dt) {
+        double output_signal = 0;
+        if (K_P) output_signal += K_P * error;
+        if (K_I) {
+            error_area += error * dt;
+            output_signal += K_I * error_area;
+        }
+        if (K_D) {
+            output_signal += K_D * (error - last_error) / dt;
+            last_error = error;
+        }
+        return output_signal;
     }
 
-private:
-    const T k_p;
-    const T k_i;
-    const T k_d;
-    const T dt;
-    T last_pos{};
-    T integral{};
+    static T proportional_signal(T K_P, T error) {
+        return K_P * error;
+    }
 };

@@ -94,7 +94,7 @@ public:
         for (size_t k = 0; k < n; k++) {
             for (size_t i = 0; i < m; i++) {
                 T alpha = I[i][k];
-                for (size_t j = 0; i != 0 && j < i - 1; j++) {
+                for (size_t j = 0; j < i; j++) {
                     alpha -= L[i][j] * u[i][j];
                 }
                 u[i][k] = alpha / L[i][i];

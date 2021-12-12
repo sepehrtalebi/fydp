@@ -4,6 +4,7 @@
 #include <initializer_list>
 #include <cmath>
 #include <functional>
+#include <fstream>
 
 template<typename T, size_t n>
 class Vector {
@@ -36,6 +37,21 @@ public:
 
     Vector(const Vector<T, n> &other) {
         *this = other;
+    }
+
+    void range(T start, T end) {
+        double interval = (end - start)/n;
+        for (int i = 0; i < n; i++) data[i] = interval * i;
+    }
+
+    std::array<T, n> data_to_array() {
+        std::array<T, n> output = data;
+        return output;
+    }
+
+    template<typename OStream>
+    void toCSV(OStream& out) const {
+        for (int i = 0; i < n; i++) out << data[i] << std::endl;
     }
 
     T magnitude() const {

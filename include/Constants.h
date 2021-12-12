@@ -2,6 +2,7 @@
 
 #include "Vector3.h"
 #include "Matrix.h"
+#include "controller/PIDGains.h"
 
 // environmental constants
 static constexpr const double GRAVITATIONAL_ACCELERATION = 9.81; // m/s^2
@@ -61,17 +62,28 @@ static const Vector3<double> L_RUDDER{-1, 0, 0}; // NOLINT(cert-err58-cpp)
 
 static constexpr const double T_SAMPLE = 1E-3; //sampling period
 
-//propeller constants
+//AppliedLoads propeller constants
 static constexpr const double K_PROPELLER = 1;
 static constexpr const double TAU_PROPELLER = 1;
 static constexpr const double THRUST_GAIN_PROPELLER = 1;
 static constexpr const double TORQUE_GAIN_PROPELLER = 1;
 static const Vector3<double> L_FRONT_PROPELLER{0, 0, 0}; // NOLINT(cert-err58-cpp)
 
-//elevator constants
+//AppliedLoads elevator constants
 static constexpr const double LIFT_GAIN_ELEVATOR = 1;
 static const Vector3<double> L_ELEVATOR{0, 0, 0}; // NOLINT(cert-err58-cpp)
 
 // Kalman filter constants
 constexpr static const size_t n = 25; // number of states
 constexpr static const size_t p = 18; // number of sensor measurements
+
+//controller constants
+static const PIDGains THROTTLE_GAIN{1, 1, 1, 1};
+static const PIDGains ROLL_GAIN{1, 1, 1};
+static const PIDGains ELEVATOR_GAIN{1, 1, 1, 1};
+constexpr static const double PROPELLER_K_P = 1;
+static const PIDGains AILERON_GAIN{1, 1, 1, 1};
+static const PIDGains PITCH_GAIN{1, 1, 1};
+static constexpr const double BASELINE_VELOCITY = 10; //m/s
+static constexpr const double TRIM = 7 * M_PI / 180.0; //rad. This is used for sin of trim. Alternatively can use length ratios
+static constexpr const double SAMPLING_TIME = 1e-3; //s

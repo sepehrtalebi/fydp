@@ -47,5 +47,9 @@ add_executable(FYDP tests.cpp
         test/TestDifferentiation.cpp
         test/TestPrimes.cpp
         test/TestFourier.cpp
-        test/TestDubinsPath.cpp
-        src/PID.cpp)
+        test/TestPolynomial.cpp
+        test/TestRationalFunction.cpp
+        src/controller/Controller.cpp
+        test/TestTransferFunction.h 
+        test/TestTransferFunction.cpp
+        test/TestDubinsPath.cpp)
