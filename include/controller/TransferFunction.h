@@ -6,7 +6,7 @@
 
 template <typename T, size_t n, size_t m>
 class TransferFunction: public RationalFunction<T, n, m> {
-    Vector<T, std::max<size_t>(n, 0)> past_inputs;
+    Vector<T, std::max<size_t>(m, 0)> past_inputs;
     Vector<T, std::max<size_t>(m - 1, 0)> past_outputs;
     bool discretized;
 
@@ -14,7 +14,7 @@ class TransferFunction: public RationalFunction<T, n, m> {
         T next_output = 0;
         if (m > 1)
             for (int i = 0; i < m - 1; i++) next_output -= this->denominator[i] * past_outputs[m - 2 - i];
-        for (int i = 0; i < n; i++) next_output += this->numerator[i] * past_inputs[n - 1 - i];
+        for (int i = 0; i < m && i < n; i++) next_output += this->numerator[i] * past_inputs[m - 1 - i];
         next_output /= this->denominator[m - 1];
         return next_output;
     }
