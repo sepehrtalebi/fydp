@@ -3,8 +3,6 @@ project(FYDP)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_subdirectory(matplotlib-cpp)
-
 include_directories(./include)
 include_directories(./include/differentiation)
 include_directories(./include/numc)
@@ -55,5 +53,3 @@ add_executable(FYDP tests.cpp
         test/TestTransferFunction.h 
         test/TestTransferFunction.cpp
         test/TestDubinsPath.cpp)
-
-target_link_libraries(FYDP matplotlib_cpp)

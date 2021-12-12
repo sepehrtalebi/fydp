@@ -10,3 +10,6 @@
 [submodule "include/utils/matplotlib-cpp"]
 	path = include/utils/matplotlib-cpp
 	url = https://github.com/lava/matplotlib-cpp
+[submodule "matplotlib-cpp"]
+	path = matplotlib-cpp
+	url = https://github.com/lava/matplotlib-cpp
