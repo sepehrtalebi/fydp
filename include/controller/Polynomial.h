@@ -2,7 +2,7 @@
 #include "Vector.h"
 #include <iostream>
 #include <algorithm>
-#include <exception>
+#include <cassert>
 
 template <typename T, size_t n>
 class Polynomial: public Vector<T, n> {
@@ -86,7 +86,7 @@ public:
 
     template<size_t m>
     Polynomial& operator=(const Polynomial<T, m> &other) {
-        if (m > n) throw std::invalid_argument("Cannot add dimensions to a constant size array");
+        assert(n <= m);
         for (size_t i = 0; i < m; i++) this->data[i] = other[i];
         for (size_t i = m; i < n; i++) this->data[i] = 0;
         return *this;
@@ -172,7 +172,7 @@ public:
 
     template<size_t m>
     void operator+=(const Polynomial<T, m> &other) {
-        if (m > n) throw std::invalid_argument("Cannot add dimensions to a constant size array");
+        assert(n <= m);
         for (int i = 0; i < m; i++)
             this->data[i] += other[i];
     }
@@ -207,7 +207,7 @@ public:
 
     template<size_t m>
     void operator-=(const Polynomial<T, m> &other) {
-        if (m > n) throw std::invalid_argument("Cannot add dimensions to a constant size array");
+        assert(n <= m);
         for (int i = 0; i < m; i++)
             this->data[i] -= other[i];
     }
