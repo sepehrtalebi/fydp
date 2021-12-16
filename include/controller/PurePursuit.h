@@ -20,6 +20,8 @@ public:
      * @return An std::pair of a bool indicating whether a re-plan is needed, and the commanded angular velocity
      */
     std::pair<bool, T> pursue(const typename DubinsPath<T>::State &state) const {
+        // Pursuit algorithm roughly based off of this article:
+        // https://dingyan89.medium.com/three-methods-of-vehicle-lateral-control-pure-pursuit-stanley-and-mpc-db8cc1d32081
         Vector2 ideal_target = state.pos + state.vel * lookahead_time;
         Vector2 target = path.closestPoint(ideal_target);
         // TODO: add check to see if we are too far off course
