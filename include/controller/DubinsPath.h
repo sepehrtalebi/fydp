@@ -236,12 +236,30 @@ private:
     using Path = std::array<Curve, 3>;
     static const Matrix<T, 2, 2> ROT_90_CW;
     static const Matrix<T, 2, 2> ROT_90_CCW;
+    using iterator = typename Path::iterator;
+    using const_iterator = typename Path::const_iterator;
 
     Path path;
 
     DubinsPath() = default;
 
     explicit DubinsPath(const Path &path) : path(path) {}
+
+    iterator begin() {
+        return path.begin();
+    }
+
+    iterator end() {
+        return path.end();
+    }
+
+    const_iterator begin() const {
+        return path.begin();
+    }
+
+    const_iterator end() const {
+        return path.end;
+    }
 
     /**
      *
