@@ -10,6 +10,7 @@
 #include "CQuotient.h"
 #include "CSin.h"
 #include "CSum.h"
+#include "CMultiSum.h"
 #include "CVariable.h"
 
 #include <cstddef>
@@ -47,6 +48,17 @@ template <size_t id, typename L, typename R>
 struct derivative<id, sum<L, R>> {
   using type = sum_t<derivative_t<id, L>, derivative_t<id, R>>;
 };
+
+template<size_t id, typename T, typename ...Ts>
+struct derivative<id, multi_sum<T, Ts...>> {
+  using type = multi_sum_t<derivative_t<id, T>, derivative_t<id, multi_sum_t<Ts...>>>;
+};
+
+template<size_t id, typename T>
+struct derivative<id, multi_sum<T>> : derivative<id, T> {};
+
+template<size_t id>
+struct derivative<id, multi_sum<>> : Zero {};
 
 // difference
 

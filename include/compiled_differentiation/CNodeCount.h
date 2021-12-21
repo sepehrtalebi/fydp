@@ -5,6 +5,7 @@
 #include "CDifference.h"
 #include "CExp.h"
 #include "CLog.h"
+#include "CMultiSum.h"
 #include "CPower.h"
 #include "CProduct.h"
 #include "CQuotient.h"
@@ -65,6 +66,19 @@ struct node_count<Variable<id>> {
 template <typename L, typename R>
 struct node_count<sum<L, R>> {
   static constexpr unsigned int value = node_count_v<L> + node_count_v<R> + 1;
+};
+
+template<typename T, typename ...Ts>
+struct node_count<multi_sum<T, Ts...>> {
+  static constexpr unsigned int value = node_count_v<T> + node_count_v<multi_sum_t<Ts...>> + 1;
+};
+
+template<typename T>
+struct node_count<multi_sum<T>> : node_count<T> {};
+
+template<>
+struct node_count<multi_sum<>> {
+  static constexpr unsigned int value = 1;
 };
 
 template <typename L, typename R>

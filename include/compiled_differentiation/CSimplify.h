@@ -74,37 +74,12 @@ struct simplify<
   using type = sum_t<simplify_t<L>, simplify_t<R>>;
 };
 
-// C1 - C2 -> C3
-template <typename R1, typename R2>
-struct simplify<difference<Constant<R1>, Constant<R2>>> {
-  using type = Constant<std::ratio_subtract<R1, R2>>;
-};
-
-// 0 - T -> -1 * T
-template <typename T>
-struct simplify<difference<Zero, T>, std::enable_if_t<!is_constant_v<T>>> {
-  using type = simplify_t<product_t<MinusOne, simplify_t<T>>>;
-};
-
-// T - 0 -> T
-template <typename T>
-struct simplify<difference<T, Zero>, std::enable_if_t<!is_constant_v<T>>> {
-  using type = simplify_t<T>;
-};
-
-// T - T -> 0
-template <typename T>
-struct simplify<difference<T, T>, std::enable_if_t<!is_constant_v<T>>> {
-  using type = Zero;
-};
-
 template <typename L, typename R>
-struct simplify<difference<L, R>, std::enable_if_t<
-                                      !(is_constant_v<L> && is_constant_v<R>) &&
-                                      !std::is_same_v<L, Zero> &&
-                                      !std::is_same_v<R, Zero> &&
-                                      !std::is_same_v<L, R>>> {
-  using type = difference_t<simplify_t<L>, simplify_t<R>>;
+struct simplify<difference<L, R>> {
+ private:
+  using MinusR = product_t<MinusOne, simplify_t<R>>;
+ public:
+  using type = sum_t<simplify_t<L>, simplify_t<MinusR>>;
 };
 
 // C1 * C2 -> C3
@@ -152,37 +127,12 @@ struct simplify<product<L, R>, std::enable_if_t<
   using type = product_t<simplify_t<L>, simplify_t<R>>;
 };
 
-// C1 / C2 -> C3
-template <typename R1, typename R2>
-struct simplify<quotient<Constant<R1>, Constant<R2>>> {
-  using type = Constant<std::ratio_divide<R1, R2>>;
-};
-
-// T / 1 -> T
-template <typename T>
-struct simplify<quotient<T, One>, std::enable_if_t<!is_constant_v<T>>> {
-  using type = simplify_t<T>;
-};
-
-// 0 / T -> 0
-template <typename T>
-struct simplify<quotient<Zero, T>, std::enable_if_t<!is_constant_v<T>>> {
-  using type = Zero;
-};
-
-// T / T -> 1
-template <typename T>
-struct simplify<quotient<T, T>, std::enable_if_t<!is_constant_v<T>>> {
-  using type = One;
-};
-
 template <typename N, typename D>
-struct simplify<quotient<N, D>, std::enable_if_t<
-                                    !(is_constant_v<N> && is_constant_v<D>) &&
-                                    !std::is_same_v<D, One> &&
-                                    !std::is_same_v<N, Zero> &&
-                                    !std::is_same_v<N, D>>> {
-  using type = quotient_t<simplify_t<N>, simplify_t<D>>;
+struct simplify<quotient<N, D>> {
+ private:
+  using InvD = power_t<simplify_t<D>, MinusOne>;
+ public:
+  using type = product_t<simplify_t<N>, simplify_t<InvD>>;
 };
 
 // sin(0) -> 0
