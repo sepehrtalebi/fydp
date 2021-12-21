@@ -78,7 +78,7 @@ public:
                 if (i == j)
                     L[i][j] = sqrt(this->data[i][i] - sum);
                 else
-                    L[i][j] = (1.0 / L[j][j] * (this->data[i][j] - sum));
+                    L[i][j] = (static_cast<T>(1) / L[j][j] * (this->data[i][j] - sum));
             }
         }
         return L;

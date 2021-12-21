@@ -169,8 +169,8 @@ private:
         // compute roots of unity via repeated multiplication
         // this avoids repetitive use of std::polar which is slower since it requires sin and cos
         std::vector<std::complex<T>> roots_of_unity(N);
-        roots_of_unity[0] = std::complex<T>(1, 0);
-        roots_of_unity[1] = std::polar(1.0, (-2 * M_PI / N));
+        roots_of_unity[0] = std::complex<T>(static_cast<T>(1), static_cast<T>(0));
+        roots_of_unity[1] = std::polar(static_cast<T>(1), static_cast<T>(-2 * M_PI / N));
         for (size_t i = 2; i < N; i++) {
             roots_of_unity[i] = roots_of_unity[1] * roots_of_unity[i - 1];
         }
