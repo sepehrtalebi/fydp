@@ -5,6 +5,7 @@ set(CMAKE_CXX_STANDARD 20)
 
 include_directories(./include)
 include_directories(./include/differentiation)
+include_directories(./include/compiled_differentiation)
 include_directories(./include/numc)
 include_directories(./include/kalman_filter)
 include_directories(./include/utils)
@@ -45,6 +46,7 @@ add_executable(FYDP tests.cpp
         test/TestQuaternion.cpp
         test/TestMatrix.cpp
         test/TestDifferentiation.cpp
+        test/TestCompiledDifferentiation.cpp
         test/TestPrimes.cpp
         test/TestFourier.cpp
         test/TestPolynomial.cpp
