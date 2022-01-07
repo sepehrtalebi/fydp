@@ -55,8 +55,9 @@ void testCompiledDifferentiation() {
     ASSERT_EQUAL(one, getDerivative(x, x));
     ASSERT_EQUAL(one, getHigherDerivative<1>(x, x));
     static_assert(getNodeCount(getDerivative(x, x + y)) == 1);
+//    ASSERT_EQUAL(two * x, pow(x, two) * two * pow(x, minus_one));
 //    ASSERT_EQUAL(two * x, getDerivative(x, x * x));
-//    ASSERT_EQUAL(two * x - four, x - four + x);
+    ASSERT_EQUAL(two * x - four, x - four + x);
 
 //    static_assert(std::is_same_v<product_t<two, x>, deep_simplify_t<derivative_t<0, power_t<x, two>>>>);
 //    static_assert(std::is_same_v<product_t<six, x>, higher_derivative_t<0, 2, power_t<x, three>>>);
