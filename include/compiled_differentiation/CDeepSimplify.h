@@ -23,12 +23,8 @@ template <typename T>
 using deep_simplify_t = typename deep_simplify<T>::type;
 
 template <typename T>
-struct deep_simplify<T, std::enable_if_t<!is_fully_simplified_v<T>>> : deep_simplify<simplify_t<T>> {};
-
-template <typename T>
-inline constexpr deep_simplify_t<T> getDeepSimplified(T) {
-  return deep_simplify_t<T>{};
-}
+struct deep_simplify<T, std::enable_if_t<!is_fully_simplified_v<T>>> :
+    deep_simplify<simplify_t<T>> {};
 
 // operator overloading
 
@@ -89,7 +85,7 @@ inline constexpr deep_simplify_t<power_t<B, E>> pow(B, E) {
 
 template <size_t id, typename T>
 inline constexpr deep_simplify_t<derivative_t<id, T>> getDerivative(
-    Variable<id>, T) {
+    Variable<id> /** var **/, T /** expr **/) {
   return deep_simplify_t<derivative_t<id, T>>{};
 }
 
@@ -101,7 +97,7 @@ inline constexpr deep_simplify_t<derivative_t<id, T>> getDerivative(
  */
 template <size_t order, size_t id, typename T>
 inline constexpr deep_simplify_t<higher_derivative_t<id, order, T>>
-getHigherDerivative(Variable<id>, T) {
+getHigherDerivative(Variable<id> /** var **/, T /** expr **/) {
   return deep_simplify_t<higher_derivative_t<id, order, T>>{};
 }
 

@@ -23,7 +23,7 @@ void testOperators() {
 
     auto t = getHigherDerivative<1>(x, three * x + x);
 
-    static_assert(std::is_same_v<decltype(four), decltype(getDerivative(x, four * x + y))>);
+    ASSERT_EQUAL(four, getDerivative(x, four * x + y));
 }
 
 void testCompiledDifferentiation() {
