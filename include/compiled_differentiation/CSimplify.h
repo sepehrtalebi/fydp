@@ -12,23 +12,256 @@
 #include "CSin.h"
 #include "CSum.h"
 #include "CVariable.h"
-
 #include <type_traits>
 
 namespace compiled {
 
-template <typename T, typename /** enable **/ = void>
+namespace internal {
+
+// used for recursive calls for convenience
+#define REC(T) decltype(simplify(std::declval<T>()))
+
+template <typename T>
+constexpr auto simplify(T /** value **/) {
+  // Sum
+  if constexpr (is_sum_v<T>) {
+    using left = typename T::left_operand_type;
+    using right = typename T::right_operand_type;
+
+    if constexpr (is_constant_v<left> && is_constant_v<right>)
+      return Constant<
+          std::ratio_add<typename left::ratio, typename right::ratio>>{};
+    // 0 + T -> T
+    else if constexpr (std::is_same_v<left, Zero>)
+      return simplify(right{});
+    // T + 0 -> T
+    else if constexpr (std::is_same_v<right, Zero>)
+      return simplify(left{});
+    // T + T -> 2 * T
+    else if constexpr (std::is_same_v<left, right>)
+      return simplify(product_t<Constant<std::ratio<2>>, REC(left)>{});
+    // (T1 + T2) + T3, where T1 + T2 and T3 are both fully simplified
+    else if constexpr (is_sum_v<left> && std::is_same_v<REC(left), left> &&
+                       std::is_same_v<REC(right), right>) {
+      using T1 = typename left::left_operand_type;
+      using T2 = typename left::right_operand_type;
+      using sum_13 = sum_t<T1, right>;
+      using s_sum_13 = REC(sum_13);
+      using sum_23 = sum_t<T2, right>;
+      using s_sum_23 = REC(sum_23);
+      if constexpr (!std::is_same_v<sum_13, s_sum_13>)
+        return simplify(sum_t<s_sum_13, T2>{});
+      else if constexpr (!std::is_same_v<sum_23, s_sum_23>)
+        return simplify(sum_t<s_sum_23, T1>{});
+      else
+        return T{};
+    }
+    // default case
+    else
+      return sum_t<REC(left), REC(right)>{};
+    // C1 + C2 -> C3
+  }
+
+  // Difference
+  else if constexpr (is_difference_v<T>) {
+    using left = typename T::left_operand_type;
+    using right = typename T::right_operand_type;
+
+    using minus_right = product_t<MinusOne, REC(right)>;
+    return simplify(sum_t<REC(left), REC(minus_right)>{});
+  }
+
+  // Product
+  else if constexpr (is_product_v<T>) {
+    using left = typename T::left_operand_type;
+    using right = typename T::right_operand_type;
+
+    // C1 * C2 -> C3
+    if constexpr (is_constant_v<left> && is_constant_v<right>)
+      return Constant<
+          std::ratio_multiply<typename left::ratio, typename right::ratio>>{};
+    // 0 * R -> 0, L * 0 -> 0
+    else if constexpr (std::is_same_v<left, Zero> ||
+                       std::is_same_v<right, Zero>)
+      return Zero{};
+    // 1 * R -> R
+    else if constexpr (std::is_same_v<left, One>)
+      return simplify(right{});
+    // L * 1 -> L
+    else if constexpr (std::is_same_v<right, One>)
+      return simplify(left{});
+    // L * L -> L ^ 2
+    else if constexpr (std::is_same_v<left, right>)
+      return simplify(power_t<REC(left), Constant<std::ratio<2>>>{});
+    // B ^ E1 * B ^ E2 -> B ^ (E1 + E2)
+    else if constexpr (is_power_v<left> && is_power_v<right>) {
+      if constexpr (std::is_same_v<typename left::base, typename right::base>) {
+        using s_e =
+            sum_t<REC(typename left::exponent), REC(typename right::exponent)>;
+        return simplify(power_t<REC(typename left::base), REC(s_e)>{});
+      } else
+        return product_t<REC(left), REC(right)>{};
+    }
+    // B1 ^ E * B2 ^ E -> (B1 * B2) ^ E
+    else if constexpr (is_power_v<left> && is_power_v<right>) {
+      if constexpr (std::is_same_v<typename left::exponent,
+                                   typename right::exponent>) {
+        using s_b =
+            product_t<REC(typename left::base), REC(typename right::base)>;
+        return simplify(power_t<REC(s_b), REC(typename left::exponent)>{});
+      } else
+        return product_t<REC(left), REC(right)>{};
+    }
+    // B ^ E * B -> B ^ (E + 1)
+    else if constexpr (is_power_v<left>) {
+      if constexpr (std::is_same_v<typename left::base, right>) {
+        using s_e = sum_t<REC(typename left::exponent), One>;
+        return simplify(power_t<REC(right), REC(s_e)>{});
+      } else
+        return product_t<REC(left), REC(right)>{};
+    }
+    // B * B ^ E -> B ^ (E + 1)
+    else if constexpr (is_power_v<right>) {
+      if constexpr (std::is_same_v<typename right::base, left>) {
+        using s_e = sum_t<REC(typename right::exponent), One>;
+        return simplify(power_t<REC(left), REC(s_e)>{});
+      } else
+        return product_t<REC(left), REC(right)>{};
+    }
+    // (T1 * T2) * T3, where T1 * T2 and T3 are both fully simplified
+    else if constexpr (is_product_v<left> && std::is_same_v<REC(left), left> &&
+                       std::is_same_v<REC(right), right>) {
+      using T1 = typename left::left_operand_type;
+      using T2 = typename left::right_operand_type;
+      using product_13 = product_t<T1, right>;
+      using s_product_13 = REC(product_13 );
+      using product_23 = product_t<T2, right>;
+      using s_product_23 = REC(product_23);
+      if constexpr (!std::is_same_v<product_13, s_product_13>)
+        return simplify(product_t<s_product_13, T2>{});
+      else if constexpr (!std::is_same_v<product_23, s_product_23>)
+        return simplify(product_t<s_product_23, T1>{});
+      else
+        return T{};
+    }
+    // T1 * (T2 * T3), where T1 and T2 * T3 are both fully simplified
+    else if constexpr (is_product_v<right> && std::is_same_v<REC(left), left> &&
+                       std::is_same_v<REC(right), right>) {
+      using T2 = typename right::left_operand_type;
+      using T3 = typename right::right_operand_type;
+      using product_12 = product_t<left, T2>;
+      using s_product_12 = REC(product_12);
+      using product_13 = product_t<left, T3>;
+      using s_product_13 = REC(product_13);
+      if constexpr (!std::is_same_v<product_12, s_product_12>)
+        return simplify(product_t<s_product_12, T3>{});
+      else if constexpr (!std::is_same_v<product_13, s_product_13>)
+        return simplify(product_t<s_product_13, T2>{});
+      else
+        return T{};
+    }
+    // default case
+    else
+      return product_t<REC(left), REC(right)>{};
+  }
+
+  // Quotient
+  else if constexpr (is_quotient_v<T>) {
+    using num = typename T::num_type;
+    using den = typename T::den_type;
+
+    using den_inv = power_t<REC(den), MinusOne>;
+    return simplify(product_t<REC(num), REC(den_inv)>{});
+  }
+
+  // Sine
+  else if constexpr (is_sine_v<T>) {
+    using operand = typename T::operand;
+
+    // sin(0) -> 0
+    if constexpr (std::is_same_v<operand, Zero>) return Zero{};
+    // default case
+    else
+      return sine_t<REC(operand)>{};
+  }
+
+  // Cosine
+  else if constexpr (is_cosine_v<T>) {
+    using operand = typename T::operand;
+
+    // cos(0) -> 1
+    if constexpr (std::is_same_v<operand, Zero>) return One{};
+    // default case
+    else
+      return cosine_t<REC(operand)>{};
+  }
+
+  // Exponential
+  else if constexpr (is_exponential_v<T>) {
+    using operand = typename T::operand;
+
+    // exp(0) -> 1
+    if constexpr (std::is_same_v<operand, Zero>) return One{};
+    // default case
+    else
+      return exponential_t<REC(operand)>{};
+  }
+
+  // Logarithm
+  else if constexpr (is_logarithm_v<T>) {
+    using operand = typename T::operand;
+
+    // log(1) -> 0
+    if constexpr (std::is_same_v<operand, One>) return Zero{};
+    // default case
+    else
+      return logarithm_t<REC(operand)>{};
+  }
+
+  // Power
+  else if constexpr (is_power_v<T>) {
+    using base = typename T::base;
+    using exponent = typename T::exponent;
+
+    // 0 ^ 0 -> 1
+    if constexpr (std::is_same_v<base, Zero> && std::is_same_v<exponent, Zero>)
+      return One{};
+    // 0 ^ 1 -> 0
+    else if constexpr (std::is_same_v<base, Zero> && std::is_same_v<exponent, One>)
+      return Zero{};
+    // 1 ^ 0 -> 1
+    else if constexpr (std::is_same_v<base, One> && std::is_same_v<exponent, Zero>)
+      return One{};
+    // 1 ^ 1 -> 1
+    else if constexpr (std::is_same_v<base, One> && std::is_same_v<exponent, One>)
+      return One{};
+    // B ^ 0 -> 1
+    else if constexpr (std::is_same_v<exponent, Zero>) return One{};
+    // B ^ 1 -> B
+    else if constexpr (std::is_same_v<exponent, One>) return simplify(base{});
+    // 0 ^ E -> 0
+    else if constexpr (std::is_same_v<base, Zero>) return Zero{};
+    // 1 ^ E -> 1
+    else if constexpr (std::is_same_v<base, One>) return One{};
+    // default case
+    else
+      return power_t<REC(base), REC(exponent)>{};
+  }
+
+  // default case
+  else
+    return T{};
+}
+
+}  // namespace internal
+
+template <typename T>
 struct simplify {
-  using type = T;
+  using type = decltype(internal::simplify(std::declval<T>()));
 };
 
 template <typename T>
 using simplify_t = typename simplify<T>::type;
-
-template <typename T>
-inline constexpr simplify_t<T> getSimplified(T) {
-  return simplify_t<T>{};
-}
 
 template <typename T>
 struct is_fully_simplified {
@@ -38,254 +271,6 @@ struct is_fully_simplified {
 template <typename T>
 inline constexpr bool is_fully_simplified_v = is_fully_simplified<T>::value;
 
-// base simplifications:
-
-// C1 + C2 -> C3
-template <typename R1, typename R2>
-struct simplify<sum<Constant<R1>, Constant<R2>>> {
-  using type = Constant<std::ratio_add<R1, R2>>;
-};
-
-// 0 + T -> T
-template <typename T>
-struct simplify<sum<Zero, T>, std::enable_if_t<!is_constant_v<T>>> {
-  using type = simplify_t<T>;
-};
-
-// T + 0 -> T
-template <typename T>
-struct simplify<sum<T, Zero>, std::enable_if_t<!is_constant_v<T>>> {
-  using type = simplify_t<T>;
-};
-
-// T + T -> 2 * T
-template <typename T>
-struct simplify<sum<T, T>, std::enable_if_t<!is_constant_v<T>>> {
-  using type = product_t<Constant<std::ratio<2>>, simplify_t<T>>;
-};
-
-template <typename L, typename R>
-struct simplify<
-    sum<L, R>, std::enable_if_t<
-                   !(is_constant_v<L> && is_constant_v<R>) &&
-                   !std::is_same_v<L, Zero> &&
-                   !std::is_same_v<R, Zero> &&
-                   !std::is_same_v<L, R>>> {
-  using type = sum_t<simplify_t<L>, simplify_t<R>>;
-};
-
-template <typename L, typename R>
-struct simplify<difference<L, R>> {
- private:
-  using MinusR = product_t<MinusOne, simplify_t<R>>;
- public:
-  using type = sum_t<simplify_t<L>, simplify_t<MinusR>>;
-};
-
-// C1 * C2 -> C3
-template <typename R1, typename R2>
-struct simplify<product<Constant<R1>, Constant<R2>>> {
-  using type = Constant<std::ratio_multiply<R1, R2>>;
-};
-
-// 0 * R -> 0
-template <typename R>
-struct simplify<product<Zero, R>, std::enable_if_t<!is_constant_v<R>>> {
-  using type = Zero;
-};
-
-// L * 0 -> 0
-template <typename L>
-struct simplify<product<L, Zero>, std::enable_if_t<!is_constant_v<L>>> {
-  using type = Zero;
-};
-
-// 1 * R -> R
-template <typename R>
-struct simplify<product<One, R>, std::enable_if_t<!is_constant_v<R>>> {
-  using type = simplify_t<R>;
-};
-
-// L * 1 -> L
-template <typename L>
-struct simplify<product<L, One>, std::enable_if_t<!is_constant_v<L>>> {
-  using type = simplify_t<L>;
-};
-
-// L * L -> L ^ 2
-template <typename T>
-struct simplify<product<T, T>, std::enable_if_t<!is_constant_v<T>>> {
-  using type = power_t<simplify_t<T>, Constant<std::ratio<2>>>;
-};
-
-template <typename L, typename R>
-struct simplify<product<L, R>, std::enable_if_t<
-                                   !(is_constant_v<L> && is_constant_v<R>) &&
-                                   !is_zero_or_one_v<L> &&
-                                   !is_zero_or_one_v<R> &&
-                                   !std::is_same_v<L, R>>> {
-  using type = product_t<simplify_t<L>, simplify_t<R>>;
-};
-
-template <typename N, typename D>
-struct simplify<quotient<N, D>> {
- private:
-  using InvD = power_t<simplify_t<D>, MinusOne>;
- public:
-  using type = product_t<simplify_t<N>, simplify_t<InvD>>;
-};
-
-// sin(0) -> 0
-template <>
-struct simplify<sine<Zero>> {
-  using type = Zero;
-};
-
-template <typename T>
-struct simplify<sine<T>, std::enable_if_t<!std::is_same_v<T, Zero>>> {
-  using type = sine_t<simplify_t<T>>;
-};
-
-// cos(0) -> 1
-template <>
-struct simplify<cosine<Zero>> {
-  using type = One;
-};
-
-template <typename T>
-struct simplify<cosine<T>, std::enable_if_t<std::is_same_v<T, Zero>>> {
-  using type = cosine_t<simplify_t<T>>;
-};
-
-// exp(0) -> 1
-template <>
-struct simplify<exponential<Zero>> {
-  using type = One;
-};
-
-template <typename T>
-struct simplify<exponential<T>, std::enable_if_t<std::is_same_v<T, Zero>>> {
-  using type = exponential_t<simplify_t<T>>;
-};
-
-// log(1) -> 0
-template <>
-struct simplify<logarithm<One>> {
-  using type = Zero;
-};
-
-template <typename T>
-struct simplify<logarithm<T>, std::enable_if_t<std::is_same_v<T, One>>> {
-  using type = logarithm_t<simplify_t<T>>;
-};
-
-// 0 ^ 0 -> 1
-template <>
-struct simplify<power<Zero, Zero>> {
-  using type = One;
-};
-
-// 0 ^ 1 -> 0
-template <>
-struct simplify<power<Zero, One>> {
-  using type = Zero;
-};
-
-// 1 ^ 0 -> 1
-template <>
-struct simplify<power<One, Zero>> {
-  using type = One;
-};
-
-// 1 ^ 1 -> 1
-template <>
-struct simplify<power<One, One>> {
-  using type = One;
-};
-
-// B ^ 0 -> 1
-template <typename B>
-struct simplify<power<B, Zero>, std::enable_if_t<!is_zero_or_one_v<B>>> {
-  using type = One;
-};
-
-// B ^ 1 -> B
-template <typename B>
-struct simplify<power<B, One>, std::enable_if_t<!is_zero_or_one_v<B>>> {
-  using type = simplify_t<B>;
-};
-
-// 0 ^ E -> 0
-template <typename E>
-struct simplify<power<Zero, E>, std::enable_if_t<!is_zero_or_one_v<E>>> {
-  using type = Zero;
-};
-
-// 1 ^ E -> 1
-template <typename E>
-struct simplify<power<One, E>, std::enable_if_t<!is_zero_or_one_v<E>>> {
-  using type = One;
-};
-
-template <typename B, typename E>
-struct simplify<power<B, E>, std::enable_if_t<
-                                 !is_zero_or_one_v<B> &&
-                                 !is_zero_or_one_v<E>>> {
-  using type = power_t<simplify_t<B>, simplify_t<E>>;
-};
-
-// compound simplifications:
-
-// B ^ E1 * B ^ E2 -> B ^ (E1 + E2)
-template <typename B, typename E1, typename E2>
-struct simplify<product<power<B, E1>, power<B, E2>>> {
-  using type = power_t<simplify_t<B>, sum_t<simplify_t<E1>, simplify_t<E2>>>;
-};
-
-// B1 ^ E * B2 ^ E -> (B1 * B2) ^ E
-template <typename B1, typename B2, typename E>
-struct simplify<product<power<B1, E>, power<B2, E>>> {
-  using type =
-      power_t<product_t<simplify_t<B1>, simplify_t<B2>>, simplify_t<E>>;
-};
-
-// B ^ E * B -> B ^ (E + 1)
-template <typename B, typename E>
-struct simplify<product<power<B, E>, B>> {
-  using type = power_t<B, simplify_t<sum_t<simplify_t<E>, One>>>;
-};
-
-// B * B ^ E -> B ^ (E + 1)
-template <typename B, typename E>
-struct simplify<product<B, power<B, E>>> {
-  using type = power_t<B, simplify_t<sum_t<simplify_t<E>, One>>>;
-};
-
-// B ^ E / B -> B ^ (E - 1)
-template <typename B, typename E>
-struct simplify<quotient<power<B, E>, B>> {
-  using type =
-      power_t<simplify_t<B>, simplify_t<difference_t<simplify_t<E>, One>>>;
-};
-
-// B / B ^ E = 1 / B ^ (E - 1)
-template <typename B, typename E>
-struct simplify<quotient<B, power<B, E>>> {
-  using type =
-      quotient_t<One, power_t<simplify_t<B>,
-                              simplify_t<difference_t<simplify_t<E>, One>>>>;
-};
-
-// L + (-R) -> L - R
-template <typename L, typename R>
-struct simplify<sum<L, product<MinusOne, R>>> {
-  using type = difference_t<simplify_t<L>, simplify_t<R>>;
-};
-
-// (-L) + R -> R - L
-template <typename L, typename R>
-struct simplify<sum<product<MinusOne, L>, R>> {
-  using type = difference_t<simplify_t<R>, simplify_t<L>>;
-};
+// reordering operations
 
 }  // namespace compiled
