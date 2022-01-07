@@ -52,6 +52,16 @@ inline constexpr deep_simplify_t<quotient_t<N, D>> operator/(N, D) {
   return deep_simplify_t<quotient_t<N, D>>{};
 }
 
+template<typename T>
+inline constexpr deep_simplify_t<T> operator+(T) {
+  return deep_simplify_t<T>{};
+}
+
+template<typename T>
+inline constexpr deep_simplify_t<product_t<MinusOne, T>> operator-(T) {
+  return deep_simplify_t<product_t<MinusOne, T>>{};
+}
+
 template <typename T>
 inline constexpr deep_simplify_t<sine_t<T>> sin(T) {
   return deep_simplify_t<sine_t<T>>{};
