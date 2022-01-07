@@ -1,12 +1,14 @@
 #pragma once
 
 #include <cmath>
+#include <type_traits>
 
 namespace compiled {
 
 template <typename T>
 struct exponential {
   using type = exponential<T>;
+  using operand = T;
 
   static inline double apply(const double* variables) {
     return std::exp(T::apply(variables));

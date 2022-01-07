@@ -1,12 +1,14 @@
 #pragma once
 
 #include <cmath>
+#include <type_traits>
 
 namespace compiled {
 
 template <typename T>
 struct sine {
   using type = sine<T>;
+  using operand = T;
 
   static inline double apply(const double* variables) {
     return std::sin(T::apply(variables));

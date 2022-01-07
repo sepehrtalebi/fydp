@@ -1,10 +1,14 @@
 #pragma once
 
+#include <type_traits>
+
 namespace compiled {
 
 template <typename L, typename R>
 struct sum {
   using type = sum<L, R>;
+  using left_operand_type = L;
+  using right_operand_type = R;
 
   static inline double apply(const double* variables) {
     return L::apply(variables) + R::apply(variables);

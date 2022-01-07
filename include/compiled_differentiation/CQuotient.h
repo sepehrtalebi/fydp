@@ -1,10 +1,14 @@
 #pragma once
 
+#include <type_traits>
+
 namespace compiled {
 
 template <typename N, typename D>
 struct quotient {
   using type = quotient<N, D>;
+  using num_type = N;
+  using den_type = D;
 
   static inline double apply(const double* variables) {
     return N::apply(variables) / D::apply(variables);

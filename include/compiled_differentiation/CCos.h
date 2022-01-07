@@ -1,12 +1,14 @@
 #pragma once
 
 #include <cmath>
+#include <type_traits>
 
 namespace compiled {
 
 template <typename T>
 struct cosine {
   using type = cosine<T>;
+  using operand = T;
 
   static inline double apply(const double* variables) {
     return std::cos(T::apply(variables));

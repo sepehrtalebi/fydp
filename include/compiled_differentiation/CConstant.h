@@ -7,6 +7,7 @@ namespace compiled {
     template<typename R>
     struct Constant {
         using type = Constant<R>;
+        using ratio = R;
 
         static constexpr double apply(const double* /** variables **/) {
             return static_cast<double>(R::num) / static_cast<double>(R::den);

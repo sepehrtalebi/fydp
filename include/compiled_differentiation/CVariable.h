@@ -6,6 +6,7 @@ namespace compiled {
     template<size_t id>
     struct Variable {
         using type = Variable<id>;
+        static constexpr size_t id_value = id;
 
         static double apply(const double* variables) {
             return variables[id];

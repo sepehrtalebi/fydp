@@ -1,11 +1,14 @@
 #pragma once
 
+#include <type_traits>
+
 namespace compiled {
 
 template <typename L, typename R>
 struct difference {
   using type = difference<L, R>;
-  static constexpr bool is_difference = true;
+  using left_operand_type = L;
+  using right_operand_type = R;
 
   static inline double apply(const double* variables) {
     return L::apply(variables) - R::apply(variables);

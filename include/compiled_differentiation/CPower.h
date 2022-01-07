@@ -1,12 +1,15 @@
 #pragma once
 
 #include <cmath>
+#include <type_traits>
 
 namespace compiled {
 
 template <typename B, typename E>
 struct power {
   using type = power<B, E>;
+  using base = B;
+  using exponent = E;
 
   static inline double apply(const double* variables) {
     return std::pow(B::apply(variables), E::apply(variables));
