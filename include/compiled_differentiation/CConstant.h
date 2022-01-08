@@ -30,10 +30,4 @@ namespace compiled {
 
     template<typename T>
     inline constexpr bool is_constant_v = is_constant<T>::value;
-
-    template<typename T>
-    using is_zero_or_one = std::disjunction<std::is_same<T, Zero>, std::is_same<T, One>>;
-
-    template<typename T>
-    inline constexpr bool is_zero_or_one_v = is_zero_or_one<T>::value;
 }
