@@ -93,40 +93,33 @@ constexpr auto simplify(T /** value **/) {
     // L * L -> L ^ 2
     else if constexpr (std::is_same_v<left, right>)
       return simplify(power_t<REC(left), Constant<std::ratio<2>>>{});
+    // need to use get_base_t and get_exponent_t in the following expressions
+    // because ::base and ::exponent would fail for non-power types due to the
+    // lack of short-circuiting
     // B ^ E1 * B ^ E2 -> B ^ (E1 + E2)
-    else if constexpr (is_power_v<left> && is_power_v<right>) {
-      if constexpr (std::is_same_v<typename left::base, typename right::base>) {
-        using s_e =
-            sum_t<REC(typename left::exponent), REC(typename right::exponent)>;
-        return simplify(power_t<REC(typename left::base), REC(s_e)>{});
-      } else
-        return product_t<REC(left), REC(right)>{};
+    else if constexpr (is_power_v<left> && is_power_v<right> &&
+                       std::is_same_v<get_base_t<left>, get_base_t<right>>) {
+      using s_e = sum_t<REC(get_exponent_t<left>), REC(get_exponent_t<right>)>;
+      return simplify(power_t<REC(get_base_t<left>), REC(s_e)>{});
     }
     // B1 ^ E * B2 ^ E -> (B1 * B2) ^ E
-    else if constexpr (is_power_v<left> && is_power_v<right>) {
-      if constexpr (std::is_same_v<typename left::exponent,
-                                   typename right::exponent>) {
-        using s_b =
-            product_t<REC(typename left::base), REC(typename right::base)>;
-        return simplify(power_t<REC(s_b), REC(typename left::exponent)>{});
-      } else
-        return product_t<REC(left), REC(right)>{};
+    else if constexpr (is_power_v<left> && is_power_v<right> &&
+                       std::is_same_v<get_exponent_t<left>,
+                                      get_exponent_t<right>>) {
+      using s_b = product_t<REC(get_base_t<left>), REC(get_base_t<right>)>;
+      return simplify(power_t<REC(s_b), REC(get_exponent_t<left>)>{});
     }
     // B ^ E * B -> B ^ (E + 1)
-    else if constexpr (is_power_v<left>) {
-      if constexpr (std::is_same_v<typename left::base, right>) {
-        using s_e = sum_t<REC(typename left::exponent), One>;
-        return simplify(power_t<REC(right), REC(s_e)>{});
-      } else
-        return product_t<REC(left), REC(right)>{};
+    else if constexpr (is_power_v<left> &&
+                       std::is_same_v<get_base_t<left>, right>) {
+      using s_e = sum_t<REC(get_exponent_t<left>), One>;
+      return simplify(power_t<REC(right), REC(s_e)>{});
     }
     // B * B ^ E -> B ^ (E + 1)
-    else if constexpr (is_power_v<right>) {
-      if constexpr (std::is_same_v<typename right::base, left>) {
-        using s_e = sum_t<REC(typename right::exponent), One>;
-        return simplify(power_t<REC(left), REC(s_e)>{});
-      } else
-        return product_t<REC(left), REC(right)>{};
+    else if constexpr (is_power_v<right> &&
+                       std::is_same_v<get_base_t<right>, left>) {
+      using s_e = sum_t<REC(get_exponent_t<right>), One>;
+      return simplify(power_t<REC(left), REC(s_e)>{});
     }
     // (T1 * T2) * T3, where T1 * T2 and T3 are both fully simplified
     else if constexpr (is_product_v<left> && std::is_same_v<REC(left), left> &&
@@ -134,7 +127,7 @@ constexpr auto simplify(T /** value **/) {
       using T1 = typename left::left_operand_type;
       using T2 = typename left::right_operand_type;
       using product_13 = product_t<T1, right>;
-      using s_product_13 = REC(product_13 );
+      using s_product_13 = REC(product_13);
       using product_23 = product_t<T2, right>;
       using s_product_23 = REC(product_23);
       if constexpr (!std::is_same_v<product_13, s_product_13>)
@@ -227,22 +220,29 @@ constexpr auto simplify(T /** value **/) {
     if constexpr (std::is_same_v<base, Zero> && std::is_same_v<exponent, Zero>)
       return One{};
     // 0 ^ 1 -> 0
-    else if constexpr (std::is_same_v<base, Zero> && std::is_same_v<exponent, One>)
+    else if constexpr (std::is_same_v<base, Zero> &&
+                       std::is_same_v<exponent, One>)
       return Zero{};
     // 1 ^ 0 -> 1
-    else if constexpr (std::is_same_v<base, One> && std::is_same_v<exponent, Zero>)
+    else if constexpr (std::is_same_v<base, One> &&
+                       std::is_same_v<exponent, Zero>)
       return One{};
     // 1 ^ 1 -> 1
-    else if constexpr (std::is_same_v<base, One> && std::is_same_v<exponent, One>)
+    else if constexpr (std::is_same_v<base, One> &&
+                       std::is_same_v<exponent, One>)
       return One{};
     // B ^ 0 -> 1
-    else if constexpr (std::is_same_v<exponent, Zero>) return One{};
+    else if constexpr (std::is_same_v<exponent, Zero>)
+      return One{};
     // B ^ 1 -> B
-    else if constexpr (std::is_same_v<exponent, One>) return simplify(base{});
+    else if constexpr (std::is_same_v<exponent, One>)
+      return simplify(base{});
     // 0 ^ E -> 0
-    else if constexpr (std::is_same_v<base, Zero>) return Zero{};
+    else if constexpr (std::is_same_v<base, Zero>)
+      return Zero{};
     // 1 ^ E -> 1
-    else if constexpr (std::is_same_v<base, One>) return One{};
+    else if constexpr (std::is_same_v<base, One>)
+      return One{};
     // default case
     else
       return power_t<REC(base), REC(exponent)>{};
