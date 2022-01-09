@@ -35,6 +35,7 @@ void testCompiledDifferentiation() {
 
     ASSERT_EQUAL(0_c, 0_c);
     ASSERT_EQUAL(7_c, 3_c + 4_c);
+    ASSERT_EQUAL(4.7_c, 2.1_c + 2.6_c);
     ASSERT_EQUAL(3_c, 3_c + 0_c);
     static_assert(getNodeCount(3_c + 0_c) == 1);
     static_assert(getNodeCount(3_c + 2_c) == 1);

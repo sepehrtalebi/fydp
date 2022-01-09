@@ -35,22 +35,39 @@ namespace compiled {
     struct parse_ratio;
 
     template<char... cs>
-    inline constexpr int parse_ratio_v = parse_ratio<cs...>::value;
+    using parse_ratio_t = typename parse_ratio<cs...>::type;
+
+    template<>
+    struct parse_ratio<'.'> {
+        using power = std::ratio<1, 10>;
+        using type = std::ratio<0>;
+    };
 
     template<char c>
     struct parse_ratio<c> {
-      static constexpr size_t power = 1;
-      static constexpr int value = c - '0';
+      static_assert('0' <= c && c <= '9');
+
+      using power = std::ratio<1>;
+      using type = std::ratio<c - '0'>;
+    };
+
+    template<char... cs>
+    struct parse_ratio<'.', cs...> {
+        using power = std::ratio<1, 10>;
+        using type = std::ratio_divide<parse_ratio_t<cs...>,
+          std::ratio_multiply<std::ratio<10>, typename parse_ratio<cs...>::power>>;
     };
 
     template<char c, char... cs>
     struct parse_ratio<c, cs...> {
-      static constexpr size_t power = 10 * parse_ratio<cs...>::power;
-      static constexpr int value = (c - '0') * power + parse_ratio_v<cs...>;
+        static_assert('0' <= c && c <= '9');
+
+        using power = std::ratio_multiply<std::ratio<10>, typename parse_ratio<cs...>::power>;
+        using type = std::ratio_add<std::ratio_multiply<std::ratio<c - '0'>, power>, parse_ratio_t<cs...>>;
     };
 
     template<char... cs>
     constexpr auto operator "" _c() {
-      return Constant<std::ratio<parse_ratio_v<cs...>>>{};
+      return Constant<parse_ratio_t<cs...>>{};
     }
 }
