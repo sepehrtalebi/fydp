@@ -13,8 +13,8 @@
 void testOperators() {
     using namespace compiled;
 
-    auto x = Variable<0>{};
-    auto y = Variable<1>{};
+    auto x = 0_v;
+    auto y = 1_v;
 
     auto t = getHigherDerivative<1>(x, 3_c * x + x);
 
@@ -24,8 +24,8 @@ void testOperators() {
 void testCompiledDifferentiation() {
     using namespace compiled;
 
-    auto x = Variable<0>{};
-    auto y = Variable<1>{};
+    auto x = 0_v;
+    auto y = 1_v;
 
     static_assert(is_constant_v<decltype(3_c)>);
     static_assert(is_constant_v<Zero>);
