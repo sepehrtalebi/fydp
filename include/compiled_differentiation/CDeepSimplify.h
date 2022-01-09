@@ -30,63 +30,63 @@ struct deep_simplify<T, std::enable_if_t<!is_fully_simplified_v<T>>> :
 
 template <typename L, typename R>
 inline constexpr deep_simplify_t<sum_t<L, R>> operator+(L, R) {
-  return deep_simplify_t<sum_t<L, R>>{};
+  return {};
 }
 
 template <typename L, typename R>
 inline constexpr deep_simplify_t<difference_t<L, R>> operator-(L, R) {
-  return deep_simplify_t<difference_t<L, R>>{};
+  return {};
 }
 
 template <typename L, typename R>
 inline constexpr deep_simplify_t<product_t<L, R>> operator*(L, R) {
-  return deep_simplify_t<product_t<L, R>>{};
+  return {};
 }
 
 template <typename N, typename D>
 inline constexpr deep_simplify_t<quotient_t<N, D>> operator/(N, D) {
-  return deep_simplify_t<quotient_t<N, D>>{};
+  return {};
 }
 
 template<typename T>
 inline constexpr deep_simplify_t<T> operator+(T) {
-  return deep_simplify_t<T>{};
+  return {};
 }
 
 template<typename T>
 inline constexpr deep_simplify_t<product_t<MinusOne, T>> operator-(T) {
-  return deep_simplify_t<product_t<MinusOne, T>>{};
+  return {};
 }
 
 template <typename T>
 inline constexpr deep_simplify_t<sine_t<T>> sin(T) {
-  return deep_simplify_t<sine_t<T>>{};
+  return {};
 }
 
 template <typename T>
 inline constexpr deep_simplify_t<cosine_t<T>> cos(T) {
-  return deep_simplify_t<cosine_t<T>>{};
+  return {};
 }
 
 template <typename T>
 inline constexpr deep_simplify_t<exponential_t<T>> exp(T) {
-  return deep_simplify_t<exponential_t<T>>{};
+  return {};
 }
 
 template <typename T>
 inline constexpr deep_simplify_t<logarithm_t<T>> log(T) {
-  return deep_simplify_t<logarithm_t<T>>{};
+  return {};
 }
 
 template <typename B, typename E>
 inline constexpr deep_simplify_t<power_t<B, E>> pow(B, E) {
-  return deep_simplify_t<power_t<B, E>>{};
+  return {};
 }
 
 template <size_t id, typename T>
 inline constexpr deep_simplify_t<derivative_t<id, T>> getDerivative(
     Variable<id> /** var **/, T /** expr **/) {
-  return deep_simplify_t<derivative_t<id, T>>{};
+  return {};
 }
 
 /**
@@ -98,7 +98,7 @@ inline constexpr deep_simplify_t<derivative_t<id, T>> getDerivative(
 template <size_t order, size_t id, typename T>
 inline constexpr deep_simplify_t<higher_derivative_t<id, order, T>>
 getHigherDerivative(Variable<id> /** var **/, T /** expr **/) {
-  return deep_simplify_t<higher_derivative_t<id, order, T>>{};
+  return {};
 }
 
 }  // namespace compiled

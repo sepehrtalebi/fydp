@@ -67,7 +67,7 @@ namespace compiled {
     };
 
     template<char... cs>
-    constexpr auto operator "" _c() {
-      return Constant<parse_ratio_t<cs...>>{};
+    constexpr Constant<parse_ratio_t<cs...>> operator "" _c() {
+      return {};
     }
 }
