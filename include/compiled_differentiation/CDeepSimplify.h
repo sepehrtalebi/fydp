@@ -2,6 +2,7 @@
 
 #include "CCos.h"
 #include "CDerivative.h"
+#include "CHigherDerivative.h"
 #include "CDifference.h"
 #include "CExp.h"
 #include "CLog.h"
