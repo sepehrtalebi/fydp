@@ -10,15 +10,12 @@
 
 #define ASSERT_EQUAL(T1, T2) static_assert(std::is_same_v<decltype(T1), decltype(T2)>)
 
-void testOperators() {
-    using namespace compiled;
+template<typename T>
+auto func(T x) {
+  using namespace compiled;
 
-    auto x = 0_v;
-    auto y = 1_v;
-
-    auto t = getHigherDerivative<1>(x, 3_c * x + x);
-
-    ASSERT_EQUAL(4_c, getDerivative(x, 4_c * x + y));
+  auto y = sin(3_c * x + 4_c);
+  return 3_c * y * y;
 }
 
 void testCompiledDifferentiation() {
@@ -50,4 +47,8 @@ void testCompiledDifferentiation() {
 
 //    static_assert(std::is_same_v<product_t<2_c, x>, deep_simplify_t<derivative_t<0, power_t<x, 2_c>>>>);
 //    static_assert(std::is_same_v<product_t<6_c, x>, higher_derivative_t<0, 2, power_t<x, 3_c>>>);
+
+    // test func
+    auto result = getDerivative(0_v, func(0_v));
+    double result2 = func(3.0);
 }
