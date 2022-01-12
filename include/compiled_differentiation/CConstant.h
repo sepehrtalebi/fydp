@@ -8,9 +8,10 @@ namespace compiled {
     struct Constant {
         using type = Constant<R>;
         using ratio = R;
+        static constexpr double value = static_cast<double>(R::num) / static_cast<double>(R::den);
 
         static constexpr double apply(const double* /** variables **/) {
-            return static_cast<double>(R::num) / static_cast<double>(R::den);
+            return value;
         }
     };
 
