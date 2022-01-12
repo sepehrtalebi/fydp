@@ -4,6 +4,7 @@
 #include "CCos.h"
 #include "CDifference.h"
 #include "CExp.h"
+#include "CGetOperands.h"
 #include "CLog.h"
 #include "CNodeCount.h"
 #include "CPower.h"
@@ -40,6 +41,38 @@ constexpr auto simplify(T /** value **/) {
     // T + T -> 2 * T
     else if constexpr (std::is_same_v<left, right>)
       return simplify(product_t<Constant<std::ratio<2>>, REC(left)>{});
+    // T1 * T2 + T1 * T3 -> T1 * (T2 + T3)
+    else if constexpr (is_product_v<left> && is_product_v<right> &&
+                       std::is_same_v<get_left_operand_t<left>,
+                                      get_left_operand_t<right>>) {
+      using factor = sum_t<REC(get_right_operand_t<left>),
+                           REC(get_right_operand_t<right>)>;
+      return simplify(product_t<REC(get_left_operand_t<left>), REC(factor)>{});
+    }
+    // T1 * T2 + T3 * T1 -> T1 * (T2 + T3)
+    else if constexpr (is_product_v<left> && is_product_v<right> &&
+                       std::is_same_v<get_left_operand_t<left>,
+                                      get_right_operand_t<right>>) {
+      using factor =
+          sum_t<REC(get_right_operand_t<left>), REC(get_left_operand_t<right>)>;
+      return simplify(product_t<REC(get_left_operand_t<left>), REC(factor)>{});
+    }
+    // T1 * T2 + T2 * T3 -> T2 * (T1 + T3)
+    else if constexpr (is_product_v<left> && is_product_v<right> &&
+                       std::is_same_v<get_right_operand_t<left>,
+                                      get_left_operand_t<right>>) {
+      using factor =
+          sum_t<REC(get_left_operand_t<left>), REC(get_right_operand_t<right>)>;
+      return simplify(product_t<REC(get_right_operand_t<left>), REC(factor)>{});
+    }
+    // T1 * T2 + T3 * T2 -> T2 * (T1 + T3)
+    else if constexpr (is_product_v<left> && is_product_v<right> &&
+                       std::is_same_v<get_right_operand_t<left>,
+                                      get_right_operand_t<right>>) {
+      using factor =
+          sum_t<REC(get_left_operand_t<left>), REC(get_left_operand_t<right>)>;
+      return simplify(product_t<REC(get_right_operand_t<left>), REC(factor)>{});
+    }
     // (T1 + T2) + T3, where T1 + T2 and T3 are both fully simplified
     else if constexpr (is_sum_v<left> && std::is_same_v<REC(left), left> &&
                        std::is_same_v<REC(right), right>) {
