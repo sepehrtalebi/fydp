@@ -56,6 +56,22 @@ constexpr auto simplify(T /** value **/) {
       else
         return T{};
     }
+    // T1 + (T2 + T3), where T1 and T2 + T3 are both fully simplified
+    else if constexpr (is_sum_v<right> && std::is_same_v<REC(left), left> &&
+                       std::is_same_v<REC(right), right>) {
+      using T2 = typename right::left_operand_type;
+      using T3 = typename right::right_operand_type;
+      using sum_12 = sum_t<left, T2>;
+      using s_sum_12 = REC(sum_12);
+      using sum_13 = sum_t<left, T3>;
+      using s_sum_13 = REC(sum_13);
+      if constexpr (!std::is_same_v<sum_12, s_sum_12>)
+        return simplify(sum_t<s_sum_12, T3>{});
+      else if constexpr (!std::is_same_v<sum_13, s_sum_13>)
+        return simplify(sum_t<s_sum_13, T2>{});
+      else
+        return T{};
+    }
     // default case
     else
       return sum_t<REC(left), REC(right)>{};
