@@ -243,6 +243,11 @@ constexpr auto simplify(T /** value **/) {
     // 1 ^ E -> 1
     else if constexpr (std::is_same_v<base, One>)
       return One{};
+    // (B ^ E1) ^ E2 -> B ^ (E1 * E2)
+    else if constexpr (is_power_v<base>) {
+      using combined_exponent = product_t<REC(get_exponent_t<base>), REC(exponent)>;
+      return simplify(power_t<REC(get_base_t<base>), REC(combined_exponent)>{});
+    }
     // default case
     else
       return power_t<REC(base), REC(exponent)>{};
