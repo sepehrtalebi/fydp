@@ -1,5 +1,7 @@
 #pragma once
 
+#include <array>
+
 namespace compiled {
 
 template <typename ...Ts>
@@ -12,7 +14,8 @@ template<typename T, typename ...Ts>
 struct multi_sum<T, Ts...> {
   using type = multi_sum<T, Ts...>;
 
-  static inline double apply(const double* variables) {
+  template <size_t n>
+  static inline double apply(const std::array<double, n>& variables) {
     return T::apply(variables) + multi_sum_t<Ts...>::apply(variables);
   }
 };

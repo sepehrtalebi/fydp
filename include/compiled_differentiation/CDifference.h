@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <type_traits>
 
 namespace compiled {
@@ -10,7 +11,8 @@ struct difference {
   using left_operand_type = L;
   using right_operand_type = R;
 
-  static inline double apply(const double* variables) {
+  template <size_t n>
+  static inline double apply(const std::array<double, n>& variables) {
     return L::apply(variables) - R::apply(variables);
   }
 };

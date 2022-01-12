@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <cstddef>
 
 namespace compiled {
@@ -8,7 +9,9 @@ namespace compiled {
         using type = Variable<id>;
         static constexpr size_t id_value = id;
 
-        static double apply(const double* variables) {
+        template <size_t n>
+        static inline double apply(const std::array<double, n>& variables) {
+            static_assert(id < n, "Input number of variables is not large enough!");
             return variables[id];
         }
     };

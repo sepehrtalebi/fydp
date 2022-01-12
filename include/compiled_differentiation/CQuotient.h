@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <type_traits>
 
 namespace compiled {
@@ -10,7 +11,8 @@ struct quotient {
   using num_type = N;
   using den_type = D;
 
-  static inline double apply(const double* variables) {
+  template <size_t n>
+  static inline double apply(const std::array<double, n>& variables) {
     return N::apply(variables) / D::apply(variables);
   }
 };

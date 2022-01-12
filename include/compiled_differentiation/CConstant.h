@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <ratio>
 #include <type_traits>
 
@@ -10,7 +11,8 @@ namespace compiled {
         using ratio = R;
         static constexpr double value = static_cast<double>(R::num) / static_cast<double>(R::den);
 
-        static constexpr double apply(const double* /** variables **/) {
+        template <size_t n>
+        static constexpr double apply(const std::array<double, n>& /** variables **/) {
             return value;
         }
     };

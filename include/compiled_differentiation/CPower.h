@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <cmath>
 #include <type_traits>
 
@@ -11,7 +12,8 @@ struct power {
   using base = B;
   using exponent = E;
 
-  static inline double apply(const double* variables) {
+  template <size_t n>
+  static inline double apply(const std::array<double, n>& variables) {
     return std::pow(B::apply(variables), E::apply(variables));
   }
 };

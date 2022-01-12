@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <cmath>
 #include <type_traits>
 
@@ -10,7 +11,8 @@ struct cosine {
   using type = cosine<T>;
   using operand = T;
 
-  static inline double apply(const double* variables) {
+  template <size_t n>
+  static inline double apply(const std::array<double, n>& variables) {
     return std::cos(T::apply(variables));
   }
 };
