@@ -10,6 +10,8 @@
 #include "test/TestTransferFunction.h"
 #include "test/TestDubinsPath.h"
 #include "test/TestPurePursuit.h"
+#include "test/TestCompiledDifferentiation.h"
+#include "test/TestRatioPower.h"
 #include <iostream>
 
 int main() {
@@ -25,6 +27,8 @@ int main() {
     testPolynomial();
     testRationalFunction();
     testTransferFunction();
+    testCompiledDifferentiation();
+    testRatioPower();
     std::cout << "Passed All Tests!" << std::endl;
     return 0;
 }
