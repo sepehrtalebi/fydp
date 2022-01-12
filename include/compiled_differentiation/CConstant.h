@@ -25,6 +25,9 @@ namespace compiled {
     One one{};
     MinusOne minus_one{};
 
+    /**
+     * Returns true if T is an instance of Constant and false otherwise.
+     */
     template<typename T>
     struct is_constant : std::false_type {};
 
@@ -34,6 +37,27 @@ namespace compiled {
     template<typename T>
     inline constexpr bool is_constant_v = is_constant<T>::value;
 
+    /**
+     * Returns the R in Constant<R>.
+     * If the given type is not an instance of Constant, then void is returned.
+     */
+    template<typename T>
+    struct get_ratio {
+      using type = void;
+    };
+
+    template<typename T>
+    struct get_ratio<Constant<T>> {
+      using type = T;
+    };
+
+    template<typename T>
+    using get_ratio_t = typename get_ratio<T>::type;
+
+    /**
+     * Parses the given char sequence into an std::ratio.
+     * The char sequence can be any valid floating point number.
+     */
     template<char... cs>
     struct parse_ratio;
 
