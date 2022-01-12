@@ -16,6 +16,9 @@ namespace compiled {
         }
     };
 
+    /**
+     * Returns true if T is an instance of Variable and false otherwise.
+     */
     template<typename T>
     struct is_variable : std::false_type {};
 
@@ -25,6 +28,10 @@ namespace compiled {
     template<typename T>
     inline constexpr bool is_variable_v = is_variable<T>::value;
 
+    /**
+     * Parses the given char sequence into a size_t.
+     * The char sequence can be any valid natural number.
+     */
     template<char... cs>
     struct parse_size_t;
 

@@ -20,6 +20,9 @@ struct logarithm {
 template <typename T>
 using logarithm_t = typename logarithm<T>::type;
 
+/**
+ * Returns true if T is an instance of logarithm and false otherwise.
+ */
 template<typename T>
 struct is_logarithm : std::false_type {};
 

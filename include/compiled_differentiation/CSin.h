@@ -20,6 +20,9 @@ struct sine {
 template <typename T>
 using sine_t = typename sine<T>::type;
 
+/**
+ * Returns true if T is an instance of sine and false otherwise.
+ */
 template<typename T>
 struct is_sine : std::false_type {};
 

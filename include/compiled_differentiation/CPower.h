@@ -21,6 +21,9 @@ struct power {
 template <typename B, typename E>
 using power_t = typename power<B, E>::type;
 
+/**
+ * Returns true if T is an instance of power and false otherwise.
+ */
 template<typename T>
 struct is_power : std::false_type {};
 
@@ -30,6 +33,10 @@ struct is_power<power<B, E>> : std::true_type {};
 template<typename T>
 inline constexpr bool is_power_v = is_power<T>::value;
 
+/**
+ * Returns the B in power<B, E>.
+ * If the given type is not an instance of power, then void is returned.
+ */
 template<typename T>
 struct get_base {
   using type = void;
@@ -43,6 +50,10 @@ struct get_base<power<B, E>> {
 template<typename T>
 using get_base_t = typename get_base<T>::type;
 
+/**
+ * Returns the E in power<B, E>.
+ * If the given type is not an instance of power, then void is returned.
+ */
 template<typename T>
 struct get_exponent {
   using type = void;

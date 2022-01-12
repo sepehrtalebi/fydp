@@ -20,7 +20,9 @@ struct exponential {
 template <typename T>
 using exponential_t = typename exponential<T>::type;
 
-
+/**
+ * Returns true if T is an instance of exponential and false otherwise.
+ */
 template<typename T>
 struct is_exponential : std::false_type {};
 

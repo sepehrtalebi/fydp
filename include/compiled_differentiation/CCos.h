@@ -20,6 +20,9 @@ struct cosine {
 template <typename T>
 using cosine_t = typename cosine<T>::type;
 
+/**
+ * Returns true if T is an instance of cosine and false otherwise.
+ */
 template<typename T>
 struct is_cosine : std::false_type {};
 

@@ -20,6 +20,9 @@ struct quotient {
 template <typename N, typename D>
 using quotient_t = typename quotient<N, D>::type;
 
+/**
+ * Returns true if T is an instance of quotient and false otherwise.
+ */
 template<typename T>
 struct is_quotient : std::false_type {};
 

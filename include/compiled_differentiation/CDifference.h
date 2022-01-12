@@ -20,6 +20,9 @@ struct difference {
 template <typename L, typename R>
 using difference_t = typename difference<L, R>::type;
 
+/**
+ * Returns true if T is an instance of difference and false otherwise.
+ */
 template<typename T>
 struct is_difference : std::false_type {};
 

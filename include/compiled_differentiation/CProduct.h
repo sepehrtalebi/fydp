@@ -20,6 +20,9 @@ struct product {
 template <typename L, typename R>
 using product_t = typename product<L, R>::type;
 
+/**
+ * Returns true if T is an instance of product and false otherwise.
+ */
 template<typename T>
 struct is_product : std::false_type {};
 

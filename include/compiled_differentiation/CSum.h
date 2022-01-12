@@ -20,6 +20,9 @@ struct sum {
 template <typename L, typename R>
 using sum_t = typename sum<L, R>::type;
 
+/**
+ * Returns true if T is an instance of sum and false otherwise.
+ */
 template<typename T>
 struct is_sum : std::false_type {};
 
