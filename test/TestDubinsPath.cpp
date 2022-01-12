@@ -33,5 +33,5 @@ void testDubinsPath() {
     path.toCSV(out3);
     out3.close();
 
-    std::cout << "Passed all tests for DubinsPath!" << std::endl;
+    std::cout << "Passed all tests for DubinsPath!\n";
 }

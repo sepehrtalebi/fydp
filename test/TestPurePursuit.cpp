@@ -17,5 +17,5 @@ void testPurePursuit() {
     pursuer.toCSV(out1, start);
     out1.close();
 
-    std::cout << "Passed all tests for PurePursuit!" << std::endl;
+    std::cout << "Passed all tests for PurePursuit!\n";
 }

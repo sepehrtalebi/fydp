@@ -26,5 +26,5 @@ void testPrimes() {
         assert(lowestPrimitiveRootOfPrime(test_cases[i]) == outputs[i]);
     }
 
-    std::cout << "Passed All Tests for primes!" << std::endl;
+    std::cout << "Passed All Tests for primes!\n";
 }

@@ -11,5 +11,5 @@ void testVector3() {
     assert(first.x == 1);
     assert(second.x == 4);
 
-    std::cout << "Passed All Tests for Vector3!" << std::endl;
+    std::cout << "Passed All Tests for Vector3!\n";
 }
