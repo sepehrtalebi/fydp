@@ -4,6 +4,8 @@
 #include <initializer_list>
 #include <cmath>
 #include <functional>
+#include <string>
+#include <sstream>
 #include <fstream>
 
 template<typename T, size_t n>
@@ -39,25 +41,19 @@ public:
         *this = other;
     }
 
-    void range(T start, T end) {
-        double interval = (end - start)/n;
-        for (int i = 0; i < n; i++) data[i] = interval * i;
-    }
-
-    std::array<T, n> data_to_array() {
-        std::array<T, n> output = data;
-        return output;
-    }
-
     template<typename OStream>
     void toCSV(OStream& out) const {
         for (int i = 0; i < n; i++) out << data[i] << std::endl;
     }
 
-    T magnitude() const {
+    T magnitudeSquared() const {
         T sum{};
         for (size_t i = 0; i < n; i++) sum += data[i] * data[i];
-        return sqrt(sum);
+        return sum;
+    }
+
+    T magnitude() const {
+        return sqrt(magnitudeSquared());
     }
 
     void normalize() {
@@ -199,6 +195,15 @@ public:
 
     const_iterator end() const {
         return data.end();
+    }
+
+    [[nodiscard]] std::string toStr() const {
+        if (n == 0) return "{}";
+        std::stringstream out;
+        out << "{" << data[0];
+        for (size_t i = 1; i < n; i++) out << ", " << data[i];
+        out << "}";
+        return out.str();
     }
 };
 

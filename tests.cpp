@@ -9,6 +9,7 @@
 #include "test/TestRationalFunction.h"
 #include "test/TestTransferFunction.h"
 #include "test/TestDubinsPath.h"
+#include "test/TestPurePursuit.h"
 #include <iostream>
 
 int main() {
@@ -20,6 +21,7 @@ int main() {
     testPrimes();
     testFourier();
     testDubinsPath();
+    testPurePursuit();
     testPolynomial();
     testRationalFunction();
     testTransferFunction();
