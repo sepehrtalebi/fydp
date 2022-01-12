@@ -16,6 +16,7 @@ add_executable(FYDP tests.cpp
         src/kalman_filter/KF.cpp
         src/kalman_filter/UKF.cpp
         src/kalman_filter/EKF.cpp
+        src/controller/Controller.cpp
         src/SensorMeasurements.cpp
         src/AircraftState.cpp
         src/ControlInputs.cpp
@@ -49,4 +50,9 @@ add_executable(FYDP tests.cpp
         test/TestFourier.cpp
         test/TestDubinsPath.cpp
         test/TestPurePursuit.cpp
-        src/PID.cpp)
+        test/TestPolynomial.cpp
+        test/TestRationalFunction.cpp
+        test/TestTransferFunction.h 
+        test/TestTransferFunction.cpp
+        test/TestDubinsPath.cpp
+        )

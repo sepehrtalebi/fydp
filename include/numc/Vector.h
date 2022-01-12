@@ -6,6 +6,7 @@
 #include <functional>
 #include <string>
 #include <sstream>
+#include <fstream>
 
 template<typename T, size_t n>
 class Vector {
@@ -38,6 +39,11 @@ public:
 
     Vector(const Vector<T, n> &other) {
         *this = other;
+    }
+
+    template<typename OStream>
+    void toCSV(OStream& out) const {
+        for (int i = 0; i < n; i++) out << data[i] << std::endl;
     }
 
     T magnitudeSquared() const {
