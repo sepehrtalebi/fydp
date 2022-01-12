@@ -33,9 +33,29 @@ inline constexpr deep_simplify_t<sum_t<L, R>> operator+(L, R) {
   return {};
 }
 
+template<typename R>
+inline constexpr double operator+(Constant<R>, const double& d) {
+  return Constant<R>::value + d;
+}
+
+template<typename R>
+inline constexpr double operator+(const double& d, Constant<R>) {
+  return d + Constant<R>::value;
+}
+
 template <typename L, typename R>
 inline constexpr deep_simplify_t<difference_t<L, R>> operator-(L, R) {
   return {};
+}
+
+template<typename R>
+inline constexpr double operator-(Constant<R>, const double& d) {
+  return Constant<R>::value - d;
+}
+
+template<typename R>
+inline constexpr double operator-(const double& d, Constant<R>) {
+  return d - Constant<R>::value;
 }
 
 template <typename L, typename R>
@@ -43,9 +63,29 @@ inline constexpr deep_simplify_t<product_t<L, R>> operator*(L, R) {
   return {};
 }
 
+template<typename R>
+inline constexpr double operator*(Constant<R>, const double& d) {
+  return Constant<R>::value * d;
+}
+
+template<typename R>
+inline constexpr double operator*(const double& d, Constant<R>) {
+  return d * Constant<R>::value;
+}
+
 template <typename N, typename D>
 inline constexpr deep_simplify_t<quotient_t<N, D>> operator/(N, D) {
   return {};
+}
+
+template<typename R>
+inline constexpr double operator/(Constant<R>, const double& d) {
+  return Constant<R>::value / d;
+}
+
+template<typename R>
+inline constexpr double operator/(const double& d, Constant<R>) {
+  return d / Constant<R>::value;
 }
 
 template<typename T>
@@ -81,6 +121,16 @@ inline constexpr deep_simplify_t<logarithm_t<T>> log(T) {
 template <typename B, typename E>
 inline constexpr deep_simplify_t<power_t<B, E>> pow(B, E) {
   return {};
+}
+
+template<typename R>
+inline constexpr double pow(Constant<R>, const double& d) {
+  return std::pow(Constant<R>::value, d);
+}
+
+template<typename R>
+inline constexpr double pow(const double& d, Constant<R>) {
+  return std::pow(d, Constant<R>::value);
 }
 
 template <size_t id, typename T>
