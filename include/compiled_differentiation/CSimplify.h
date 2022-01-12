@@ -10,6 +10,7 @@
 #include "CPower.h"
 #include "CProduct.h"
 #include "CQuotient.h"
+#include "CRatioPower.h"
 #include "CSin.h"
 #include "CSum.h"
 #include "CVariable.h"
@@ -265,21 +266,10 @@ constexpr auto simplify(T /** value **/) {
     using base = typename T::base;
     using exponent = typename T::exponent;
 
-    // 0 ^ 0 -> 1
-    if constexpr (std::is_same_v<base, Zero> && std::is_same_v<exponent, Zero>)
-      return One{};
-    // 0 ^ 1 -> 0
-    else if constexpr (std::is_same_v<base, Zero> &&
-                       std::is_same_v<exponent, One>)
-      return Zero{};
-    // 1 ^ 0 -> 1
-    else if constexpr (std::is_same_v<base, One> &&
-                       std::is_same_v<exponent, Zero>)
-      return One{};
-    // 1 ^ 1 -> 1
-    else if constexpr (std::is_same_v<base, One> &&
-                       std::is_same_v<exponent, One>)
-      return One{};
+    // C1 ^ C2 -> C3, if it is simplifiable
+    if constexpr (is_constant_v<base> && is_constant_v<exponent> &&
+                  can_ratio_power_v<get_ratio_t<base>, get_ratio_t<exponent>>)
+      return Constant<ratio_power_t<get_ratio_t<base>, get_ratio_t<exponent>>>{};
     // B ^ 0 -> 1
     else if constexpr (std::is_same_v<exponent, Zero>)
       return One{};
