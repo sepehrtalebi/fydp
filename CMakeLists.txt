@@ -54,5 +54,4 @@ add_executable(FYDP tests.cpp
         test/TestRationalFunction.cpp
         test/TestTransferFunction.h 
         test/TestTransferFunction.cpp
-        test/TestDubinsPath.cpp
         )
