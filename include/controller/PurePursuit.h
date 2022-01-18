@@ -3,6 +3,7 @@
 #include "DubinsPath.h"
 #include <cmath>
 #include <utility>
+#include "MathUtils.h"
 
 template<typename T>
 class PurePursuit {
@@ -28,7 +29,7 @@ public:
 
         // readjust to a coordinate system where we are at the origin and moving in the direction of the x-axis
         target -= state.pos;
-        target = getRotationMatrix(state.vel).transpose() * target;
+        target = math_utils::getRotationMatrix(state.vel).transpose() * target;
 
         if (target[0] <= 0) {
             // target is behind us (or to the side of us)
@@ -64,7 +65,7 @@ public:
             if (should_replan) break;
 
             state.pos += state.vel * STEP_SIZE;
-            state.vel = getRotationMatrix(ang_vel * STEP_SIZE) * state.vel;
+            state.vel = math_utils::getRotationMatrix(ang_vel * STEP_SIZE) * state.vel;
             out << state.pos[0] << ", " << state.pos[1] << std::endl;
         }
     }
