@@ -49,6 +49,7 @@ add_executable(FYDP tests.cpp
         test/TestDifferentiation.cpp
         test/TestCompiledDifferentiation.cpp
         test/TestRatioPower.cpp
+        test/TestTypeArray.cpp
         test/TestPrimes.cpp
         test/TestFourier.cpp
         test/TestDubinsPath.cpp

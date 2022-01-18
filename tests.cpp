@@ -12,6 +12,7 @@
 #include "test/TestPurePursuit.h"
 #include "test/TestCompiledDifferentiation.h"
 #include "test/TestRatioPower.h"
+#include "test/TestTypeArray.h"
 #include <iostream>
 
 int main() {
@@ -29,6 +30,7 @@ int main() {
     testTransferFunction();
     testCompiledDifferentiation();
     testRatioPower();
+    testTypeArray();
     std::cout << "Passed All Tests!" << std::endl;
     return 0;
 }
