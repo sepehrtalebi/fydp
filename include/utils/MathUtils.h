@@ -4,6 +4,8 @@
 #include "Matrix.h"
 #include <cmath>
 
+namespace math_utils {
+
 template<typename T>
 Matrix<T, 2, 2> getRotationMatrix(const T& theta) {
     T sin = std::sin(theta);
@@ -22,4 +24,6 @@ Matrix<T, 2, 2> getRotationMatrix(const Vector<T, 2>& vec) {
     T cos = vec[0] / hypot;
     return {cos, -sin,
             sin, cos};
+}
+
 }

@@ -84,6 +84,8 @@ public:
          * @return The point on this Curve closest to the specified point
          */
         [[nodiscard]] Vector<T, 2> closestPoint(const Vector<T, 2> &p) const {
+            using math_utils::getRotationMatrix;
+
             if (!is_turning) {
                 Vector2 d = end_pos - start_pos;
                 T projection_fraction = (p - start_pos).dot(d) / d.dot(d);
@@ -152,7 +154,7 @@ public:
             } else {
                 for (size_t i = 0; i < NUM_SAMPLES; i++) {
                     T theta = start_angle + delta_angle * (i / static_cast<T>(NUM_SAMPLES));
-                    Vector<T, 2> pos = center + getRotationMatrix(theta) * Vector2{radius, 0};
+                    Vector<T, 2> pos = center + math_utils::getRotationMatrix(theta) * Vector2{radius, 0};
                     out << pos[0] << "," << pos[1] << std::endl;
                 }
             }
