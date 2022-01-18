@@ -17,10 +17,6 @@ public:
 
     [[nodiscard]] Matrix<double, 6, n> getAppliedLoadsJacobian(const Vector<double, n> &state) const;
 
-    static double saturation(const double &value, const double &limit);
-
-    static double saturation(const double &value, const double &min, const double &max);
-
 private:
     static const Matrix<ExprPtr, 3, 4> QUAT_TO_WEIGHT_JAC_EXPR;
 

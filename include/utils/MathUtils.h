@@ -3,6 +3,7 @@
 #include "Vector.h"
 #include "Matrix.h"
 #include <cmath>
+#include <type_traits>
 
 namespace math_utils {
 
@@ -24,6 +25,20 @@ Matrix<T, 2, 2> getRotationMatrix(const Vector<T, 2>& vec) {
     T cos = vec[0] / hypot;
     return {cos, -sin,
             sin, cos};
+}
+
+template <typename T1, typename T2>
+std::common_type_t<T1, T2> saturation(const T1& value, const T2& limit) {
+  if (value > limit) return limit;
+  if (value < -limit) return -limit;
+  return value;
+}
+
+template <typename T1, typename T2, typename T3>
+std::common_type_t<T1, T2, T3> saturation(const T1& value, const T2& min, const T3& max) {
+  if (value > max) return max;
+  if (value < min) return min;
+  return value;
 }
 
 }

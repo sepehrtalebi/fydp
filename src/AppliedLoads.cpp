@@ -5,12 +5,15 @@
 #include "Quaternion.h"
 #include "Variable.h"
 #include "Constant.h"
+#include "MathUtils.h"
 #include <cmath>
 
 #ifndef M_PI_4
 // this is needed for the code to compile in the Simulink S Function Builder
 #define M_PI_4 0.78539816339744830962
 #endif
+
+using math_utils::saturation;
 
 static Matrix<ExprPtr, 3, 4> getQuatToWeightJacExpr() {
     Matrix<ExprPtr, 3, 4> expr;
@@ -32,18 +35,6 @@ void AppliedLoads::update(const ControlInputs &control_inputs) {
     last_propeller_ang_vel = getPropellerAngVelocity();
     last_control_inputs = current_control_inputs;
     current_control_inputs = control_inputs;
-}
-
-double AppliedLoads::saturation(const double &value, const double &limit) {
-    if (value > limit) return limit;
-    if (value < -limit) return -limit;
-    return value;
-}
-
-double AppliedLoads::saturation(const double &value, const double &min, const double &max) {
-    if (value > max) return max;
-    if (value < min) return min;
-    return value;
 }
 
 double AppliedLoads::getPropellerAngVelocity() const {
