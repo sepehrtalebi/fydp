@@ -18,5 +18,5 @@ void testMatrix() {
     assert(s_mat[0][0] == 1);
     assert(s_mat[0][1] == 0);
 
-    std::cout << "Passed All Tests for Matrix!" << std::endl;
+    std::cout << "Passed All Tests for Matrix!\n";
 }

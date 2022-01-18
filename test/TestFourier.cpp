@@ -83,5 +83,5 @@ void testFourier() {
     }
     testFFT(10000);
 
-    std::cout << "Passed All Tests for Fourier!" << std::endl;
+    std::cout << "Passed All Tests for Fourier!\n";
 }

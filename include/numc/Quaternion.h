@@ -11,7 +11,7 @@ public:
     T &q2 = this->data[2];
     T &q3 = this->data[3];
 public:
-    explicit Quaternion(T q0 = 1, T q1 = 0, T q2 = 0, T q3 = 0) {
+    explicit Quaternion(T q0 = static_cast<T>(1), T q1 = static_cast<T>(0), T q2 = static_cast<T>(0), T q3 = static_cast<T>(0)) {
         this->q0 = q0;
         this->q1 = q1;
         this->q2 = q2;
@@ -31,7 +31,7 @@ public:
     }
 
     static Quaternion identity() {
-        return Quaternion{1, 0, 0, 0};
+        return Quaternion{};
     }
 
     Quaternion cong() const {
@@ -39,7 +39,7 @@ public:
     }
 
     Vector3<T> rotate(const Vector3<T> &vec) const {
-        Quaternion x_quat = Quaternion{0, vec.x, vec.y, vec.z};
+        Quaternion x_quat = Quaternion{static_cast<T>(0), vec.x, vec.y, vec.z};
         Quaternion x_rot_quat = this->cong() * x_quat * (*this);
         return Vector3<T>{x_rot_quat.q1,
                           x_rot_quat.q2,
