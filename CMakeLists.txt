@@ -10,7 +10,8 @@ include_directories(./include/kalman_filter)
 include_directories(./include/utils)
 include_directories(./include/controller)
 
-add_executable(FYDP tests.cpp
+add_executable(
+        FYDP tests.cpp
         src/kalman_filter/SensorFilter.cpp
         src/kalman_filter/BasicSensorFilter.cpp
         src/kalman_filter/KF.cpp
@@ -50,6 +51,9 @@ add_executable(FYDP tests.cpp
         test/TestPolynomial.cpp
         test/TestRationalFunction.cpp
         src/controller/Controller.cpp
-        test/TestTransferFunction.h 
+        test/TestTransferFunction.h
         test/TestTransferFunction.cpp
-        test/TestDubinsPath.cpp)
+        test/TestDubinsPath.cpp
+        test/TestPID.h
+        test/TestPID.cpp
+        )
