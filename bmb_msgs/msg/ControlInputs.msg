@@ -1,0 +1,4 @@
+float64 propeller_voltage
+float64 right_aileron_angle
+float64 left_aileron_angle
+float64 elevator_angle

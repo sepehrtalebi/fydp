@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>trexo_trajectory</name>
+  <version>2.2.0</version>
+  <description>Trajectory planner for walking gaits</description>
+
+  <maintainer email="ru@trexorobotics.com">Rahul Udasi</maintainer>
+  <maintainer email="tm@trexorobotics.com">Tom Meredith</maintainer>
+
+  <license>Proprietary</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <buildtool_depend condition="$ROS_PYTHON_VERSION == 2">python-setuptools</buildtool_depend>
+  <buildtool_depend condition="$ROS_PYTHON_VERSION == 3">python3-setuptools</buildtool_depend>
+
+  <depend>actionlib</depend>
+  <depend>control_msgs</depend>
+  <depend>controller_manager_msgs</depend>
+  <depend>roscpp</depend>
+  <depend>roslib</depend>
+  <depend>std_msgs</depend>
+  <depend>std_srvs</depend>
+  <depend>trajectory_msgs</depend>
+  <depend>trexo_msgs</depend>
+  <depend>trexo_utilities</depend>
+
+  <exec_depend>rospy</exec_depend>
+  <exec_depend condition="$ROS_PYTHON_VERSION == 2">python-matplotlib</exec_depend>
+  <exec_depend condition="$ROS_PYTHON_VERSION == 3">python3-matplotlib</exec_depend>
+  <exec_depend condition="$ROS_PYTHON_VERSION == 2">python-numpy</exec_depend>
+  <exec_depend condition="$ROS_PYTHON_VERSION == 3">python3-numpy</exec_depend>
+  <exec_depend condition="$ROS_PYTHON_VERSION == 2">python-scipy</exec_depend>
+  <exec_depend condition="$ROS_PYTHON_VERSION == 3">python3-scipy</exec_depend>
+</package>
