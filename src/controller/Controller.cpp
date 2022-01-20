@@ -1,7 +1,8 @@
 #include "controller/Controller.h"
 #include "Constants.h"
-#include "AppliedLoads.h"
+#include "MathUtils.h"
 
+using math_utils::saturation;
 
 double Controller::pitch_controller(const double &altitude_command, const double &height,
                                     const double &body_velocity) {
@@ -9,8 +10,8 @@ double Controller::pitch_controller(const double &altitude_command, const double
     double u = pid_pitch.update(error);
     double sin_AOA = 1/(body_velocity*body_velocity) * BASELINE_VELOCITY*BASELINE_VELOCITY * std::sin(TRIM);
     sin_AOA += u;
-    sin_AOA = std::asin(AppliedLoads::saturation(sin_AOA, 1));
-    sin_AOA = AppliedLoads::saturation(sin_AOA, 10 * M_PI / 180);
+    sin_AOA = std::asin(saturation(sin_AOA, 1));
+    sin_AOA = saturation(sin_AOA, 10 * M_PI / 180);
     return sin_AOA;
 }
 

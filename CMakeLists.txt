@@ -5,6 +5,7 @@ set(CMAKE_CXX_STANDARD 20)
 
 include_directories(./include)
 include_directories(./include/differentiation)
+include_directories(./include/compiled_differentiation)
 include_directories(./include/numc)
 include_directories(./include/kalman_filter)
 include_directories(./include/utils)
@@ -17,6 +18,7 @@ add_executable(
         src/kalman_filter/KF.cpp
         src/kalman_filter/UKF.cpp
         src/kalman_filter/EKF.cpp
+        src/controller/Controller.cpp
         src/SensorMeasurements.cpp
         src/AircraftState.cpp
         src/ControlInputs.cpp
@@ -46,8 +48,13 @@ add_executable(
         test/TestQuaternion.cpp
         test/TestMatrix.cpp
         test/TestDifferentiation.cpp
+        test/TestCompiledDifferentiation.cpp
+        test/TestRatioPower.cpp
+        test/TestTypeArray.cpp
         test/TestPrimes.cpp
         test/TestFourier.cpp
+        test/TestDubinsPath.cpp
+        test/TestPurePursuit.cpp
         test/TestPolynomial.cpp
         test/TestRationalFunction.cpp
         src/controller/Controller.cpp

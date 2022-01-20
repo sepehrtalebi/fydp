@@ -31,5 +31,5 @@ void testDifferentiation() {
         // std::cout << jac[i][j]->toStr() << std::endl;
     }
 
-    std::cout << "Passed All Tests for Differentiation!" << std::endl;
+    std::cout << "Passed All Tests for Differentiation!\n";
 }

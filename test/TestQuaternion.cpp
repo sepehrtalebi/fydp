@@ -12,5 +12,5 @@ void testQuaternion() {
     assert(second.q0 == 1);
     assert(second.q1 == 1);
 
-    std::cout << "Passed All Tests for Quaternion!" << std::endl;
+    std::cout << "Passed All Tests for Quaternion!\n";
 }

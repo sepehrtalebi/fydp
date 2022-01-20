@@ -43,5 +43,5 @@ void testVector() {
     Vector<double, 3> expr_sub = expr.applyFunc<double>([&subs](const ExprPtr &e) { return e->evaluate(subs); });
     for (size_t i = 0; i < 3; i++) assert(expr_sub[i] == i);
 
-    std::cout << "Passed All Tests for Vector!" << std::endl;
+    std::cout << "Passed All Tests for Vector!\n";
 }

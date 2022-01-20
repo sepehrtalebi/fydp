@@ -9,21 +9,29 @@
 #include "test/TestRationalFunction.h"
 #include "test/TestTransferFunction.h"
 #include "test/TestDubinsPath.h"
+#include "test/TestPurePursuit.h"
+#include "test/TestCompiledDifferentiation.h"
+#include "test/TestRatioPower.h"
+#include "test/TestTypeArray.h"
 #include <iostream>
 
 
 int main() {
-//    testVector();
-//    testVector3();
-//    testQuaternion();
-//    testMatrix();
-//    testDifferentiation();
-//    testPrimes();
-//    testFourier();
-//    testDubinsPath();
-//    testPolynomial();
-//    testRationalFunction();
-//    testTransferFunction();
-//    std::cout << "Passed All Tests!" << std::endl;
+    testVector();
+    testVector3();
+    testQuaternion();
+    testMatrix();
+    testDifferentiation();
+    testPrimes();
+    testFourier();
+    testDubinsPath();
+    testPurePursuit();
+    testPolynomial();
+    testRationalFunction();
+    testTransferFunction();
+    testCompiledDifferentiation();
+    testRatioPower();
+    testTypeArray();
+    std::cout << "Passed All Tests!" << std::endl;
     return 0;
 }
