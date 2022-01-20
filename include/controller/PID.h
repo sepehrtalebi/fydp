@@ -1,23 +1,27 @@
 #pragma once
+#include "TransferFunction.h"
 
 template<typename T>
 class PID {
-    T last_error, error_area;
-    const T K_P, K_I, K_D;
+    T K_P, K_I, K_D;
+    const T low_pass = 100;
+    TransferFunction<T, 2, 2> I;
+    TransferFunction<T, 2, 2> D;
 public:
-    PID(T K_P, T K_I, T K_D): K_P(K_P), K_I(K_I), K_D(K_D), last_error(0), error_area(0) {}
-    PID() =default;
+    PID(T K_P, T K_I, T K_D, T dt): K_P(K_P), K_I(K_I), K_D(K_D) {
+        I = K_I * TransferFunction<T, 2, 2>{Polynomial<T, 2> {dt/2, dt/2}, Polynomial<T, 2>{-1, 1}, true}; //discrete version of 1/s
+        D = K_D * TransferFunction<T, 2, 2>{Polynomial<T, 2> {-2 * low_pass, 2 * low_pass},
+                                      Polynomial<T, 2>{low_pass * dt - 2, low_pass * dt + 2}, true}; //discrete version of Ns/(s + N)
+    }
 
-    T update(T error, T dt) {
+    T update(T error) {
         double output_signal = 0;
         if (K_P) output_signal += K_P * error;
         if (K_I) {
-            error_area += error * dt;
-            output_signal += K_I * error_area;
+            output_signal += I.next_output(error);
         }
         if (K_D) {
-            output_signal += K_D * (error - last_error) / dt;
-            last_error = error;
+            output_signal += D.next_output(error);
         }
         return output_signal;
     }

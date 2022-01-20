@@ -2,7 +2,7 @@
 #include "Vector.h"
 #include <iostream>
 #include <algorithm>
-#include <exception>
+#include <cassert>
 
 template <typename T, size_t n>
 class Polynomial: public Vector<T, n> {
@@ -86,7 +86,7 @@ public:
 
     template<size_t m>
     Polynomial& operator=(const Polynomial<T, m> &other) {
-        if (m > n) throw std::invalid_argument("Cannot add dimensions to a constant size array");
+        assert(n <= m);
         for (size_t i = 0; i < m; i++) this->data[i] = other[i];
         for (size_t i = m; i < n; i++) this->data[i] = 0;
         return *this;
@@ -108,7 +108,7 @@ public:
     }
 
     template<size_t m>
-    auto _of_(const Polynomial<T, m> &g_of_x) const {
+    Polynomial<T, (n - 1) * (m - 1) + 1> _of_(const Polynomial<T, m> &g_of_x) const {
         Polynomial<T, (n - 1) * (m - 1) + 1> f_of_g;
         f_of_g[0] = this->data[0];
         for (size_t i = n - 1; i > 0; i--) {
@@ -120,17 +120,18 @@ public:
     }
 
     void print(char independent_var = 's') {
-        for (int i = n - 1; i > 1; i--) {
+        std::cout << this->data[0];
+        if (n > 1)  std::cout << " + " << this->data[1] << independent_var;
+        for (int i = 2; i < n; i++) {
             if (this->data[i] != 0)
-                std::cout << this->data[i] << independent_var << "^" << i << " + "; //TODO: setw
+                std::cout << " + " << this->data[i] << independent_var << "^" << i ;
         }
-        if ((n > 1) && (this->data[1] != 0)) std::cout << this->data[1] << independent_var << " + " << this->data[0] << std::endl;
-        else std::cout << this->data[0] << std::endl;
+        std::cout << std::endl;
     }
 
     using Vector<T, n>::operator*;
 
-    auto operator*(const Polynomial<T, n> &other) const {
+    Polynomial<T, 2 * n - 1> operator*(const Polynomial<T, n> &other) const {
         Polynomial<T, 2 * n - 1> foil;
         for (int i = 0; i < n; i++)
             for (int j = 0; j < n; j++)
@@ -139,7 +140,7 @@ public:
     }
 
     template<size_t m>
-    auto operator*(const Polynomial<T, m> &other) const {
+    Polynomial<T, m + n - 1> operator*(const Polynomial<T, m> &other) const {
         Polynomial<T, m + n - 1> foil;
         for (int i = 0; i < n; i++)
             for (int j = 0; j < m; j++)
@@ -151,14 +152,14 @@ public:
 
     using Vector<T, n>::operator+;
 
-    auto operator+(T &scalar) const {
-        auto sum = this;
+    Polynomial<T, n> operator+(T &scalar) const {
+        Polynomial<T, n> sum = (*this);
         sum[0] += scalar;
         return sum;
     }
 
     template<size_t m>
-    auto operator+(const Polynomial<T, m> &other) const {
+    Polynomial<T, std::max(n, m)> operator+(const Polynomial<T, m> &other) const {
         Polynomial<T, std::max(n, m)> sum;
         for (size_t i = 0; i < n; i++) sum[i] += this->data[i];
         for (size_t i = 0; i < m; i++) sum[i] += other[i];
@@ -172,28 +173,28 @@ public:
 
     template<size_t m>
     void operator+=(const Polynomial<T, m> &other) {
-        if (m > n) throw std::invalid_argument("Cannot add dimensions to a constant size array");
+        assert(n <= m);
         for (int i = 0; i < m; i++)
             this->data[i] += other[i];
     }
 
     using Vector<T, n>::operator-;
 
-    auto operator-(T &scalar) const {
-        auto diff = this;
+    Polynomial<T, n> operator-(T &scalar) const {
+        Polynomial<T, n> diff = (*this);
         diff[0] -= scalar;
         return diff;
     }
 
     template<size_t m>
-    auto operator-(const Polynomial<T, n> &other) const {
+    Polynomial<T, n> operator-(const Polynomial<T, n> &other) const {
         Polynomial<T, n> diff;
         for (size_t i = 0; i < n; i++) diff[i] = this->data[i] - other[i];
         return diff;
     }
 
     template<size_t m>
-    auto operator-(const Polynomial<T, m> &other) const {
+    Polynomial<T, std::max(n, m)> operator-(const Polynomial<T, m> &other) const {
         Polynomial<T, std::max(n, m)> diff;
         for (size_t i = 0; i < n; i++) diff[i] -= this->data[i];
         for (size_t i = 0; i < m; i++) diff[i] -= other[i];
@@ -207,7 +208,7 @@ public:
 
     template<size_t m>
     void operator-=(const Polynomial<T, m> &other) {
-        if (m > n) throw std::invalid_argument("Cannot add dimensions to a constant size array");
+        assert(n <= m);
         for (int i = 0; i < m; i++)
             this->data[i] -= other[i];
     }
