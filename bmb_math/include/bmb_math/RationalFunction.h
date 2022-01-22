@@ -63,11 +63,11 @@ public:
         denominator.print(independent_var);
     }
 
-    T numerator_data(size_t num_index) {
+    T numerator_data(size_t num_index) const {
         return numerator[num_index];
     }
 
-    T denominator_data(size_t den_index) {
+    T denominator_data(size_t den_index) const {
         return denominator[den_index];
     }
 
@@ -79,9 +79,11 @@ public:
     }
 
     template<size_t p, size_t q>
-    RationalFunction<T, (n - 1) * std::max(p - 1, q - 1) + (q - 1) * heaviside_difference(m, n) + 1,
-    (m - 1) * std::max(p - 1, q - 1) + (q - 1) * heaviside_difference(n, m) + 1>
-    _of_(const RationalFunction<T, p, q> &g_of_x) const {
+    using composite_rational = RationalFunction<T, (n - 1) * std::max(p - 1, q - 1) + (q - 1) * heaviside_difference(m, n) + 1,
+            (m - 1) * std::max(p - 1, q - 1) + (q - 1) * heaviside_difference(n, m) + 1>;
+
+    template<size_t p, size_t q>
+    composite_rational<p, q> _of_(const RationalFunction<T, p, q> &g_of_x) const {
         Polynomial<T, (n - 1) * std::max(p - 1, q - 1) + (q - 1) * heaviside_difference(m, n) + 1> num;
         Polynomial<T, (m - 1) * std::max(p - 1, q - 1) + (q - 1) * heaviside_difference(n, m) + 1> den;
 
@@ -148,15 +150,12 @@ public:
 
     RationalFunction<T, n, m> operator*(const T &scalar) const {
         Polynomial<T, n> num;
-        Polynomial<T, m> den;
         num = numerator * scalar;
-        den = denominator * scalar;
-        return {num, den};
+        return {num, this->denominator};
     }
 
     void operator*=(const T &scalar) {
         numerator *= scalar;
-        denominator *= scalar;
     }
 
     template<size_t p, size_t q>
@@ -195,13 +194,19 @@ template<typename T, size_t n, size_t m>
 RationalFunction<T, n, m> operator*(const T &scalar, const RationalFunction<T, n, m> &rf) {
     Polynomial<T, n> num;
     Polynomial<T, m> den;
-    num = rf.numerator * scalar;
-    den = rf.denominator * scalar;
+    for (int i = 0; i < n; i++)
+        num[i] = rf.numerator_data(i) * scalar;
+    for (int i = 0; i < m; i++)
+        den[i] = rf.denominator_data(i) * scalar;
     return {num, den};
 }
 
 template<typename T, size_t n, size_t m, size_t p>
 RationalFunction<T, n + p - 1, m> operator*(const Polynomial<T, p> &poly, const RationalFunction<T, n, m> &rf) {
-    auto num = rf.numerator * poly;
+    Polynomial<T, p + n - 1> num;
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++)
+            num[i + j] += poly[j] * rf.numerator_data(i);
+    }
     return {num, rf.denominator};
 }

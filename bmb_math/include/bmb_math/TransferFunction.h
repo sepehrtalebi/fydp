@@ -6,16 +6,19 @@
 
 template <typename T, size_t n, size_t m>
 class TransferFunction: public RationalFunction<T, n, m> {
-    Vector<T, std::max<size_t>(m, 0)> past_inputs;
+    Vector<T, m> past_inputs;
     Vector<T, std::max<size_t>(m - 1, 0)> past_outputs;
     bool discretized;
 
-    T next_output() {
+    T next_output(T input) {
+        assert(this->discretized);
         T next_output = 0;
+        past_inputs = reallocate_push(past_inputs, input);
         if (m > 1)
             for (int i = 0; i < m - 1; i++) next_output -= this->denominator[i] * past_outputs[m - 2 - i];
         for (int i = 0; i < m && i < n; i++) next_output += this->numerator[i] * past_inputs[m - 1 - i];
         next_output /= this->denominator[m - 1];
+        past_outputs = reallocate_push(past_outputs, next_output);
         return next_output;
     }
 
@@ -29,15 +32,22 @@ class TransferFunction: public RationalFunction<T, n, m> {
 
     template<typename, size_t, size_t>
     friend class TransferFunction;
+    template<typename>
+    friend class PID;
 public:
-    TransferFunction() = default;
+    TransferFunction() {
+        assert(m > 0);
+    }
 
     TransferFunction(const Polynomial<T, n> &numerator, const Polynomial<T, m> &denominator, bool discrete = false):
-            RationalFunction<T, n, m>(numerator, denominator), past_inputs(), past_outputs(), discretized(discrete) {}
+            RationalFunction<T, n, m>(numerator, denominator), past_inputs(), past_outputs(), discretized(discrete) {
+        assert(m > 0);
+    }
 
     using RationalFunction<T, n, m>::RationalFunction;
 
-    TransferFunction(RationalFunction<T, n, m> rf): TransferFunction(rf.numerator, rf.denominator) {}  // NOLINT(google-explicit-constructor)
+    TransferFunction(RationalFunction<T, n, m> rf):
+        TransferFunction(rf.numerator, rf.denominator) {}  // NOLINT(google-explicit-constructor)
 
     TransferFunction& operator=(const TransferFunction<T, n, m> &other) {
         this->numerator = other.numerator;
@@ -91,20 +101,14 @@ public:
         Vector<T, output_size> step_response;
         if (this->discretized) {
             assert(m >= n);
-            past_inputs[0] = 1;
             for (int i = 0; i < output_size; i++) {
-                step_response[i] = next_output();
-                past_outputs = reallocate_push(past_outputs, step_response[i]);
-                past_inputs = reallocate_push(past_inputs, 1);
+                step_response[i] = next_output(1);
             }
         }
         else {
             auto discrete = this->discretize(dt);
-            discrete.past_inputs[0] = 1;
             for (int i = 0; i < output_size; i++) {
-                step_response[i] = discrete.next_output();
-                discrete.past_outputs = reallocate_push(discrete.past_outputs, step_response[i]);
-                discrete.past_inputs = reallocate_push(discrete.past_inputs, 1);
+                step_response[i] = discrete.next_output(1);
             }
         }
         return step_response;
