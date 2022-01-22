@@ -4,6 +4,8 @@
 #include "../../../bmb_math/include/bmb_math/Matrix.h"
 #include "../../../bmb_controllers/include/bmb_controllers/PIDGains.h"
 
+// TODO: move to yaml file and read from parameter server
+
 // environmental constants
 static constexpr const double GRAVITATIONAL_ACCELERATION = 9.81; // m/s^2
 static const Vector3<double> EARTH_GRAVITY{0, 0, GRAVITATIONAL_ACCELERATION};
