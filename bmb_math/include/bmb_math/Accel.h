@@ -1,11 +1,11 @@
 #pragma once
 
-#include "Vector3.h"
+#include <bmb_math/Vector3.h>
 
 template<typename T>
 struct Accel {
-    Vector3<T> linear;
-    Vector3<T> angular;
+    Vector3<T> linear{};
+    Vector3<T> angular{};
 
     Accel<T> operator+(const Accel<T> &other) {
         return {Vector3<T>{linear + other.linear}, Vector3<T>{angular + other.angular}};

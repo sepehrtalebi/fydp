@@ -1,6 +1,6 @@
 #pragma once
 
-#include "BinaryOperator.h"
+#include <bmb_differentiation/runtime/BinaryOperator.h>
 
 #include <map>
 #include <memory>

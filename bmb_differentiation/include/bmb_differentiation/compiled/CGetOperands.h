@@ -1,8 +1,9 @@
 #pragma once
 
-#include "CDifference.h"
-#include "CProduct.h"
-#include "CSum.h"
+#include <bmb_differentiation/compiled/CDifference.h>
+#include <bmb_differentiation/compiled/CProduct.h>
+#include <bmb_differentiation/compiled/CSum.h>
+
 #include <type_traits>
 
 namespace compiled {

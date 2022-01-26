@@ -1,9 +1,12 @@
-#include "../../include/bmb_differentiation/runtime/Cos.h"
-#include "../../include/bmb_differentiation/runtime/Zero.h"
-#include "../../include/bmb_differentiation/runtime/One.h"
-#include "../../include/bmb_differentiation/runtime/Nan.h"
+#include "bmb_differentiation/runtime/Cos.h"
+
+#include <bmb_differentiation/runtime/Zero.h>
+#include <bmb_differentiation/runtime/One.h>
+#include <bmb_differentiation/runtime/Nan.h>
 
 #include <cmath>
+#include <string>
+#include <memory>
 
 double Cos::call(const double &operand) const {
     return cos(operand);

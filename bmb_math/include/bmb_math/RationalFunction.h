@@ -1,8 +1,10 @@
 #pragma once
+
+#include <bmb_math/Polynomial.h>
+
+#include <algorithm>
 #include <iostream>
 #include <vector>
-#include "Polynomial.h"
-#include <algorithm>
 
 template<typename T>
 static constexpr T abs_difference(const T& a, const T&b) {

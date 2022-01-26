@@ -1,7 +1,9 @@
-#include "../include/bmb_state_estimation/KF.h"
-#include "../../bmb_math/include/bmb_math/Quaternion.h"
-#include "../../bmb_world_model/include/world_model/Constants.h"
-#include "../../bmb_world_model/include/world_model/SensorModels.h"
+#include "bmb_state_estimation/KF.h"
+
+#include <bmb_world_model/Constants.h>
+#include <bmb_world_model/WrenchUtilities.h>
+#include <bmb_math/Quaternion.h>
+#include <bmb_world_model/SensorModels.h>
 
 KF::KF() {
     x[q0] = 1;

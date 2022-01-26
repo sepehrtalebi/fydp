@@ -1,6 +1,6 @@
 #pragma once
 
-#include "CDerivative.h"
+#include <bmb_differentiation/compiled/CDerivative.h>
 
 #include <cstddef>
 

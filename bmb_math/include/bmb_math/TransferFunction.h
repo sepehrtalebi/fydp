@@ -1,11 +1,15 @@
 #pragma once
-#include <iostream>
+
+#include <bmb_math/RationalFunction.h>
+
 #include <array>
 #include <cassert>
-#include "RationalFunction.h"
+#include <iostream>
 
 template <typename T, size_t n, size_t m>
 class TransferFunction: public RationalFunction<T, n, m> {
+    static_assert(m > 0);
+
     Vector<T, m> past_inputs;
     Vector<T, std::max<size_t>(m - 1, 0)> past_outputs;
     bool discretized;
@@ -35,13 +39,10 @@ class TransferFunction: public RationalFunction<T, n, m> {
     template<typename>
     friend class PID;
 public:
-    TransferFunction() {
-        assert(m > 0);
-    }
+    TransferFunction() = default;
 
     TransferFunction(const Polynomial<T, n> &numerator, const Polynomial<T, m> &denominator, bool discrete = false):
             RationalFunction<T, n, m>(numerator, denominator), past_inputs(), past_outputs(), discretized(discrete) {
-        assert(m > 0);
     }
 
     using RationalFunction<T, n, m>::RationalFunction;

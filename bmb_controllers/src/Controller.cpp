@@ -1,6 +1,7 @@
-#include "../include/bmb_controllers/Controller.h"
-#include "../../bmb_world_model/include/world_model/Constants.h"
-#include "../../bmb_utilities/include/bmb_utilities/MathUtils.h"
+#include "bmb_controllers/Controller.h"
+
+#include <bmb_world_model/Constants.h>
+#include <bmb_utilities/MathUtils.h>
 
 using math_utils::saturation;
 

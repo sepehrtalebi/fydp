@@ -1,9 +1,13 @@
-#include "../../include/bmb_differentiation/runtime/Difference.h"
-#include "../../include/bmb_differentiation/runtime/Zero.h"
-#include "../../include/bmb_differentiation/runtime/Nan.h"
-#include "../../include/bmb_differentiation/runtime/Constant.h"
-#include "../../include/bmb_differentiation/runtime/Variable.h"
-#include "../../include/bmb_differentiation/runtime/Product.h"
+#include "bmb_differentiation/runtime/Difference.h"
+
+#include <bmb_differentiation/runtime/Zero.h>
+#include <bmb_differentiation/runtime/Nan.h>
+#include <bmb_differentiation/runtime/Constant.h>
+#include <bmb_differentiation/runtime/Variable.h>
+#include <bmb_differentiation/runtime/Product.h>
+
+#include <string>
+#include <memory>
 
 ExprPtr Difference::diff(const std::string &id) const {
     return first->diff(id) - second->diff(id);

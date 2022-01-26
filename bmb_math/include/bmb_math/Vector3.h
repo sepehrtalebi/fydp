@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Vector.h"
+#include <bmb_math/Vector.h>
 
 template<typename T>
 class Vector3 : public Vector<T, 3> {

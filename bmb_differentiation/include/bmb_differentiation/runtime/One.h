@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Constant.h"
+#include <bmb_differentiation/runtime/Constant.h>
 
 #include <map>
 #include <memory>

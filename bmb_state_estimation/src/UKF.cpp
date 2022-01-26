@@ -1,4 +1,6 @@
-#include "../include/bmb_state_estimation/UKF.h"
+#include "bmb_state_estimation/UKF.h"
+
+#include <cmath>
 
 const double UKF::gamma = std::sqrt(n + UKF::lambda); // NOLINT(cert-err58-cpp)
 

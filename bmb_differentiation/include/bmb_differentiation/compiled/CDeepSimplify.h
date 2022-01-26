@@ -1,17 +1,17 @@
 #pragma once
 
-#include "CCos.h"
-#include "CDerivative.h"
-#include "CHigherDerivative.h"
-#include "CDifference.h"
-#include "CExp.h"
-#include "CLog.h"
-#include "CPower.h"
-#include "CProduct.h"
-#include "CQuotient.h"
-#include "CSimplify.h"
-#include "CSin.h"
-#include "CSum.h"
+#include <bmb_differentiation/compiled/CCos.h>
+#include <bmb_differentiation/compiled/CDerivative.h>
+#include <bmb_differentiation/compiled/CHigherDerivative.h>
+#include <bmb_differentiation/compiled/CDifference.h>
+#include <bmb_differentiation/compiled/CExp.h>
+#include <bmb_differentiation/compiled/CLog.h>
+#include <bmb_differentiation/compiled/CPower.h>
+#include <bmb_differentiation/compiled/CProduct.h>
+#include <bmb_differentiation/compiled/CQuotient.h>
+#include <bmb_differentiation/compiled/CSimplify.h>
+#include <bmb_differentiation/compiled/CSin.h>
+#include <bmb_differentiation/compiled/CSum.h>
 
 #include <type_traits>
 

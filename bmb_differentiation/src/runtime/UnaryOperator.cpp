@@ -1,5 +1,9 @@
-#include "../../include/bmb_differentiation/runtime/UnaryOperator.h"
-#include "../../include/bmb_differentiation/runtime/Constant.h"
+#include "bmb_differentiation/runtime/UnaryOperator.h"
+
+#include <bmb_differentiation/runtime/Constant.h>
+
+#include <map>
+#include <string>
 
 double UnaryOperator::evaluate(const std::map<std::string, double> &variables) const {
     return call(operand->evaluate(variables));

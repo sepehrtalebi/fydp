@@ -1,4 +1,7 @@
-#include "../../include/bmb_differentiation/runtime/Zero.h"
+#include "bmb_differentiation/runtime/Zero.h"
+
+#include <map>
+#include <string>
 
 const ConstPtr Zero::INSTANCE = std::shared_ptr<Zero>(new Zero()); // NOLINT(cert-err58-cpp)
 

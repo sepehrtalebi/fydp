@@ -1,6 +1,8 @@
-#include "../include/bmb_math/Primes.h"
+#include <bmb_math/Primes.h>
+
 #include <cmath>
 #include <stdexcept>
+#include <vector>
 
 std::vector<size_t> primesUpTo(const size_t &n) {
     // returns all primes <= n using the sieve of Eratosthenes

@@ -1,8 +1,10 @@
-#include "../include/world_model/SensorModels.h"
-#include "../include/world_model/AppliedLoads.h"
-#include "../../bmb_math/include/bmb_math/Vector3.h"
-#include "../../bmb_math/include/bmb_math/Quaternion.h"
-#include "../../bmb_state_estimation/include/bmb_state_estimation/KF.h"
+#include "bmb_world_model/SensorModels.h"
+
+#include <bmb_world_model/AppliedLoads.h>
+#include <bmb_math/bmb_math/Vector3.h>
+#include <bmb_math/Quaternion.h>
+#include <bmb_state_estimation/KF.h>
+
 #include <cmath>
 
 // determines whether noise is added to the sensor measurements

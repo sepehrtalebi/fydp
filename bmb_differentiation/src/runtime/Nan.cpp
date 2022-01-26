@@ -1,4 +1,7 @@
-#include "../../include/bmb_differentiation/runtime/Nan.h"
+#include "bmb_differentiation/runtime/Nan.h"
+
+#include <string>
+#include <map>
 
 const ConstPtr Nan::INSTANCE = std::shared_ptr<Nan>(new Nan()); // NOLINT(cert-err58-cpp)
 

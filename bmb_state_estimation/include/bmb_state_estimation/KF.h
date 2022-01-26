@@ -1,13 +1,15 @@
 #pragma once
 
-#include "SensorFilter.h"
-#include "../../../bmb_math/include/bmb_math/Vector.h"
-#include "../../../bmb_math/include/bmb_math/Matrix.h"
-#include "../../../bmb_math/include/bmb_math/Vector3.h"
-#include "../../../bmb_math/include/bmb_math/Wrench.h"
-#include "../../../bmb_math/include/bmb_math/Accel.h"
-#include "../../../bmb_world_model/include/world_model/AppliedLoads.h"
-#include "../../../bmb_world_model/include/world_model/Constants.h"
+#include <bmb_state_estimation/SensorFilter.h>
+#include <bmb_math/Vector.h>
+#include <bmb_math/Matrix.h>
+#include <bmb_math/Vector3.h>
+#include <bmb_math/Wrench.h>
+#include <bmb_math/Accel.h>
+#include <bmb_world_model/AppliedLoads.h>
+#include <bmb_world_model/Constants.h>
+
+#include <cstddef>
 
 class KF : public SensorFilter {
 public:

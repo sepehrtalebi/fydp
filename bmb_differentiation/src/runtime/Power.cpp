@@ -1,10 +1,13 @@
-#include "../../include/bmb_differentiation/runtime/Power.h"
-#include "../../include/bmb_differentiation/runtime/Zero.h"
-#include "../../include/bmb_differentiation/runtime/One.h"
-#include "../../include/bmb_differentiation/runtime/Nan.h"
-#include "../../include/bmb_differentiation/runtime/Constant.h"
+#include "bmb_differentiation/runtime/Power.h"
+
+#include <bmb_differentiation/runtime/Zero.h>
+#include <bmb_differentiation/runtime/One.h>
+#include <bmb_differentiation/runtime/Nan.h>
+#include <bmb_differentiation/runtime/Constant.h>
 
 #include <cmath>
+#include <string>
+#include <memory>
 
 ExprPtr Power::diff(const std::string &id) const {
     return pow(first, second) * (second->diff(id) * log(first) + first->diff(id) * (second / first));

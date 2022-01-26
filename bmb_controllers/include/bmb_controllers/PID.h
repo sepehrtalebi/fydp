@@ -1,5 +1,6 @@
 #pragma once
-#include "TransferFunction.h"
+
+#include <bmb_math/TransferFunction.h>
 
 template<typename T>
 class PID {

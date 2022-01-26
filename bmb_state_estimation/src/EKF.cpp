@@ -1,9 +1,11 @@
-#include "../include/bmb_state_estimation/EKF.h"
-#include "../../bmb_world_model/include/world_model/SensorModels.h"
-#include "../../bmb_math/include/bmb_math/Quaternion.h"
-#include "../../bmb_differentiation/include/bmb_differentiation/runtime/Variable.h"
-#include "../../bmb_world_model/include/world_model/AppliedLoads.h"
-#include "../../bmb_world_model/include/world_model/Constants.h"
+#include "bmb_state_estimation/EKF.h"
+
+#include <bmb_world_model/SensorModels.h>
+#include <bmb_math/Quaternion.h>
+#include <bmb_differentiation/runtime/Variable.h>
+#include <bmb_world_model/AppliedLoads.h>
+#include <bmb_world_model/Constants.h>
+
 #include <map>
 #include <string>
 

@@ -1,4 +1,4 @@
-#include "../include/bmb_state_estimation/BasicSensorFilter.h"
+#include <bmb_state_estimation/BasicSensorFilter.h>
 
 BasicSensorFilter::BasicSensorFilter() {
     state.orientation = Quaternion<double>::identity();

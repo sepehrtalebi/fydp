@@ -1,8 +1,9 @@
 #pragma once
 
-#include "../../../bmb_math/include/bmb_math/Vector.h"
-#include "../../../bmb_math/include/bmb_math/Matrix.h"
-#include "../../../bmb_utilities/include/bmb_utilities/MathUtils.h"
+#include <bmb_math/Vector.h>
+#include <bmb_math/Matrix.h>
+#include <bmb_utilities/MathUtils.h>
+
 #include <array>
 #include <cmath>
 #include <vector>

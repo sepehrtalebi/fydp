@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Vector.h"
+#include <bmb_math/Vector.h>
+
 #include <array>
 #include <cmath>
 #include <stdexcept>

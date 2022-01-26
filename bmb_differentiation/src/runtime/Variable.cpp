@@ -1,6 +1,11 @@
-#include "../../include/bmb_differentiation/runtime/Variable.h"
-#include "../../include/bmb_differentiation/runtime/Zero.h"
-#include "../../include/bmb_differentiation/runtime/One.h"
+#include "bmb_differentiation/runtime/Variable.h"
+
+#include <bmb_differentiation/runtime/Zero.h>
+#include <bmb_differentiation/runtime/One.h>
+
+#include <map>
+#include <memory>
+#include <string>
 
 std::shared_ptr<Variable> Variable::make(const std::string &id) {
     return std::make_shared<Variable>(id);

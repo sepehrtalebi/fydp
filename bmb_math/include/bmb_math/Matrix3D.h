@@ -1,8 +1,9 @@
 #pragma once
 
+#include <bmb_math/Vector.h>
+#include <bmb_math/Matrix.h>
+
 #include <array>
-#include "Vector.h"
-#include "Matrix.h"
 #include <functional>
 
 template<typename T, size_t n, size_t m, size_t p>
@@ -16,7 +17,7 @@ public:
         return {};
     }
 
-    Vector<T, n * m * p> flatten() const {
+    [[nodiscard]] Vector<T, n * m * p> flatten() const {
         Vector<T, n * m * p> flat_mat;
         for (size_t i = 0; i < n; i++) for (size_t j = 0; j < m; j++) for (size_t k = 0; k < p; k++)
             flat_mat[i * m * p + j * p + k] = data[i][j][k];

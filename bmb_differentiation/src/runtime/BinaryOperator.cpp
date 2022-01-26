@@ -1,5 +1,6 @@
-#include "../../include/bmb_differentiation/runtime/BinaryOperator.h"
-#include "../../include/bmb_differentiation/runtime/Constant.h"
+#include "bmb_differentiation/runtime/BinaryOperator.h"
+
+#include <bmb_differentiation/runtime/Constant.h>
 
 double BinaryOperator::evaluate(const std::map<std::string, double> &variables) const {
     return call(first->evaluate(variables), second->evaluate(variables));

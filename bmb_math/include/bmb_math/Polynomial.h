@@ -1,8 +1,9 @@
 #pragma once
-#include "Vector.h"
-#include <iostream>
+
+#include <bmb_math/Vector.h>
+
 #include <algorithm>
-#include <cassert>
+#include <iostream>
 
 template <typename T, size_t n>
 class Polynomial: public Vector<T, n> {
@@ -86,7 +87,7 @@ public:
 
     template<size_t m>
     Polynomial& operator=(const Polynomial<T, m> &other) {
-        assert(n <= m);
+        static_assert(n <= m);
         for (size_t i = 0; i < m; i++) this->data[i] = other[i];
         for (size_t i = m; i < n; i++) this->data[i] = 0;
         return *this;
@@ -173,7 +174,7 @@ public:
 
     template<size_t m>
     void operator+=(const Polynomial<T, m> &other) {
-        assert(n <= m);
+        static_assert(n <= m);
         for (int i = 0; i < m; i++)
             this->data[i] += other[i];
     }
@@ -208,7 +209,7 @@ public:
 
     template<size_t m>
     void operator-=(const Polynomial<T, m> &other) {
-        assert(n <= m);
+        static_assert(n <= m);
         for (int i = 0; i < m; i++)
             this->data[i] -= other[i];
     }

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "SensorFilter.h"
+#include <bmb_state_estimation/SensorFilter.h>
 
 class BasicSensorFilter : public SensorFilter {
 private:

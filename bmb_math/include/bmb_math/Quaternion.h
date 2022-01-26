@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Vector3.h"
-#include "Matrix.h"
+#include <bmb_math/Vector3.h>
+#include <bmb_math/Matrix.h>
 
 template<typename T>
 class Quaternion : public Vector<T, 4> {

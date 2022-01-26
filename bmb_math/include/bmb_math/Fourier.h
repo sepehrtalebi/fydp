@@ -1,7 +1,9 @@
 #pragma once
 
-#include "Primes.h"
+#include <bmb_math/Primes.h>
+
 #include <complex>
+#include <vector>
 
 template<typename T>
 class Fourier {
@@ -77,7 +79,7 @@ private:
     static FactorTree *planFFT(const size_t &N) {
         std::vector<size_t> factors = primeFactorization(N);
 
-        FactorTree *tree = new FactorTree();
+        auto *tree = new FactorTree();
         tree->value = factors[0];
 
         for (size_t i = 1; i < factors.size(); i++) {

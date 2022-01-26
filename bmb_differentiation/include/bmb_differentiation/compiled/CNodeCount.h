@@ -1,17 +1,17 @@
 #pragma once
 
-#include "CConstant.h"
-#include "CCos.h"
-#include "CDifference.h"
-#include "CExp.h"
-#include "CLog.h"
-#include "CMultiSum.h"
-#include "CPower.h"
-#include "CProduct.h"
-#include "CQuotient.h"
-#include "CSin.h"
-#include "CSum.h"
-#include "CVariable.h"
+#include <bmb_differentiation/compiled/CConstant.h>
+#include <bmb_differentiation/compiled/CCos.h>
+#include <bmb_differentiation/compiled/CDifference.h>
+#include <bmb_differentiation/compiled/CExp.h>
+#include <bmb_differentiation/compiled/CLog.h>
+#include <bmb_differentiation/compiled/CMultiSum.h>
+#include <bmb_differentiation/compiled/CPower.h>
+#include <bmb_differentiation/compiled/CProduct.h>
+#include <bmb_differentiation/compiled/CQuotient.h>
+#include <bmb_differentiation/compiled/CSin.h>
+#include <bmb_differentiation/compiled/CSum.h>
+#include <bmb_differentiation/compiled/CVariable.h>
 
 namespace compiled {
 

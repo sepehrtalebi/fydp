@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Expression.h"
+#include <bmb_differentiation/runtime/Expression.h>
 
 #include <map>
 #include <memory>

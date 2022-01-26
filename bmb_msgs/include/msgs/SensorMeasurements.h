@@ -1,7 +1,9 @@
 #pragma once
 
-#include "../bmb_math/include/bmb_math/Vector.h"
-#include "../bmb_math/include/bmb_math/Vector3.h"
+#include <bmb_math/Vector.h>
+#include <bmb_math/Vector3.h>
+
+#include <cstdint>
 
 struct SensorMeasurements {
     enum {

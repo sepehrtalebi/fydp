@@ -1,9 +1,13 @@
-#include "../../include/bmb_differentiation/runtime/Quotient.h"
-#include "../../include/bmb_differentiation/runtime/Zero.h"
-#include "../../include/bmb_differentiation/runtime/One.h"
-#include "../../include/bmb_differentiation/runtime/Nan.h"
-#include "../../include/bmb_differentiation/runtime/Constant.h"
-#include "../../include/bmb_differentiation/runtime/Variable.h"
+#include "bmb_differentiation/runtime/Quotient.h"
+
+#include <bmb_differentiation/runtime/Zero.h>
+#include <bmb_differentiation/runtime/One.h>
+#include <bmb_differentiation/runtime/Nan.h>
+#include <bmb_differentiation/runtime/Constant.h>
+#include <bmb_differentiation/runtime/Variable.h>
+
+#include <string>
+#include <memory>
 
 ExprPtr Quotient::diff(const std::string &id) const {
     return (first->diff(id) * second - second->diff(id) * first) / (second * second);

@@ -1,9 +1,10 @@
 #pragma once
 
-#include "DubinsPath.h"
+#include <bmb_controllers/DubinsPath.h>
+#include <bmb_utilities/MathUtils.h>
+
 #include <cmath>
 #include <utility>
-#include "../../../bmb_utilities/include/bmb_utilities/MathUtils.h"
 
 template<typename T>
 class PurePursuit {

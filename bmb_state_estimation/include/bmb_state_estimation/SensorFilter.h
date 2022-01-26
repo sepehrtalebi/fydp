@@ -1,8 +1,10 @@
 #pragma once
 
-#include "../../../bmb_msgs/include/msgs/SensorMeasurements.h"
-#include "../../../bmb_msgs/include/msgs/ControlInputs.h"
-#include "../../../bmb_msgs/include/msgs/AircraftState.h"
+#include <bmb_msgs/SensorMeasurements.h>
+#include <bmb_msgs/ControlInputs.h>
+#include <bmb_msgs/AircraftState.h>
+
+#include <cstdint>
 
 class SensorFilter {
 public:

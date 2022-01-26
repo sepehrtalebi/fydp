@@ -1,6 +1,8 @@
-#include "../include/bmb_state_estimation/SensorFilter.h"
+#include "bmb_state_estimation/SensorFilter.h"
 
-#include "../../bmb_math/include/bmb_math/Vector.h"
+#include <bmb_math/Vector.h>
+
+#include <cstdint>
 
 void SensorFilter::updateWrapper(const double *doubleSensorMeasurements, const uint8_t *uint8SensorMeasurements,
                                  const unsigned char *boolSensorMeasurements, const double *control_inputs, double dt) {

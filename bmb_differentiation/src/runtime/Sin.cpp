@@ -1,8 +1,11 @@
-#include "../../include/bmb_differentiation/runtime/Sin.h"
-#include "../../include/bmb_differentiation/runtime/Zero.h"
-#include "../../include/bmb_differentiation/runtime/Nan.h"
+#include "bmb_differentiation/runtime/Sin.h"
+
+#include <bmb_differentiation/runtime/Zero.h>
+#include <bmb_differentiation/runtime/Nan.h>
 
 #include <cmath>
+#include <string>
+#include <memory>
 
 double Sin::call(const double &operand) const {
     return sin(operand);

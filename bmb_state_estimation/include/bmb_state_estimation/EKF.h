@@ -1,9 +1,10 @@
 #pragma once
 
-#include "KF.h"
-#include "../../../bmb_differentiation/include/bmb_differentiation/runtime/Expression.h"
-#include "../../../bmb_math/include/bmb_math/Matrix.h"
-#include "../../../bmb_math/include/bmb_math/Matrix3D.h"
+#include <bmb_state_estimation/KF.h>
+#include <bmb_differentiation/runtime/Expression.h>
+#include <bmb_math/Matrix.h>
+#include <bmb_math/Matrix3D.h>
+
 #include <utility>
 
 class EKF : public KF {
