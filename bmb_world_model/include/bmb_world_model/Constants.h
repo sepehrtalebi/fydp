@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../../../bmb_math/include/bmb_math/Vector3.h"
-#include "../../../bmb_math/include/bmb_math/Matrix.h"
-#include "../../../bmb_controllers/include/bmb_controllers/PIDGains.h"
+#include <bmb_math/Vector3.h>
+#include <bmb_math/Matrix.h>
+#include <bmb_controllers/PIDGains.h>
 
 // TODO: move to yaml file and read from parameter server
 

@@ -1,6 +1,7 @@
 #include "TestPurePursuit.h"
-#include "../include/bmb_controllers/PurePursuit.h"
-#include "../include/bmb_controllers/DubinsPath.h"
+#include <bmb_controllers/PurePursuit.h>
+#include <bmb_controllers/DubinsPath.h>
+
 #include <cassert>
 #include <iostream>
 

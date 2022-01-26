@@ -1,5 +1,8 @@
 #include "TestMatrix.h"
-#include "../include/bmb_math/Matrix.h"
+
+#include <bmb_math/Matrix.h>
+
+#include <cstdint>
 #include <string>
 #include <cassert>
 #include <iostream>

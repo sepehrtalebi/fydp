@@ -1,5 +1,5 @@
 #include "TestPrimes.h"
-#include "../include/bmb_math/Primes.h"
+#include <bmb_math/Primes.h>
 #include <cassert>
 #include <iostream>
 

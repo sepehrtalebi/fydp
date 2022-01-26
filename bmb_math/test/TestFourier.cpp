@@ -1,5 +1,6 @@
 #include "TestFourier.h"
-#include "../include/bmb_math/Fourier.h"
+#include <bmb_math/Fourier.h>
+
 #include <cmath>
 #include <chrono>
 #include <random>

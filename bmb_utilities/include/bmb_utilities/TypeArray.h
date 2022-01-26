@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../../../bmb_differentiation/include/bmb_differentiation/compiled/CConstant.h"
-#include "../../../bmb_differentiation/include/bmb_differentiation/compiled/CVariable.h"
+#include <bmb_differentiation/compiled/CConstant.h>
+#include <bmb_differentiation/compiled/CVariable.h>
 
 #include <cstddef>
 #include <tuple>

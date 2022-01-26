@@ -1,5 +1,6 @@
 #include "TestDubinsPath.h"
-#include "../include/bmb_controllers/DubinsPath.h"
+#include <bmb_controllers/DubinsPath.h>
+
 #include <cassert>
 #include <cmath>
 #include <fstream>

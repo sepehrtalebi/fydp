@@ -1,5 +1,6 @@
 #include "TestVector3.h"
-#include "../include/bmb_math/Vector3.h"
+#include <bmb_math/Vector3.h>
+
 #include <cassert>
 #include <iostream>
 

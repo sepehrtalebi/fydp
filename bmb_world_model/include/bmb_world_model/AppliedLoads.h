@@ -1,11 +1,11 @@
 #pragma once
 
-#include "../../../bmb_math/include/bmb_math/Wrench.h"
-#include "../../../bmb_math/include/bmb_math/Vector.h"
-#include "../../../bmb_math/include/bmb_math/Matrix.h"
-#include "../../../bmb_msgs/include/msgs/ControlInputs.h"
-#include "Constants.h"
-#include "../../../bmb_differentiation/include/bmb_differentiation/runtime/Expression.h"
+#include <bmb_math/Wrench.h>
+#include <bmb_math/Vector.h>
+#include <bmb_math/Matrix.h>
+#include <bmb_msgs/ControlInputs.h>
+#include <bmb_world_model/Constants.h>
+#include <bmb_differentiation/runtime/Expression.h>
 
 class AppliedLoads {
 public:

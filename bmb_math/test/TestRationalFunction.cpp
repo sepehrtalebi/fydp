@@ -1,5 +1,6 @@
 #include "TestRationalFunction.h"
-#include "../include/bmb_math/RationalFunction.h"
+#include <bmb_math/RationalFunction.h>
+
 #include <cassert>
 
 void testRationalFunction() {

@@ -1,5 +1,6 @@
 #include "TestPolynomial.h"
-#include "../include/bmb_math/Polynomial.h"
+#include <bmb_math/Polynomial.h>
+
 #include <cassert>
 
 //test constructors and operators *= += *

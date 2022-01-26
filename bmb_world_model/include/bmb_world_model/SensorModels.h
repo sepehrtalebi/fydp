@@ -1,10 +1,11 @@
 #pragma once
 
-#include "../../../bmb_math/include/bmb_math/Vector.h"
-#include "../../../bmb_math/include/bmb_math/Accel.h"
-#include "../../../bmb_math/include/bmb_math/Matrix.h"
-#include "../../../bmb_msgs/include/msgs/SensorMeasurements.h"
-#include "Constants.h"
+#include <bmb_math/Vector.h>
+#include <bmb_math/Accel.h>
+#include <bmb_math/Matrix.h>
+#include <bmb_msgs/SensorMeasurements.h>
+#include <bmb_world_model/Constants.h>
+
 #include <utility>
 
 SensorMeasurements getSensorMeasurements(const Vector<double, n> &state, const Accel<double> &accel);

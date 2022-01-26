@@ -1,4 +1,4 @@
-#include "../include/msgs/SensorMeasurements.h"
+#include <bmb_msgs/SensorMeasurements.h>
 
 SensorMeasurements SensorMeasurements::parseZ(const Vector<double, 16> &doubleZ, const Vector<uint8_t, 1> &uint8Z,
                                               const Vector<bool, 1> &boolZ) {

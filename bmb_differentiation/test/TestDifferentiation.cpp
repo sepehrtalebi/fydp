@@ -1,11 +1,11 @@
 #include "TestDifferentiation.h"
 
-#include "../include/bmb_differentiation/runtime/Expression.h"
-#include "../include/bmb_differentiation/runtime/Variable.h"
-#include "../../bmb_math/include/bmb_math/Vector.h"
-#include "../../bmb_math/include/bmb_math/Vector3.h"
-#include "../../bmb_math/include/bmb_math/Quaternion.h"
-#include "../../bmb_math/include/bmb_math/Matrix.h"
+#include <bmb_differentiation/runtime/Expression.h>
+#include <bmb_differentiation/runtime/Variable.h>
+#include <bmb_math/Vector.h>
+#include <bmb_math/Vector3.h>
+#include <bmb_math/Quaternion.h>
+#include <bmb_math/Matrix.h>
 #include <cassert>
 #include <iostream>
 

@@ -1,4 +1,4 @@
-#include "../include/msgs/AircraftState.h"
+#include <bmb_msgs/AircraftState.h>
 
 Vector<double, 19> AircraftState::getX() const {
     return Vector<double, 19>{

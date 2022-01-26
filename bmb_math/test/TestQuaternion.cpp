@@ -1,5 +1,6 @@
 #include "TestQuaternion.h"
-#include "../include/bmb_math/Quaternion.h"
+#include <bmb_math/Quaternion.h>
+
 #include <cassert>
 #include <iostream>
 

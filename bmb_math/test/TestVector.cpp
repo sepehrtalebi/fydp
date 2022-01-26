@@ -1,9 +1,12 @@
 #include "TestVector.h"
-#include "../include/bmb_math/Vector.h"
-#include "../../bmb_differentiation/include/bmb_differentiation/runtime/Expression.h"
-#include "../../bmb_differentiation/include/bmb_differentiation/runtime/Variable.h"
+
+#include <bmb_math/Vector.h>
+#include <bmb_differentiation/runtime/Expression.h>
+#include <bmb_differentiation/runtime/Variable.h>
+
 #include <cassert>
 #include <iostream>
+#include <map>
 
 static int roundDown(const double &num) {
     return (int) num;

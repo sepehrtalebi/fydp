@@ -1,5 +1,6 @@
 #include "TestTransferFunction.h"
-#include "../include/bmb_math/TransferFunction.h"
+#include <bmb_math/TransferFunction.h>
+
 #include <cassert>
 #include <fstream>
 #include <iostream>

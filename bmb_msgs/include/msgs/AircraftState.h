@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../../../bmb_math/include/bmb_math/Vector3.h"
-#include "../../../bmb_math/include/bmb_math/Quaternion.h"
+#include <bmb_math/Vector3.h>
+#include <bmb_math/Quaternion.h>
 
 struct AircraftState {
     // represents the AircraftState as stored in Simulink

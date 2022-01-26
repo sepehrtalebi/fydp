@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../../../bmb_math/include/bmb_math/Vector.h"
-#include "../../../bmb_math/include/bmb_math/Matrix.h"
+#include <bmb_math/Vector.h>
+#include <bmb_math/Matrix.h>
 #include <cmath>
 #include <type_traits>
 

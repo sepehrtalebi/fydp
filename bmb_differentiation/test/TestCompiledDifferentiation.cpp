@@ -1,9 +1,11 @@
 #include "TestCompiledDifferentiation.h"
-#include "../include/bmb_differentiation/compiled/CConstant.h"
-#include "../include/bmb_differentiation/compiled/CDeepSimplify.h"
-#include "../include/bmb_differentiation/compiled/CDerivative.h"
-#include "../include/bmb_differentiation/compiled/CHigherDerivative.h"
-#include "../include/bmb_differentiation/compiled/CVariable.h"
+
+#include <bmb_differentiation/compiled/CConstant.h>
+#include <bmb_differentiation/compiled/CDeepSimplify.h>
+#include <bmb_differentiation/compiled/CDerivative.h>
+#include <bmb_differentiation/compiled/CHigherDerivative.h>
+#include <bmb_differentiation/compiled/CVariable.h>
+
 #include <array>
 #include <iostream>
 #include <string>

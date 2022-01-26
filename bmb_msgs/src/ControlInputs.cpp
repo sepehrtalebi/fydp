@@ -1,4 +1,4 @@
-#include "../include/msgs/ControlInputs.h"
+#include <bmb_msgs/ControlInputs.h>
 
 ControlInputs ControlInputs::parseU(const Vector<double, 4> &inputs) {
     return {inputs[0], inputs[1], inputs[2], inputs[3]};

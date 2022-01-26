@@ -1,5 +1,5 @@
 #include "TestRatioPower.h"
-#include "../include/bmb_differentiation/compiled/CRatioPower.h"
+#include <bmb_differentiation/compiled/CRatioPower.h>
 
 #include <iostream>
 #include <ratio>
