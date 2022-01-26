@@ -17,6 +17,7 @@ public:
 
     [[nodiscard]] virtual ExprPtr diff(const std::string &id) const = 0;
 
+    // TODO: switch to unordered_map
     [[nodiscard]] virtual ExprPtr subs(const std::map<std::string, ExprPtr> &subs) const = 0;
 
     [[nodiscard]] virtual ExprPtr simplify() const = 0;
