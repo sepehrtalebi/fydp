@@ -9,6 +9,7 @@ add_compile_options(-std=c++17)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
+  sensor_msgs
   message_generation
 )
 
@@ -52,6 +53,7 @@ add_message_files(
   ControlInputs.msg
   OpticalFlowReading.msg
   RailDetection.msg
+  SensorMeasurements.msg
 )
 
 ## Generate services in the 'srv' folder
@@ -72,6 +74,7 @@ add_message_files(
 generate_messages(
   DEPENDENCIES
   geometry_msgs
+  sensor_msgs
 )
 
 ################################################
@@ -106,7 +109,7 @@ generate_messages(
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES bmb_msgs
-  CATKIN_DEPENDS geometry_msgs
+  CATKIN_DEPENDS geometry_msgs sensor_msgs
   DEPENDS
 )
 
