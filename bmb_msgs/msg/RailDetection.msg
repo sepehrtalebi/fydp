@@ -1,5 +1,5 @@
-bool found_rail
-float64 rail_angle
-float64 rail_pixel_width
-float64 rail_pixel_x
-float64 rail_pixel_y
+float64 angle
+float64 pixel_width
+float64 pixel_x
+float64 pixel_y
+bool found
