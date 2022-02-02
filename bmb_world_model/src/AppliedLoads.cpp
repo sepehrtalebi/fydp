@@ -7,6 +7,7 @@
 #include <bmb_differentiation/runtime/Variable.h>
 #include <bmb_differentiation/runtime/Constant.h>
 #include <bmb_utilities/MathUtils.h>
+#include <bmb_msgs/ControlInputs.h>
 
 #include <cmath>
 
@@ -15,7 +16,7 @@
 #define M_PI_4 0.78539816339744830962
 #endif
 
-using math_utils::saturation;
+using bmb_utilities::saturation;
 
 static Matrix<ExprPtr, 3, 4> getQuatToWeightJacExpr() {
     Matrix<ExprPtr, 3, 4> expr;
@@ -33,7 +34,7 @@ static Matrix<ExprPtr, 3, 4> getQuatToWeightJacExpr() {
 
 const Matrix<ExprPtr, 3, 4> AppliedLoads::QUAT_TO_WEIGHT_JAC_EXPR = getQuatToWeightJacExpr(); // NOLINT(cert-err58-cpp)
 
-void AppliedLoads::update(const ControlInputs &control_inputs) {
+void AppliedLoads::update(const bmb_msgs::ControlInputs &control_inputs) {
     last_propeller_ang_vel = getPropellerAngVelocity();
     last_control_inputs = current_control_inputs;
     current_control_inputs = control_inputs;
@@ -62,7 +63,8 @@ Wrench<double> AppliedLoads::getRightAileronLoads(const double &velocity) const 
 }
 
 Wrench<double> AppliedLoads::getLeftAileronLoads(const double &velocity) const {
-    double lift = LIFT_GAIN_AILERON * saturation(current_control_inputs.left_aileron_angle, M_PI_4) * velocity * velocity;
+    const double left_aileron_angle = -current_control_inputs.right_aileron_angle;
+    double lift = LIFT_GAIN_AILERON * saturation(left_aileron_angle, M_PI_4) * velocity * velocity;
     Vector3<double> force{0, 0, -lift};
     return {force, L_LEFT_AILERON.cross(force)};
 }
@@ -125,7 +127,8 @@ Matrix<double, 6, n> AppliedLoads::getAppliedLoadsJacobian(const Vector<double, 
     for (size_t i = 0; i < 3; i++) wrench_jac[3 + i][KF::vx] += vel_to_right_torque_jac[i];
 
     // left aileron loads
-    vel_to_lift_jac = LIFT_GAIN_AILERON * saturation(current_control_inputs.left_aileron_angle, M_PI_4) * 2 * state[KF::vx];
+    const double left_aileron_angle = -current_control_inputs.right_aileron_angle;
+    vel_to_lift_jac = LIFT_GAIN_AILERON * saturation(left_aileron_angle, M_PI_4) * 2 * state[KF::vx];
     wrench_jac[2][KF::vx] -= vel_to_lift_jac;
     Vector3<double> vel_to_left_torque_jac = L_LEFT_AILERON.cross({0, 0, -vel_to_lift_jac});
     for (size_t i = 0; i < 3; i++) wrench_jac[3 + i][KF::vx] += vel_to_left_torque_jac[i];

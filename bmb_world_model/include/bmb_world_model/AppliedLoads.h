@@ -6,12 +6,11 @@
 #include <bmb_msgs/ControlInputs.h>
 #include <bmb_world_model/Constants.h>
 #include <bmb_differentiation/runtime/Expression.h>
+#include <bmb_msgs/ControlInputs.h>
 
 class AppliedLoads {
 public:
-    void update(const ControlInputs &control_inputs);
-
-    void updateWrapper(const double *control_inputs, const double *aircraft_state, double *forces, double *torques);
+    void update(const bmb_msgs::ControlInputs &control_inputs);
 
     [[nodiscard]] Wrench<double> getAppliedLoads(const Vector<double, n> &state) const;
 
@@ -20,8 +19,8 @@ public:
 private:
     static const Matrix<ExprPtr, 3, 4> QUAT_TO_WEIGHT_JAC_EXPR;
 
-    ControlInputs current_control_inputs{0, 0, 0, 0};
-    ControlInputs last_control_inputs{0, 0, 0, 0};
+    bmb_msgs::ControlInputs current_control_inputs{0, 0, 0};
+    bmb_msgs::ControlInputs last_control_inputs{0, 0, 0};
     double last_propeller_ang_vel = 0;
 
     [[nodiscard]] double getPropellerAngVelocity() const;
