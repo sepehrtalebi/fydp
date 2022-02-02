@@ -4,7 +4,7 @@
 #include <bmb_state_estimation/UKF.h>
 #include <bmb_msgs/AircraftState.h>
 
-StateEstimationControlLoop::StateEstimationControlLoop() {
+StateEstimationControlLoop::StateEstimationControlLoop(ros::NodeHandle& nh) {
   // initialize subscribers
   pressure_sensor_sub_ = nh.subscribe(
       "pressure_sensor_reading", 1, &StateEstimationControlLoop::pressureSensorCallback, this);
@@ -50,7 +50,6 @@ StateEstimationControlLoop::spin() {
 int main(int argc, char** argv) {
   ros::init(argc, argv, "bmb_state_estimation");
   ros::NodeHandle nh;
-  UKF kf{};
-  StateEstimationControlLoop control_loop{nh, kf};
+  StateEstimationControlLoop control_loop{nh};
   control_loop.spin();
 }

@@ -9,7 +9,7 @@
 
 class StateEstimationControlLoop {
  public:
-  StateEstimationControlLoop();
+  StateEstimationControlLoop(ros::NodeHandle& nh);
 
   void spin();
 
@@ -36,5 +36,6 @@ class StateEstimationControlLoop {
   // Publisher Objects
   ros::Publisher aircraft_state_pub_;
 
-
+  // member variables
+  UKF kf{};
 };
