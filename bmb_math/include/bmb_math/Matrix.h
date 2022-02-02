@@ -5,6 +5,7 @@
 #include <array>
 #include <cmath>
 #include <stdexcept>
+#include <algorithm>
 
 template<typename T, size_t n, size_t m>
 class Matrix {
@@ -35,8 +36,9 @@ public:
     }
 
     static Matrix<T, n, m> identity() {
+        static constexpr size_t k = std::min(n, m);
         Matrix<T, n, m> output{};
-        for (size_t i = 0; i < n && i < m; i++) output[i][i] = 1;
+        for (size_t i = 0; i < k; i++) output[i][i] = 1;
         return output;
     }
 
