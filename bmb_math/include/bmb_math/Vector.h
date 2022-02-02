@@ -106,8 +106,11 @@ public:
         return sum;
     }
 
-    void operator+=(const Vector<T, n> &other) {
-        for (size_t i = 0; i < n; i++) data[i] += other[i];
+    template<size_t start = 0, size_t step = 1, size_t m>
+    void operator+=(const Vector<T, m> &other) {
+      static constexpr size_t stop = start + step * (m - 1) + 1;
+      static_assert(stop <= n);
+      for (size_t i = 0; i < m; i++) data[start + step * i] += other[i];
     }
 
     Vector<T, n> operator+(const double &scalar) {
@@ -132,8 +135,11 @@ public:
         return sum;
     }
 
-    void operator-=(const Vector<T, n> &other) {
-        for (size_t i = 0; i < n; i++) data[i] -= other[i];
+    template<size_t start = 0, size_t step = 1, size_t m>
+    void operator-=(const Vector<T, m> &other) {
+      static constexpr size_t stop = start + step * (m - 1) + 1;
+      static_assert(stop <= n);
+      for (size_t i = 0; i < m; i++) data[start + step * i] -= other[i];
     }
 
     Vector<T, n> operator-(const double &scalar) {

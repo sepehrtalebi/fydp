@@ -156,8 +156,13 @@ public:
         return sum;
     }
 
-    void operator+=(const Matrix<T, n, m> &other) {
-        for (size_t i = 0; i < n; i++) for (size_t j = 0; j < m; j++) data[i][j] += other[i][j];
+    template<size_t row_start, size_t col_start, size_t row_step, size_t col_step, size_t x, size_t y>
+    void operator+=(const Matrix<T, x, y> &other) {
+      static constexpr size_t row_stop = row_start + row_step * (x - 1) + 1;
+      static constexpr size_t col_stop = col_start + col_step * (y - 1) + 1;
+      static_assert(row_stop <= n && col_stop <= m);
+      for (size_t i = 0; i < x; i++) for (size_t j = 0; j < y; j++)
+        data[row_start + i * row_step][col_start + j * col_step] += other[i][j];
     }
 
     Matrix<T, n, m> operator-(const Matrix<T, n, m> &other) const {
@@ -166,8 +171,13 @@ public:
         return difference;
     }
 
-    void operator-=(const Matrix<T, n, m> &other) {
-        for (size_t i = 0; i < n; i++) for (size_t j = 0; j < m; j++) data[i][j] -= other[i][j];
+    template<size_t row_start, size_t col_start, size_t row_step, size_t col_step, size_t x, size_t y>
+    void operator-=(const Matrix<T, x, y> &other) {
+      static constexpr size_t row_stop = row_start + row_step * (x - 1) + 1;
+      static constexpr size_t col_stop = col_start + col_step * (y - 1) + 1;
+      static_assert(row_stop <= n && col_stop <= m);
+      for (size_t i = 0; i < x; i++) for (size_t j = 0; j < y; j++)
+          data[row_start + i * row_step][col_start + j * col_step] -= other[i][j];
     }
 
     Matrix<T, n, m> operator*(const T &scalar) const {
