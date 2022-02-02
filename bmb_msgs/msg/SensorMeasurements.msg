@@ -1,3 +1,4 @@
+uint8 SIZE = 21
 uint8 PRESSURE = 0
 uint8 RAIL_ANGLE = 1
 uint8 RAIL_WIDTH = 2

@@ -1,3 +1,4 @@
+uint8 SIZE = 13
 uint8 PX = 0
 uint8 PY = 1
 uint8 PZ = 2

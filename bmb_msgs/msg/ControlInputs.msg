@@ -1,3 +1,4 @@
+uint8 SIZE = 3
 uint8 PROPELLER = 0
 uint8 RIGHT_AILERON = 1
 uint8 ELEVATOR = 2
