@@ -1,7 +1,9 @@
 #include "bmb_utilities/MessageUtilities.h"
-#include <bmb_math/Vector.h>
 #include <bmb_msgs/SensorMeasurements.h>
 #include <bmb_msgs/AircraftState.h>
+#include <bmb_msgs/ControlInputs.h>
+#include <bmb_math/Vector.h>
+#include <bmb_math/Vector3.h>
 
 namespace bmb_utilities {
 
@@ -90,6 +92,22 @@ bmb_msgs::AircraftState as_msg(const Vector<double, 13>& aircraft_state) {
   msg.twist.angular.x = aircraft_state[bmb_msgs::AircraftState::WX];
   msg.twist.angular.y = aircraft_state[bmb_msgs::AircraftState::WY];
   msg.twist.angular.z = aircraft_state[bmb_msgs::AircraftState::WZ];
+  return msg;
+}
+
+Vector3<double> as_vector(const bmb_msgs::ControlInputs& msg) {
+  Vector3<double> vec;
+  vec[bmb_msgs::ControlInputs::PROPELLER] = msg.propellor_voltage;
+  vec[bmb_msgs::ControlInputs::RIGHT_AILERON] = msg.right_aileron_angle;
+  vec[bmb_msgs::ControlInputs::ELEVATOR] = msg.elevator_angle;
+  return vec;
+}
+
+bmb_msgs::ControlInputs as_msg(const Vector3<double>& control_inputs) {
+  bmb_msgs::ControlInputs msg;
+  msg.propellor_voltage = vec[bmb_msgs::ControlInputs::PROPELLER];
+  msg.right_aileron_angle = vec[bmb_msgs::ControlInputs::RIGHT_AILERON];
+  msg.elevator_angle = vec[bmb_msgs::ControlInputs::ELEVATOR];
   return msg;
 }
 
