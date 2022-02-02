@@ -77,12 +77,20 @@ public:
         return concat;
     }
 
-    template<size_t start, size_t stop = n, size_t step = 1>
+    template<size_t start = 0, size_t stop = n, size_t step = 1>
     Vector<T, bmb_math::slice_count(start, stop, step)> slice() {
-      constexpr size_t m = bmb_math::slice_count(start, stop, step);
+      static_assert(stop <= n);
+      static constexpr size_t m = bmb_math::slice_count(start, stop, step);
       Vector<T, m> vec;
       for (size_t i = 0; i < m; i++) vec[i] = data[start + i * step];
       return vec;
+    }
+
+    template<size_t start = 0, size_t step = 1, size_t m>
+    void pasteSlice(const Vector<T, m>& vec) {
+      static constexpr size_t stop = start + step * (m - 1) + 1;
+      static_assert(stop <= n);
+      for (size_t i = 0; i < m; i++) data[start + i * step] = vec[i];
     }
 
     template<typename R>
