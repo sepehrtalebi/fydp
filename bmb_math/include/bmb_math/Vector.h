@@ -69,7 +69,7 @@ public:
         return sum;
     }
 
-    template<int m>
+    template<size_t m>
     Vector<T, n + m> concatenate(const Vector<T, m> &other) const {
         Vector<T, n + m> concat;
         for (size_t i = 0; i < n; i++) concat[i] = data[i];
