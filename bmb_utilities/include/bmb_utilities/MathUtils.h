@@ -5,7 +5,7 @@
 #include <cmath>
 #include <type_traits>
 
-namespace math_utils {
+namespace bmb_utilities {
 
 template<typename T>
 Matrix<T, 2, 2> getRotationMatrix(const T& theta) {

@@ -3,7 +3,7 @@
 #include <bmb_world_model/Constants.h>
 #include <bmb_utilities/MathUtils.h>
 
-using math_utils::saturation;
+using bmb_utilities::saturation;
 
 double Controller::pitch_controller(const double &altitude_command, const double &height,
                                     const double &body_velocity) {
