@@ -53,7 +53,9 @@ add_message_files(
   ControlInputs.msg
   OpticalFlowReading.msg
   RailDetection.msg
+  ReferenceCommand.msg
   SensorMeasurements.msg
+  StateCommand.msg
 )
 
 ## Generate services in the 'srv' folder
