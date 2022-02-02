@@ -1,11 +1,19 @@
 #pragma once
 
 #include <bmb_math/Vector3.h>
+#include <geometry_msgs/Accel.h>
 
 template<typename T>
 struct Accel {
     Vector3<T> linear{};
     Vector3<T> angular{};
+
+    Accel(const geometry_msgs::Accel& msg) : linear(msg.linear), angular(msg.angular) {}
+
+    void copy_to(geometry_msgs::Accel& msg) {
+      linear.copy_to(msg.linear);
+      angular.copy_to(msg.angular);
+    }
 
     Accel<T> operator+(const Accel<T> &other) {
         return {Vector3<T>{linear + other.linear}, Vector3<T>{angular + other.angular}};

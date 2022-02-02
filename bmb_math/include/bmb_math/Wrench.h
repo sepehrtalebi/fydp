@@ -1,7 +1,7 @@
 #pragma once
 
 #include <bmb_math/Vector3.h>
-#include <bmb_math/Accel.h>
+#include <geometry_msgs/Wrench.h>
 
 #include <cstddef>
 
@@ -9,6 +9,13 @@ template<typename T>
 struct Wrench {
     Vector3<T> force;
     Vector3<T> torque;
+
+    Wrench(const geometry_msgs::Wrench& msg) : force(msg.linear), torque(msg.angular) {}
+
+    void copy_to(geometry_msgs::Wrench& msg) {
+      force.copy_to(msg.linear);
+      torque.copy_to(msg.angular);
+    }
 
     Wrench<T> operator+(const Wrench<T> &other) {
         return {Vector3<T>{force + other.force}, Vector3<T>{torque + other.torque}};
