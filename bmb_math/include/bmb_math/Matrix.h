@@ -1,6 +1,7 @@
 #pragma once
 
 #include <bmb_math/Vector.h>
+#include <bmb_math/Utility.h>
 
 #include <array>
 #include <cmath>
@@ -66,6 +67,42 @@ public:
         for (size_t i = 0; i < n; i++) for (size_t j = 0; j < n; j++)
             outerProduct[i][j] = first[i] * second[j];
         return outerProduct;
+    }
+
+    template<size_t start = 0, size_t stop = n, size_t step = 1>
+    Matrix<T, bmb_math::slice_count(start, stop, step), m> sliceRows() {
+      static_assert(stop <= n);
+      static constexpr size_t k = bmb_math::slice_count(start, stop, step);
+      Matrix<T, k, m> mat;
+      for (size_t i = 0; i < k; i++) mat[i] = data[start + i * step];
+      return mat;
+    }
+
+    template<size_t start = 0, size_t stop = m, size_t step = 1>
+    Matrix<T, n, bmb_math::slice_count(start, stop, step)> sliceColumns() {
+      static_assert(stop <= m);
+      static constexpr size_t k = bmb_math::slice_count(start, stop, step);
+      Matrix<T, n, k> mat;
+      for (size_t i = 0; i < n; i++) for (size_t j = 0; j < k; j++)
+          mat[i][j] = data[i][start + j * step];
+      return mat;
+    }
+
+    template<size_t start = 0, size_t step = 1, size_t k>
+    void pasteSliceRows(const Matrix<T, k, m>& mat) {
+      static constexpr size_t stop = start + step * (k - 1) + 1;
+      static_assert(stop <= n);
+      // delegate to Vector<T, m>::operator=
+      for (size_t i = 0; i < k; i++) data[start + i * step] = mat[i];
+    }
+
+    template<size_t start = 0, size_t step = 1, size_t k>
+    void pasteSliceColumns(const Matrix<T, n, k>& mat) {
+      static constexpr size_t stop = start + step * (k - 1) + 1;
+      static_assert(stop <= m);
+      // delegate to Vector<T, m>::operator=
+      for (size_t i = 0; i < n; i++) for (size_t j = 0; j < k; j++)
+          data[i][start + j * step] = mat[i][j];
     }
 
     template<typename R>
