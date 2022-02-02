@@ -34,7 +34,7 @@ public:
         for (size_t i = 0; i < n; i++) data[i] = arr[i];
     }
 
-    Vector& operator=(const Vector<T, n> &other) {
+    Vector<T, n>& operator=(const Vector<T, n> &other) {
         for (size_t i = 0; i < n; i++) data[i] = other[i];
         return *this;
     }
