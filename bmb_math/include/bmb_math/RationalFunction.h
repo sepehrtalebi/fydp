@@ -92,7 +92,7 @@ public:
         for (size_t i = 0; i < n; i++) { //this is how you add the rational functions in the numerator
             Polynomial<T, (n - 1) * (p - 1) + 1> num_of_num_expansion;
             Polynomial<T, (n - 1) * (q - 1) + 1> den_of_num_expansion;
-            if (n > 1) { //edge n = 1
+            if constexpr (n > 1) { //edge n = 1
                 den_of_num_expansion = {g_of_x.denominator};
                 num_of_num_expansion = {g_of_x.numerator};
             }
@@ -111,7 +111,7 @@ public:
         for (size_t i = 0; i < m; i++) { //this is how you add the rational functions in the denominator
             Polynomial<T, (m - 1) * (p - 1) + 1> num_of_den_expansion;
             Polynomial<T, (m - 1) * (q - 1) + 1> den_of_den_expansion; //edge m = 1
-            if (m > 1) {
+            if constexpr (m > 1) {
                 den_of_den_expansion = {g_of_x.denominator};
                 num_of_den_expansion = {g_of_x.numerator};
             }
@@ -127,8 +127,8 @@ public:
             den += denominator[i] * hacky_product;
         }
 
-        if ((n > m) || (m > n)) { //because the denominators of the numerator and denominator are the same, they will cancel
-            constexpr size_t abs_diff = abs_difference(m, n);
+        if constexpr ((n > m) || (m > n)) { //because the denominators of the numerator and denominator are the same, they will cancel
+            static constexpr size_t abs_diff = abs_difference(m, n);
             Polynomial<T, abs_diff + 1> canceled_denominators{g_of_x.denominator};
             canceled_denominators.pow(abs_diff);
             if (m > n) num *= canceled_denominators;
