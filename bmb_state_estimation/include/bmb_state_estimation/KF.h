@@ -8,6 +8,9 @@
 #include <bmb_math/Accel.h>
 #include <bmb_world_model/AppliedLoads.h>
 #include <bmb_world_model/Constants.h>
+#include <bmb_msgs/SensorMeasurements.h>
+#include <bmb_msgs/ControlInputs.h>
+#include <bmb_msgs/AircraftState.h>
 
 #include <cstddef>
 
@@ -36,12 +39,12 @@ protected:
 public:
     KF();
 
-    void update(const SensorMeasurements &sensorMeasurements,
-                const ControlInputs &control_inputs, const double &dt) final;
+    void update(const bmb_msgs::SensorMeasurements &sensorMeasurements,
+                const bmb_msgs::ControlInputs &control_inputs, const double &dt) final;
 
-    virtual void updateKF(const SensorMeasurements &sensorMeasurements, const double &dt) = 0;
+    virtual void updateKF(const bmb_msgs::SensorMeasurements &sensorMeasurements, const double &dt) = 0;
 
-    [[nodiscard]] AircraftState getOutput() const final;
+    [[nodiscard]] bmb_msgs::AircraftState getOutput() const final;
 
 protected:
     [[nodiscard]] Vector<double, n> f(const Vector<double, n> &state, const double &dt) const;
