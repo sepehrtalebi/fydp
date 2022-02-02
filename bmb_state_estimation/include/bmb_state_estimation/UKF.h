@@ -1,6 +1,9 @@
 #pragma once
 
 #include <bmb_state_estimation/KF.h>
+#include <bmb_msgs/SensorMeasurements.h>
+#include <bmb_math/Vector.h>
+#include <bmb_math/Matrix.h>
 
 class UKF : public KF {
 private:
@@ -15,7 +18,7 @@ private:
     Vector<double, 2 * n + 1> state_weights;
     Vector<double, 2 * n + 1> covariance_weights;
 
-    void updateKF(const SensorMeasurements &sensorMeasurements,
+    void updateKF(const bmb_msgs::SensorMeasurements &sensor_measurements,
                   const double &dt) override;
 
 public:

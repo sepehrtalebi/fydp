@@ -1,15 +1,20 @@
 #pragma once
 
+#include <bmb_msgs/AircraftState.h>
+#include <bmb_msgs/ControlInputs.h>
+#include <bmb_msgs/SensorMeasurements.h>
 #include <bmb_state_estimation/SensorFilter.h>
 
 class BasicSensorFilter : public SensorFilter {
-private:
-    AircraftState state;
-public:
-    BasicSensorFilter();
+ private:
+  bmb_msgs::AircraftState state;
 
-    void update(const SensorMeasurements &sensorMeasurements,
-                const ControlInputs &control_inputs, const double &dt) override;
+ public:
+  BasicSensorFilter();
 
-    [[nodiscard]] AircraftState getOutput() const override;
+  void update(const bmb_msgs::SensorMeasurements& sensor_measurements,
+              const bmb_msgs::ControlInputs& control_inputs,
+              const double& dt) override;
+
+  [[nodiscard]] bmb_msgs::AircraftState getOutput() const override;
 };

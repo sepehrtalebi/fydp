@@ -2,9 +2,14 @@
 
 #include <bmb_world_model/SensorModels.h>
 #include <bmb_math/Quaternion.h>
+#include <bmb_math/Matrix.h>
+#include <bmb_math/Vector.h>
+#include <bmb_math/Matrix3D.h>
 #include <bmb_differentiation/runtime/Variable.h>
 #include <bmb_world_model/AppliedLoads.h>
 #include <bmb_world_model/Constants.h>
+#include <bmb_msgs/SensorMeasurements.h>
+#include <bmb_utilities/MessageUtilities.h>
 
 #include <map>
 #include <string>
@@ -36,7 +41,7 @@ static Matrix<double, 6, 6> getWrenchToAccelJac() {
 const Matrix3D<ExprPtr, 4, 4, 3> EKF::QUAT_TO_QUAT_JAC_EXPR = getQuatToQuatJacExpr(); // NOLINT(cert-err58-cpp)
 const Matrix<double, 6, 6> EKF::WRENCH_TO_ACCEL_JAC = getWrenchToAccelJac(); // NOLINT(cert-err58-cpp)
 
-void EKF::updateKF(const SensorMeasurements &sensorMeasurements, const double &dt) {
+void EKF::updateKF(const bmb_msgs::SensorMeasurements &sensor_measurements, const double &dt) {
     // Jacobian naming convention:
     // a_to_b_jac represents the derivative of b with respect to a, and is a matrix of size (b, a)
     // The ith row and jth column of a_to_b_jac represents the derivative of the ith element of b with respect to the jth element of a
@@ -54,7 +59,7 @@ void EKF::updateKF(const SensorMeasurements &sensorMeasurements, const double &d
     P = f_jac * P * f_jac.transpose() + Q;
 
     // update step
-    Vector<double, p> z = sensorMeasurements.getZ();
+    Vector<double, p> z = bmb_utilities::as_vector(sensor_measurements);
     Vector<double, p> h_vec = h(x, dt);
     auto [h_jac, accel_to_h_jac] = getSensorMeasurementsJacobian(x, current_accel);
     h_jac += accel_to_h_jac * accel_jac;

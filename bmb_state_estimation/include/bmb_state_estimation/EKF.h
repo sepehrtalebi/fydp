@@ -3,13 +3,15 @@
 #include <bmb_state_estimation/KF.h>
 #include <bmb_differentiation/runtime/Expression.h>
 #include <bmb_math/Matrix.h>
+#include <bmb_math/Vector.h>
 #include <bmb_math/Matrix3D.h>
+#include <bmb_msgs/SensorMeasurements.h>
 
 #include <utility>
 
 class EKF : public KF {
 public:
-    void updateKF(const SensorMeasurements &sensorMeasurements,
+    void updateKF(const bmb_msgs::SensorMeasurements &sensor_measurements,
                   const double &dt) override;
 
 private:

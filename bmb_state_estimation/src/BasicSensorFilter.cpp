@@ -1,24 +1,35 @@
-#include <bmb_state_estimation/BasicSensorFilter.h>
+#include "bmb_state_estimation/BasicSensorFilter.h"
+#include <bmb_msgs/SensorMeasurements.h>
+#include <bmb_msgs/ControlInputs.h>
+#include <bmb_msgs/AircraftState.h>
+#include <bmb_math/Quaternion.h>
+#include <bmb_math/Vector3.h>
 
 BasicSensorFilter::BasicSensorFilter() {
-    state.orientation = Quaternion<double>::identity();
+    state.pose.orientation.w = 1;
 }
 
-void BasicSensorFilter::update(const SensorMeasurements &sensorMeasurements,
-                               const ControlInputs &control_inputs, const double &dt) {
-    AircraftState last_state = state;
-    Vector3<double> w_abs = state.orientation.unrotate(state.body_angular_velocity);
+void BasicSensorFilter::update(const bmb_msgs::SensorMeasurements& sensor_measurements,
+                               const bmb_msgs::ControlInputs& control_inputs,
+                               const double &dt) {
+    Vector3<double> last_position{state.pose.position};
+    Quaternion<double> last_orientation{state.pose.orientation};
+    Vector3<double> w_abs = orientation.unrotate(Vector3{state.twist.angular});
 
+    Vector3<double> position;
     // TODO: x and y based on GPS
-    state.position.z = -sensorMeasurements.gps_altitude;
-    state.orientation += state.orientation.E().transpose() * w_abs * (dt / 2);
-    state.orientation.normalize();
-    state.body_velocity = (state.position - last_state.position) / dt;
-    state.body_angular_velocity = sensorMeasurements.imu_angular_velocity;
-    state.body_angular_acceleration = (state.body_angular_velocity - last_state.body_angular_velocity) / dt;
-    state.body_acceleration = sensorMeasurements.imu_acceleration;
+    position.z = -sensorMeasurements.gps_altitude;
+    position.copy_to(state.pose.position);
+
+    Quaternion<double> orientation = last_orientation + last_orientation.E().transpose() * w_abs * (dt / 2);
+    orientation.normalize();
+    orientation.copy_to(state.pose.orientation);
+
+    Vector3<double> velocity = (position - last_position) / dt;
+    velocity.copy_to(state.twist.linear);
+    state.twist.angular = sensor_measurements.imu_reading.angular_velocity;
 }
 
-AircraftState BasicSensorFilter::getOutput() const {
+bmb_msgs::AircraftState BasicSensorFilter::getOutput() const {
     return state;
 }

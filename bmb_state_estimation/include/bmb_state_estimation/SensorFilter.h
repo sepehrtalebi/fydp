@@ -1,20 +1,14 @@
 #pragma once
 
-#include <bmb_msgs/SensorMeasurements.h>
-#include <bmb_msgs/ControlInputs.h>
 #include <bmb_msgs/AircraftState.h>
-
-#include <cstdint>
+#include <bmb_msgs/ControlInputs.h>
+#include <bmb_msgs/SensorMeasurements.h>
 
 class SensorFilter {
-public:
-    void updateWrapper(const double *doubleSensorMeasurements, const uint8_t *uint8SensorMeasurements,
-                       const unsigned char *boolSensorMeasurements, const double *control_inputs, double dt);
+ public:
+  virtual void update(const bmb_msgs::SensorMeasurements& sensor_measurements,
+                      const bmb_msgs::ControlInputs& control_inputs,
+                      const double& dt) = 0;
 
-    void getOutputWrapper(double *doubleAircraftState) const;
-
-    virtual void update(const SensorMeasurements &sensorMeasurements,
-                        const ControlInputs &control_inputs, const double &dt) = 0;
-
-    [[nodiscard]] virtual AircraftState getOutput() const = 0;
+  [[nodiscard]] virtual bmb_msgs::AircraftState getOutput() const = 0;
 };

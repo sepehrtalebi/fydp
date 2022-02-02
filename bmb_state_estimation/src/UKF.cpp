@@ -1,4 +1,8 @@
 #include "bmb_state_estimation/UKF.h"
+#include <bmb_msgs/SensorMeasurements.h>
+#include <bmb_math/Vector.h>
+#include <bmb_math/Matrix.h>
+#include <bmb_utilities/MessageUtilities.h>
 
 #include <cmath>
 
@@ -16,7 +20,7 @@ UKF::UKF() {
     for (size_t i = 1; i < 2 * n + 1; i++) covariance_weights[i] = 1 / (2 * (n + lambda));
 }
 
-void UKF::updateKF(const SensorMeasurements &sensorMeasurements,
+void UKF::updateKF(const bmb_msgs::SensorMeasurements &sensor_measurements,
                   const double &dt) {
     Vector<double, n> x_new = f(x, dt);
     auto new_sigma = sigma;
@@ -71,7 +75,7 @@ void UKF::updateKF(const SensorMeasurements &sensorMeasurements,
     K = cross_covariance * measurement_covariance.inv();
 
     // kalman gain update
-    x = state_estimate + K * (sensorMeasurements.getZ() - measurement_estimate);
+    x = state_estimate + K * (bmb_utilities::as_vector(sensor_measurements) - measurement_estimate);
     P = state_covariance - K * measurement_covariance * K.transpose();
     // update P_cholesky
     P_cholesky = P.cholesky();

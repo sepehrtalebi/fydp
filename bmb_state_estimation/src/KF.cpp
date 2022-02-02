@@ -4,30 +4,31 @@
 #include <bmb_world_model/WrenchUtilities.h>
 #include <bmb_math/Quaternion.h>
 #include <bmb_world_model/SensorModels.h>
+#include <bmb_msgs/SensorMeasurements.h>
+#include <bmb_msgs/ControlInputs.h>
+#include <bmb_msgs/AircraftState.h>
+#include <bmb_utilities/MessageUtilities.h>
 
 KF::KF() {
     x[q0] = 1;
     P[px][px] = P[py][py] = 0;
 }
 
-void KF::update(const SensorMeasurements &sensorMeasurements, const ControlInputs &control_inputs, const double &dt) {
+void KF::update(const bmb_msgs::SensorMeasurements &sensor_measurements,
+                const bmb_msgs::ControlInputs &control_inputs,
+                const double &dt) {
     applied_loads.update(control_inputs);
 
     // calculate current loads once and store in an instance variable so that it can be used throughout
     current_loads = applied_loads.getAppliedLoads(x);
-    current_accel = toAccel(current_loads);
+    current_accel = bmb_world_model::toAccel(current_loads);
 
     // delegate to subclasses
-    updateKF(sensorMeasurements, dt);
+    updateKF(sensor_measurements, dt);
 }
 
-AircraftState KF::getOutput() const {
-    return AircraftState{Vector3<double>{x[px], x[py], x[pz]},
-                         Quaternion<double>{x[q0], x[q1], x[q2], x[q3]},
-                         Vector3<double>{x[vx], x[vy], x[vz]},
-                         Vector3<double>{x[wx], x[wy], x[wz]},
-                         current_accel.angular,
-                         current_accel.linear};
+bmb_msgs::AircraftState KF::getOutput() const {
+  return bmb_utilities::as_msg(x.slice<0, 13>());
 }
 
 Vector<double, n> KF::f(const Vector<double, n> &state, const double &dt) const {
