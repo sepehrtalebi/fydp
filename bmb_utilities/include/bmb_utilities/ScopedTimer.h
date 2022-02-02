@@ -5,6 +5,8 @@
 #include <iostream>
 #include <utility>
 
+namespace bmb_utilities {
+
 class ScopedTimer {
 public:
     explicit ScopedTimer(std::string  name) : name(std::move(name)), t_start(std::chrono::high_resolution_clock::now()) {}
@@ -18,3 +20,5 @@ private:
     const std::string name;
     const std::chrono::time_point<std::chrono::high_resolution_clock> t_start;
 };
+
+}
