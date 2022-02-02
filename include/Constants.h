@@ -60,8 +60,6 @@ static constexpr const double LIFT_GAIN_RUDDER = 1;
 // displacement of aerodynamic center of rudder from the center of mass
 static const Vector3<double> L_RUDDER{-1, 0, 0}; // NOLINT(cert-err58-cpp)
 
-static constexpr const double T_SAMPLE = 1E-3; //sampling period
-
 //AppliedLoads propeller constants
 static constexpr const double K_PROPELLER = 1;
 static constexpr const double TAU_PROPELLER = 1;

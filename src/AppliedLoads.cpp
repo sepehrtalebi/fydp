@@ -32,17 +32,12 @@ static Matrix<ExprPtr, 3, 4> getQuatToWeightJacExpr() {
 const Matrix<ExprPtr, 3, 4> AppliedLoads::QUAT_TO_WEIGHT_JAC_EXPR = getQuatToWeightJacExpr(); // NOLINT(cert-err58-cpp)
 
 void AppliedLoads::update(const ControlInputs &control_inputs) {
-    last_propeller_ang_vel = getPropellerAngVelocity();
-    last_control_inputs = current_control_inputs;
     current_control_inputs = control_inputs;
 }
 
 double AppliedLoads::getPropellerAngVelocity() const {
     double propeller_voltage_sat = saturation(current_control_inputs.propeller_voltage, 0, 12);
-    double last_propeller_voltage_sat = saturation(last_control_inputs.propeller_voltage, 0, 12);
-    return (1 / (2 * TAU_PROPELLER + T_SAMPLE)) *
-           ((2 * TAU_PROPELLER - T_SAMPLE) * last_propeller_ang_vel +
-            K_PROPELLER * T_SAMPLE * (last_propeller_voltage_sat + propeller_voltage_sat));
+    return ang_vel_volt_tf.next_output(propeller_voltage_sat);
 }
 
 Wrench<double> AppliedLoads::getPropellerLoads() const {

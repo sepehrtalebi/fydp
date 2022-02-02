@@ -6,6 +6,7 @@
 #include "ControlInputs.h"
 #include "Constants.h"
 #include "Expression.h"
+#include "TransferFunction.h"
 
 class AppliedLoads {
 public:
@@ -21,8 +22,7 @@ private:
     static const Matrix<ExprPtr, 3, 4> QUAT_TO_WEIGHT_JAC_EXPR;
 
     ControlInputs current_control_inputs{0, 0, 0, 0};
-    ControlInputs last_control_inputs{0, 0, 0, 0};
-    double last_propeller_ang_vel = 0;
+    const TransferFunction<double, 2, 2> ang_vel_volt_tf = c2d({K_PROPELLER, 1, TAU_PROPELLER}, SAMPLING_TIME);
 
     [[nodiscard]] double getPropellerAngVelocity() const;
 
