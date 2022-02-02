@@ -2,6 +2,7 @@
 
 #include <bmb_math/Vector3.h>
 #include <bmb_math/Matrix.h>
+#include <geometry_msgs/Quaternion.h>
 
 template<typename T>
 class Quaternion : public Vector<T, 4> {
@@ -19,7 +20,18 @@ public:
     }
 
     // allow implicit conversions
-    Quaternion(Vector<T, 4> vec) : Quaternion(vec[0], vec[1], vec[2], vec[3]) {} // NOLINT(google-explicit-constructor)
+    Quaternion(const Vector<T, 4>& vec) : Quaternion(vec[0], vec[1], vec[2], vec[3]) {} // NOLINT(google-explicit-constructor)
+
+    // allow implicit conversions
+    Quaternion(const geometry_msgs::Quaternion& msg)
+        : Quaternion(msg.w, msg.x, msg.y, msg.z) {} // NOLINT(google-explicit-constructor)
+
+    void copy_to(geometry_msgs::Quaternion& msg) {
+      msg.w = q0;
+      msg.x = q1;
+      msg.y = q2;
+      msg.z = q3;
+    }
 
     Quaternion& operator=(const Quaternion<T> &other) {
         // need to overload this operator to allow copying the contents of a Quaternion

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <bmb_math/Vector.h>
+#include <geomety_msgs/Vector3.h>
 
 template<typename T>
 class Vector3 : public Vector<T, 3> {
@@ -29,7 +30,15 @@ public:
     }
 
     // allow implicit conversions
-    Vector3(Vector<T, 3> vec) : Vector3(vec[0], vec[1], vec[2]) {} // NOLINT(google-explicit-constructor)
+    Vector3(const Vector<T, 3>& vec) : Vector3(vec[0], vec[1], vec[2]) {} // NOLINT(google-explicit-constructor)
+
+    Vector3(const geometry_msgs::Vector3& msg) : Vector3(msg.x, msg.y, msg.z) {} // NOLINT(google-explicit-constructor)
+
+    void copy_to(geometry_msgs::Vector3& msg) {
+      msg.x = x;
+      msg.y = y;
+      msg.z = z;
+    }
 
     Vector3<T> cross(const Vector3<T> &other) const {
         return Vector3{y * other.z - z * other.y,
