@@ -28,6 +28,12 @@ public:
         }
     }
 
+    Matrix<T, n, m>& operator=(const Matrix<T, n, m>& other) {
+      // delegate to Vector<T, m>::operator=
+      for (size_t i = 0; i < n; i++) data[i] = other[i];
+      return *this;
+    }
+
     static Matrix<T, n, m> identity() {
         Matrix<T, n, m> output{};
         for (size_t i = 0; i < n && i < m; i++) output[i][i] = 1;
