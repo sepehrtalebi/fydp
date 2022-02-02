@@ -1,5 +1,7 @@
 #pragma once
 
+#include <bmb_math/Utility.h>
+
 #include <array>
 #include <initializer_list>
 #include <cmath>
@@ -73,6 +75,14 @@ public:
         for (size_t i = 0; i < n; i++) concat[i] = data[i];
         for (size_t i = n; i < n + m; i++) concat[i] = other[i];
         return concat;
+    }
+
+    template<size_t start, size_t stop = n, size_t step = 1>
+    Vector<T, bmb_math::slice_count(start, stop, step)> slice() {
+      constexpr size_t m = bmb_math::slice_count(start, stop, step);
+      Vector<T, m> vec;
+      for (size_t i = 0; i < m; i++) vec[i] = data[start + i * step];
+      return vec;
     }
 
     template<typename R>
