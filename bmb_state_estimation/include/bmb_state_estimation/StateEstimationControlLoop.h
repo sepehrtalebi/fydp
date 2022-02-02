@@ -16,15 +16,15 @@ class StateEstimationControlLoop {
  private:
   // Message Callbacks
 
-  void pressureSensorCallback(const sensor_msgs::FluidPressure::ConstPtr& msg);
+  void pressureSensorCallback(const sensor_msgs::FluidPressure& msg);
 
-  void imuCallback(const sensor_msgs::Imu::ConstPtr& msg);
+  void imuCallback(const sensor_msgs::Imu& msg);
 
-  void gpsCallback(const sensor_msgs::NavSatFix::ConstPtr& msg);
+  void gpsCallback(const sensor_msgs::NavSatFix& msg);
 
-  void railDetectionCallback(const bmb_msgs::RailDetection::ConstPtr& msg);
+  void railDetectionCallback(const bmb_msgs::RailDetection& msg);
 
-  void opticalFlowCallback(const bmb_msgs::OpticalFlow::ConstPtr& msg);
+  void opticalFlowCallback(const bmb_msgs::OpticalFlow& msg);
 
   // Subscriber Objects (need to keep in scope)
   ros::Subscriber pressure_sensor_sub_;
