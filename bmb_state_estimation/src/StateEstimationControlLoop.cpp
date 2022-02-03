@@ -4,7 +4,8 @@
 #include <bmb_state_estimation/UKF.h>
 #include <bmb_msgs/AircraftState.h>
 
-StateEstimationControlLoop::StateEstimationControlLoop(ros::NodeHandle& nh) {
+StateEstimationControlLoop::StateEstimationControlLoop(
+    ros::NodeHandle& nh, const double& update_frequency) : update_frequency(update_frequency) {
   // initialize subscribers
   pressure_sensor_sub_ = nh.subscribe(
       "pressure_sensor_reading", 1, &StateEstimationControlLoop::pressureSensorCallback, this);
@@ -23,29 +24,39 @@ StateEstimationControlLoop::StateEstimationControlLoop(ros::NodeHandle& nh) {
 
 
 void StateEstimationControlLoop::pressureSensorCallback(const sensor_msgs::FluidPressure& msg) {
-
+  latest_measurements.pressure_reading = msg;
 }
 
 void StateEstimationControlLoop::imuCallback(const sensor_msgs::Imu& msg) {
-
+  latest_measurements.imu_reading = msg;
 }
 
 void StateEstimationControlLoop::gpsCallback(const sensor_msgs::NavSatFix& msg) {
-
+  latest_measurements.gps_reading = msg;
 }
 
 void StateEstimationControlLoop::railDetectionCallback(const bmb_msgs::RailDetection& msg) {
-
+  latest_measurements.rail_detection = msg;
 }
 
 void StateEstimationControlLoop::opticalFlowCallback(const bmb_msgs::OpticalFlow& msg) {
+  latest_measurements.optical_flow_reading = msg;
+}
 
+void StateEstimationControlLoop::controlInputsCallback(const bmb_msgs::ControlInputs& msg) {
+  latest_control_inputs = msg;
 }
 
 StateEstimationControlLoop::spin() {
-
+  ros::Rate rate{update_frequency};
+  const double period = 1 / update_frequency;
+  while (ros::ok()) {
+    ros::spinOnce();
+    kf.update(latest_measurements, latest_control_inputs, period);
+    aircraft_state_pub_.publish(kf.getOutput());
+    rate.sleep();
+  }
 }
-
 
 int main(int argc, char** argv) {
   ros::init(argc, argv, "bmb_state_estimation");
