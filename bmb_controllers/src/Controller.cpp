@@ -30,7 +30,7 @@ double Controller::throttle_controller(const double &airspeed_command, const dou
 
 double Controller::roll_controller(const double &heading_command, const double &yaw)  {
     double error = heading_command - yaw;
-    return AppliedLoads::saturation(pid_roll.update(error), 5);
+    return saturation(pid_roll.update(error), 5);
 }
 
 double Controller::propeller_controller(const double &throttle_command)  {
