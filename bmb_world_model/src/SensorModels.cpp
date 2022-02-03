@@ -1,7 +1,7 @@
 #include "bmb_world_model/SensorModels.h"
 
 #include <bmb_world_model/AppliedLoads.h>
-#include <bmb_math/bmb_math/Vector3.h>
+#include <bmb_math/Vector3.h>
 #include <bmb_math/Quaternion.h>
 #include <bmb_state_estimation/KF.h>
 #include <bmb_msgs/SensorMeasurements.h>
@@ -18,6 +18,9 @@ static unsigned seed = std::chrono::system_clock::now().time_since_epoch().count
 static auto random_engine = std::default_random_engine(seed); // NOLINT(cert-err58-cpp)
 static std::normal_distribution<double> optical_flow_noise(0, 1); // NOLINT(cert-err58-cpp)
 #endif
+
+static constexpr size_t p = bmb_msgs::SensorMeasurements::SIZE;
+static constexpr size_t n = bmb_msgs::AircraftState::SIZE;
 
 static void railDetection(const Quaternion<double> &quat, const double &altitude,
                           bmb_msgs::SensorMeasurements &sensor_measurements) {
@@ -102,19 +105,21 @@ static void gps(const Vector3<double> &position, bmb_msgs::SensorMeasurements &s
                                             sin(STARTING_COORDINATES[0]) * sin(sensor_measurements.gps_reading.latitude));
 }
 
-bmb_msgs::SensorMeasurements getSensorMeasurements(const Vector<double, n> &state, const Accel<double> &accel) {
-    Quaternion<double> quat{state[KF::q0], state[KF::q1], state[KF::q2], state[KF::q3]};
-    Vector3<double> position{state[KF::px], state[KF::py], state[KF::pz]};
-    Vector3<double> velocity{state[KF::vx], state[KF::vy], state[KF::vz]};
-    double altitude = -position.z;
+bmb_msgs::SensorMeasurements getSensorMeasurements(
+    const bmb_msgs::AircraftState& state, const Vector3<double>& accelerometer_bias,
+    const Vector3<double>& gyroscope_bias, const Accel<double>& accel) {
+    Vector3<double> position{state.pose.position};
+    Quaternion<double> quat{state.pose.orientation};
+    Vector3<double> velocity{state.twist.linear};
+    const double& altitude = -position.z;
 
     bmb_msgs::SensorMeasurements sensor_measurements;
     altitudeSensor(altitude, sensor_measurements);
     gps(position, sensor_measurements);
     imu(quat, accel.linear, accel.angular,
-        Vector3<double>{state[KF::wx], state[KF::wy], state[KF::wz]},
-        Vector3<double>{state[KF::accel_bx], state[KF::accel_by], state[KF::accel_bz]},
-        Vector3<double>{state[KF::gyro_bx], state[KF::gyro_by], state[KF::gyro_bz]},
+        Vector3<double>{state.twist.angular},
+        accelerometer_bias,
+        gyroscope_bias,
         sensor_measurements);
     railDetection(quat, altitude, sensor_measurements);
     opticalFlow(velocity, altitude, sensor_measurements);
@@ -122,18 +127,25 @@ bmb_msgs::SensorMeasurements getSensorMeasurements(const Vector<double, n> &stat
     return sensor_measurements;
 }
 
-std::pair<Matrix<double, p, n>, Matrix<double, p, 6>> getSensorMeasurementsJacobian(const Vector<double, n> &state, const Accel<double> &accel) {
+std::pair<Matrix<double, p, n>, Matrix<double, p, 3>, Matrix<double, p, 3>, Matrix<double, p, 6>>
+getSensorMeasurementsJacobian(const bmb_msgs::AircraftState& state,
+                              const Vector3<double>& accelerometer_bias,
+                              const Vector3<double>& gyroscope_bias,
+                              const Accel<double>& accel) {
+    using namespace bmb_msgs;
     Matrix<double, p, n> h_jac = Matrix<double, p, n>::zeros();
+    Matrix<double, p, 3> accelerometer_bias_to_h_jac = Matrix<double, p, 3>::zeros();
+    Matrix<double, p, 3> gyroscope_bias_to_h_jac = Matrix<double, p, 3>::zeros();
     Matrix<double, p, 6> accel_to_h_jac = Matrix<double, p, 6>::zeros();
 
     // TODO
-    h_jac[SensorMeasurements::PRESSURE][KF::px] = AIR_DENSITY * GRAVITATIONAL_ACCELERATION;
+    h_jac[SensorMeasurements::PRESSURE][AircraftState::PX] = AIR_DENSITY * GRAVITATIONAL_ACCELERATION;
 
-    h_jac[SensorMeasurements::IMU_wx][KF::wx] = 1;
-    h_jac[SensorMeasurements::IMU_wy][KF::wy] = 1;
-    h_jac[SensorMeasurements::IMU_wz][KF::wz] = 1;
+    h_jac[SensorMeasurements::IMU_wx][AircraftState::WX] = 1;
+    h_jac[SensorMeasurements::IMU_wy][AircraftState::WY] = 1;
+    h_jac[SensorMeasurements::IMU_wz][AircraftState::WZ] = 1;
 
-    h_jac[SensorMeasurements::ALT][KF::pz] = -1;
+    h_jac[SensorMeasurements::ALT][AircraftState::PZ] = -1;
 
-    return {h_jac, accel_to_h_jac};
+    return {h_jac, accelerometer_bias_to_h_jac, gyroscope_bias_to_h_jac, accel_to_h_jac};
 }

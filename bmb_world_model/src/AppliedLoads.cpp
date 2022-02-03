@@ -1,6 +1,5 @@
 #include "bmb_world_model/AppliedLoads.h"
 
-#include <bmb_state_estimation/KF.h>
 #include <bmb_world_model/Constants.h>
 #include <bmb_math/Vector3.h>
 #include <bmb_math/Quaternion.h>
@@ -8,15 +7,12 @@
 #include <bmb_differentiation/runtime/Constant.h>
 #include <bmb_utilities/MathUtils.h>
 #include <bmb_msgs/ControlInputs.h>
+#include <bmb_msgs/AircraftState.h>
 
 #include <cmath>
 
-#ifndef M_PI_4
-// this is needed for the code to compile in the Simulink S Function Builder
-#define M_PI_4 0.78539816339744830962
-#endif
-
 using bmb_utilities::saturation;
+static constexpr size_t n = bmb_msgs::AircraftState::SIZE;
 
 static Matrix<ExprPtr, 3, 4> getQuatToWeightJacExpr() {
     Matrix<ExprPtr, 3, 4> expr;
@@ -75,11 +71,11 @@ Wrench<double> AppliedLoads::getElevatorLoads(const double &velocity) const {
     return {force, L_ELEVATOR.cross(force)};
 }
 
-Wrench<double> AppliedLoads::getEnvironmentalLoads(const Vector<double, n> &state) {
-    Quaternion<double> quat{state[KF::q0], state[KF::q1], state[KF::q2], state[KF::q3]};
+Wrench<double> AppliedLoads::getEnvironmentalLoads(const bmb_msgs::AircraftState& state) {
+    Quaternion<double> quat{state.pose.orientation};
     Vector3<double> weight = quat.rotate(WEIGHT);
 
-    Vector3<double> b_vel{state[KF::vx], state[KF::vy], state[KF::vz]}; // body velocity
+    Vector3<double> b_vel{state.twist.linear}; // body velocity
 
     double drag = -DRAG_GAIN_BODY * b_vel.x * b_vel.x;
     double sin_of_angle_of_attack = b_vel.z / b_vel.x;
@@ -94,8 +90,8 @@ Wrench<double> AppliedLoads::getEnvironmentalLoads(const Vector<double, n> &stat
     return {weight + body_force + rudder_force, torque};
 }
 
-Wrench<double> AppliedLoads::getAppliedLoads(const Vector<double, n> &state) const {
-    double velocity = state[KF::vx];
+Wrench<double> AppliedLoads::getAppliedLoads(const bmb_msgs::AircraftState& state) const {
+    const double& velocity = state.twist.linear.x;
     return getPropellerLoads() +
            getRightAileronLoads(velocity) +
            getLeftAileronLoads(velocity) +
@@ -103,41 +99,31 @@ Wrench<double> AppliedLoads::getAppliedLoads(const Vector<double, n> &state) con
            getEnvironmentalLoads(state);
 }
 
-void AppliedLoads::updateWrapper(const double *control_inputs, const double *aircraft_state, double *forces,
-                                 double *torques) {
-    Vector<double, 4> control_inputsVec{control_inputs};
-    Vector<double, n> aircraft_state_vec{aircraft_state};
-
-    update(ControlInputs::parseU(control_inputsVec));
-    Wrench<double> wrench = getAppliedLoads(aircraft_state_vec);
-    for (size_t i = 0; i < 3; i++) {
-        forces[i] = wrench.force[i];
-        torques[i] = wrench.torque[i];
-    }
-}
-
-Matrix<double, 6, n> AppliedLoads::getAppliedLoadsJacobian(const Vector<double, n> &state) const {
+Matrix<double, 6, n> AppliedLoads::getAppliedLoadsJacobian(const bmb_msgs::AircraftState& state) const {
     Matrix<double, 6, n> wrench_jac = Matrix<double, 6, n>::zeros();
     // propeller loads does not contribute since it does not depend on state
 
+    static constexpr size_t VX = bmb_msgs::AircraftState::VX;
+    const double& velocity = state.twist.linear.x;
+
     // right aileron loads
-    double vel_to_lift_jac = LIFT_GAIN_AILERON * saturation(current_control_inputs.right_aileron_angle, M_PI_4) * 2 * state[KF::vx];
-    wrench_jac[2][KF::vx] -= vel_to_lift_jac;
+    double vel_to_lift_jac = LIFT_GAIN_AILERON * saturation(current_control_inputs.right_aileron_angle, M_PI_4) * 2 * velocity;
+    wrench_jac[2][VX] -= vel_to_lift_jac;
     Vector3<double> vel_to_right_torque_jac = L_RIGHT_AILERON.cross({0, 0, -vel_to_lift_jac});
-    for (size_t i = 0; i < 3; i++) wrench_jac[3 + i][KF::vx] += vel_to_right_torque_jac[i];
+    for (size_t i = 0; i < 3; i++) wrench_jac[3 + i][VX] += vel_to_right_torque_jac[i];
 
     // left aileron loads
     const double left_aileron_angle = -current_control_inputs.right_aileron_angle;
-    vel_to_lift_jac = LIFT_GAIN_AILERON * saturation(left_aileron_angle, M_PI_4) * 2 * state[KF::vx];
-    wrench_jac[2][KF::vx] -= vel_to_lift_jac;
+    vel_to_lift_jac = LIFT_GAIN_AILERON * saturation(left_aileron_angle, M_PI_4) * 2 * velocity;
+    wrench_jac[2][VX] -= vel_to_lift_jac;
     Vector3<double> vel_to_left_torque_jac = L_LEFT_AILERON.cross({0, 0, -vel_to_lift_jac});
-    for (size_t i = 0; i < 3; i++) wrench_jac[3 + i][KF::vx] += vel_to_left_torque_jac[i];
+    for (size_t i = 0; i < 3; i++) wrench_jac[3 + i][State::VX] += vel_to_left_torque_jac[i];
 
     // elevator loads
-    vel_to_lift_jac = LIFT_GAIN_ELEVATOR * saturation(current_control_inputs.elevator_angle, M_PI_4) * 2 * state[KF::vx];
-    wrench_jac[2][KF::vx] += vel_to_lift_jac;
+    vel_to_lift_jac = LIFT_GAIN_ELEVATOR * saturation(current_control_inputs.elevator_angle, M_PI_4) * 2 * velocity;
+    wrench_jac[2][VX] += vel_to_lift_jac;
     Vector3<double> vel_to_elevator_torque_jac = L_ELEVATOR.cross({0, 0, vel_to_lift_jac});
-    for (size_t i = 0; i < 3; i++) wrench_jac[3 + i][KF::vx] += vel_to_elevator_torque_jac[i];
+    for (size_t i = 0; i < 3; i++) wrench_jac[3 + i][VX] += vel_to_elevator_torque_jac[i];
 
     // TODO: environmental loads
 

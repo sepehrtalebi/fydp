@@ -7,14 +7,16 @@
 #include <bmb_world_model/Constants.h>
 #include <bmb_differentiation/runtime/Expression.h>
 #include <bmb_msgs/ControlInputs.h>
+#include <bmb_msgs/AircraftState.h>
 
 class AppliedLoads {
 public:
     void update(const bmb_msgs::ControlInputs &control_inputs);
 
-    [[nodiscard]] Wrench<double> getAppliedLoads(const Vector<double, n> &state) const;
+    [[nodiscard]] Wrench<double> getAppliedLoads(const bmb_msgs::AircraftState& state) const;
 
-    [[nodiscard]] Matrix<double, 6, n> getAppliedLoadsJacobian(const Vector<double, n> &state) const;
+    [[nodiscard]] Matrix<double, 6, bmb_msgs::AircraftState::SIZE>
+    getAppliedLoadsJacobian(const bmb_msgs::AircraftState& state) const;
 
 private:
     static const Matrix<ExprPtr, 3, 4> QUAT_TO_WEIGHT_JAC_EXPR;
@@ -27,11 +29,11 @@ private:
 
     [[nodiscard]] Wrench<double> getPropellerLoads() const;
 
-    [[nodiscard]] Wrench<double> getRightAileronLoads(const double &velocity) const;
+    [[nodiscard]] Wrench<double> getRightAileronLoads(const double& velocity) const;
 
-    [[nodiscard]] Wrench<double> getLeftAileronLoads(const double &velocity) const;
+    [[nodiscard]] Wrench<double> getLeftAileronLoads(const double& velocity) const;
 
-    [[nodiscard]] Wrench<double> getElevatorLoads(const double &velocity) const;
+    [[nodiscard]] Wrench<double> getElevatorLoads(const double& velocity) const;
 
-    static Wrench<double> getEnvironmentalLoads(const Vector<double, n> &state);
+    static Wrench<double> getEnvironmentalLoads(const bmb_msgs::AircraftState& state);
 };
