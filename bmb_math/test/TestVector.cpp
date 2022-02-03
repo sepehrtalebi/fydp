@@ -30,6 +30,17 @@ void testVector() {
     assert(z[2] == 8);
     assert(z[0] == 10);
 
+    Vector<double, 5> a{1, 2, 3, 4, 5};
+    Vector<double, 2> b{1, 2};
+    a += b;
+    assert(a[0] == 2);
+    assert(a[1] == 4);
+    assert(a[3] == 4);
+    a.operator+=<1, 2>(b);
+    assert(a[0] == 2);
+    assert(a[1] == 5);
+    assert(a[3] == 6);
+
     Vector<double, 5> test{1.1, -4.5, 3, 4, 0};
     Vector<int, 5> test_floor = test.applyFunc<int>(&roundDown);
     for (size_t i = 0; i < 5; i++) assert(test_floor[i] == (int) test[i]);
