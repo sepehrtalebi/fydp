@@ -8,6 +8,10 @@ add_compile_options(-std=c++17)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
+  bmb_math
+  bmb_msgs
+  bmb_differentiation
+  bmb_utilities
 )
 
 ## System dependencies are found with CMake's conventions
@@ -101,7 +105,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES bmb_world_model
-#  CATKIN_DEPENDS
+  CATKIN_DEPENDS bmb_math bmb_msgs bmb_differentiation bmb_utilities
 #  DEPENDS system_lib
 )
 
