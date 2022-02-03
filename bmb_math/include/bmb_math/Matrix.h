@@ -156,7 +156,7 @@ public:
         return sum;
     }
 
-    template<size_t row_start, size_t col_start, size_t row_step, size_t col_step, size_t x, size_t y>
+    template<size_t row_start = 0, size_t col_start = 0, size_t row_step = 1, size_t col_step = 1, size_t x, size_t y>
     void operator+=(const Matrix<T, x, y> &other) {
       static constexpr size_t row_stop = row_start + row_step * (x - 1) + 1;
       static constexpr size_t col_stop = col_start + col_step * (y - 1) + 1;
@@ -171,7 +171,7 @@ public:
         return difference;
     }
 
-    template<size_t row_start, size_t col_start, size_t row_step, size_t col_step, size_t x, size_t y>
+    template<size_t row_start = 0, size_t col_start = 0, size_t row_step = 1, size_t col_step = 1, size_t x, size_t y>
     void operator-=(const Matrix<T, x, y> &other) {
       static constexpr size_t row_stop = row_start + row_step * (x - 1) + 1;
       static constexpr size_t col_stop = col_start + col_step * (y - 1) + 1;
