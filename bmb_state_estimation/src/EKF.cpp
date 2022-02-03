@@ -48,12 +48,16 @@ void EKF::updateKF(const bmb_msgs::SensorMeasurements &sensor_measurements, cons
     // In other words, how does a impact b
     // For simplicity, x_to_a_jac is simply written as a_jac when x represents the state
     // By the chain rule, b_to_c_jac * a_to_b_jac = a_to_c_jac
-    Matrix<double, 6, n> wrench_jac = applied_loads.getAppliedLoadsJacobian(x); // derivative of wrench with respect to state
-    Matrix<double, 6, n> accel_jac = WRENCH_TO_ACCEL_JAC * wrench_jac;
+    const bmb_msgs::AircraftState state = getOutput();
+    const Vector3 accelerometer_bias = state.slice<accel_bx, accel_bz + 1>();
+    const Vector3 gyro_bias = state.slice<gyro_bx, gyro_bz + 1>();
+    Matrix<double, 6, bmb_msgs::AircraftState::SIZE> wrench_jac =
+        applied_loads.getAppliedLoadsJacobian(state); // derivative of wrench with respect to state
+    Matrix<double, 6, bmb_msgs::AircraftState::SIZE> accel_jac = WRENCH_TO_ACCEL_JAC * wrench_jac;
 
     // prediction step
     auto [f_jac, accel_to_f_jac] = fJacobian(x, dt);
-    f_jac += accel_to_f_jac * accel_jac;
+    f_jac += accel_to_f_jac * accel_jac; // relies on the fact that AircraftState's elements are the first in KF's state
 
     x = f(x, dt);
     P = f_jac * P * f_jac.transpose() + Q;
@@ -61,7 +65,12 @@ void EKF::updateKF(const bmb_msgs::SensorMeasurements &sensor_measurements, cons
     // update step
     Vector<double, p> z = bmb_utilities::as_vector(sensor_measurements);
     Vector<double, p> h_vec = h(x, dt);
-    auto [h_jac, accel_to_h_jac] = getSensorMeasurementsJacobian(x, current_accel);
+    Matrix<double, p, n> h_jac = Matrix<double, p, n>::zeros();
+    auto [aircraft_state_to_h_jac, accelerometer_bias_to_h_jac, gyro_bias_to_h_jac, accel_to_h_jac] =
+        getSensorMeasurementsJacobian(state, accelerometer_bias, gyro_bias, current_accel);
+    h_jac += aircraft_state_to_h_jac;
+    h_jac.operator+=<accel_bx>(accelerometer_bias_to_h_jac);
+    h_jac.operator+=<gyro_bx>(gyro_bias_to_h_jac);
     h_jac += accel_to_h_jac * accel_jac;
     Matrix<double, n, p> h_jac_transpose = h_jac.transpose();
 

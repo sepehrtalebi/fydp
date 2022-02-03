@@ -33,7 +33,7 @@ protected:
     const Matrix<double, n, n> Q = Matrix<double, n, n>::identity();
     const Matrix<double, p, p> R = Matrix<double, p, p>::identity();
     AppliedLoads applied_loads{};
-    Wrench<double> current_loads; // stores applied_loads.getAppliedLoads(x) for the current time-step
+    Wrench<double> current_loads; // stores applied_loads.getAppliedLoads(getOutput()) for the current time-step
     Accel<double> current_accel; // stores accelerations and angular accelerations based on current_loads
 
 public:

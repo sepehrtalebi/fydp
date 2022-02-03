@@ -20,7 +20,7 @@ void KF::update(const bmb_msgs::SensorMeasurements &sensor_measurements,
     applied_loads.update(control_inputs);
 
     // calculate current loads once and store in an instance variable so that it can be used throughout
-    current_loads = applied_loads.getAppliedLoads(x);
+    current_loads = applied_loads.getAppliedLoads(getOutput());
     current_accel = bmb_world_model::toAccel(current_loads);
 
     // delegate to subclasses
@@ -28,7 +28,7 @@ void KF::update(const bmb_msgs::SensorMeasurements &sensor_measurements,
 }
 
 bmb_msgs::AircraftState KF::getOutput() const {
-  return bmb_utilities::as_msg(x.slice<0, 13>());
+  return bmb_utilities::as_msg(x.slice<0, bmb_msgs::AircraftState::SIZE>());
 }
 
 Vector<double, n> KF::f(const Vector<double, n> &state, const double &dt) const {
@@ -62,5 +62,9 @@ Vector<double, n> KF::f(const Vector<double, n> &state, const double &dt) const 
 }
 
 Vector<double, p> KF::h(const Vector<double, n> &state, const double & /** dt **/) {
-    return getSensorMeasurements(state, current_accel).getZ();
+    const bmb_msgs::AircraftState state = getOutput();
+    const Vector3 accelerometer_bias = state.slice<accel_bx, accel_bz + 1>();
+    const Vector3 gyro_bias = state.slice<gyro_bx, gyro_bz + 1>();
+    return bmb_utilities::as_vector(getSensorMeasurements(
+        state, accelerometer_bias, gyro_bias, current_accel));
 }
