@@ -3,6 +3,7 @@
 #include <bmb_math/Vector3.h>
 #include <bmb_math/Matrix.h>
 #include <bmb_controllers/PIDGains.h>
+#include <bmb_msgs/SensorMeasurements.h>
 
 // TODO: move to yaml file and read from parameter server
 
@@ -77,7 +78,7 @@ static const Vector3<double> L_ELEVATOR{0, 0, 0}; // NOLINT(cert-err58-cpp)
 
 // Kalman filter constants
 constexpr static const size_t n = 25; // number of states
-constexpr static const size_t p = 18; // number of sensor measurements
+constexpr static const size_t p = bmb_msgs::SensorMeasurements::SIZE; // number of sensor measurements
 
 //controller constants
 static const PIDGains THROTTLE_GAIN{1, 1, 1, 1};
