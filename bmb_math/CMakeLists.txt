@@ -9,6 +9,7 @@ add_compile_options(-std=c++17)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
+  roscpp
 )
 
 ## System dependencies are found with CMake's conventions
@@ -103,7 +104,7 @@ catkin_package(
   INCLUDE_DIRS include
   LIBRARIES ${PROJECT_NAME}
 #  CATKIN_DEPENDS
- DEPENDS geometry_msgs
+ DEPENDS geometry_msgs roscpp
 )
 
 ###########

@@ -48,6 +48,7 @@
   <!--   <doc_depend>doxygen</doc_depend> -->
   <buildtool_depend>catkin</buildtool_depend>
   <depend>geometry_msgs</depend>
+  <test_depend>roscpp</test_depend>
 
 
   <!-- The export tag contains other, unspecified, tags -->

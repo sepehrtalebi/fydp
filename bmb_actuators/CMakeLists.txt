@@ -8,6 +8,7 @@ add_compile_options(-std=c++17)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
+  roscpp
   bmb_msgs
 )
 
@@ -102,7 +103,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES bmb_actuators
-  CATKIN_DEPENDS bmb_msgs
+  CATKIN_DEPENDS roscpp bmb_msgs
 #  DEPENDS system_lib
 )
 
