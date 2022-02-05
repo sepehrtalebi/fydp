@@ -5,7 +5,7 @@
 #include <bmb_msgs/ControlInputs.h>
 #include <bmb_controllers/PID.h>
 #include <bmb_world_model/Constants.h>
-#include <bmb_controllers/PIDGains.h>
+#include <bmb_utilities/PIDGains.h>
 #include <bmb_math/Vector.h>
 
 #include <utility>

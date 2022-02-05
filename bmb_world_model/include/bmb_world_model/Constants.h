@@ -2,7 +2,7 @@
 
 #include <bmb_math/Vector3.h>
 #include <bmb_math/Matrix.h>
-#include <bmb_controllers/PIDGains.h>
+#include <bmb_utilities/PIDGains.h>
 #include <bmb_msgs/SensorMeasurements.h>
 
 // TODO: move to yaml file and read from parameter server
