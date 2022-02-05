@@ -2,6 +2,7 @@
 
 #include <bmb_math/Vector.h>
 #include <geometry_msgs/Vector3.h>
+#include <geometry_msgs/Point.h>
 
 template<typename T>
 class Vector3 : public Vector<T, 3> {
@@ -35,6 +36,14 @@ public:
     Vector3(const geometry_msgs::Vector3& msg) : Vector3(msg.x, msg.y, msg.z) {} // NOLINT(google-explicit-constructor)
 
     void copy_to(geometry_msgs::Vector3& msg) {
+      msg.x = x;
+      msg.y = y;
+      msg.z = z;
+    }
+
+    Vector3(const geometry_msgs::Point& msg) : Vector3(msg.x, msg.y, msg.z) {} // NOLINT(google-explicit-constructor)
+
+    void copy_to(geometry_msgs::Point& msg) {
       msg.x = x;
       msg.y = y;
       msg.z = z;
