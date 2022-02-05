@@ -87,8 +87,10 @@ static void imu(const Quaternion<double> &quat,
                                             body_gravity; // idealize measured acceleration
     // TODO: implement noise stuff from here: https://www.mathworks.com/help/aeroblks/threeaxisaccelerometer.html
     //  and here: https://www.mathworks.com/help/aeroblks/threeaxisgyroscope.html
-    (measured_acceleration + accelerometer_bias).copy_to(sensor_measurements.imu_reading.linear_acceleration);
-    (body_ang_velocity + gyroscope_bias).copy_to(sensor_measurements.imu_reading.angular_velocity);
+    Vector3<double>{measured_acceleration + accelerometer_bias}.copy_to(
+        sensor_measurements.imu_reading.linear_acceleration);
+    Vector3<double>{body_ang_velocity + gyroscope_bias}.copy_to(
+        sensor_measurements.imu_reading.angular_velocity);
 }
 
 static void gps(const Vector3<double> &position, bmb_msgs::SensorMeasurements &sensor_measurements) {
