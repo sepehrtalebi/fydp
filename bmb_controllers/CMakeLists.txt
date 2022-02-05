@@ -8,6 +8,10 @@ add_compile_options(-std=c++17)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
+  bmb_math
+  bmb_msgs
+  bmb_utilities
+  bmb_world_model
 )
 
 ## System dependencies are found with CMake's conventions
@@ -100,8 +104,8 @@ find_package(catkin REQUIRED COMPONENTS
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
   INCLUDE_DIRS include
-  LIBRARIES bmb_controllers
-#  CATKIN_DEPENDS
+  LIBRARIES ${PROJECT_NAME}
+  CATKIN_DEPENDS bmb_math bmb_msgs bmb_utilities bmb_world_model
 #  DEPENDS system_lib
 )
 
@@ -120,6 +124,10 @@ include_directories(
 # add_library(${PROJECT_NAME}
 #   src/${PROJECT_NAME}/bmb_controllers.cpp
 # )
+
+add_library(${PROJECT_NAME} src/Controller.cpp)
+target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES})
+add_dependencies(${PROJECT_NAME} ${catkin_EXPORTED_TARGETS})
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
@@ -168,18 +176,18 @@ include_directories(
 
 ## Mark libraries for installation
 ## See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_libraries.html
-# install(TARGETS ${PROJECT_NAME}
-#   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-#   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-#   RUNTIME DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION}
-# )
+install(TARGETS ${PROJECT_NAME}
+  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION}
+)
 
 ## Mark cpp header files for installation
-# install(DIRECTORY include/${PROJECT_NAME}/
-#   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+install(DIRECTORY include/${PROJECT_NAME}/
+  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
 #   FILES_MATCHING PATTERN "*.h"
 #   PATTERN ".svn" EXCLUDE
-# )
+)
 
 ## Mark other files for installation (e.g. launch and bag files, etc.)
 # install(FILES
