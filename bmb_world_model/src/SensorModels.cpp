@@ -101,6 +101,7 @@ static void gps(const Vector3<double> &position, bmb_msgs::SensorMeasurements &s
                                             cos(STARTING_COORDINATES[0]),
                                             cos(rect_dist / EARTH_RADIUS) -
                                             sin(STARTING_COORDINATES[0]) * sin(sensor_measurements.gps_reading.latitude));
+    sensor_measurements.gps_reading.altitude = -position.z;
 }
 
 bmb_msgs::SensorMeasurements getSensorMeasurements(
