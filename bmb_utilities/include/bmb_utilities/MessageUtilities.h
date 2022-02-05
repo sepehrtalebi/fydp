@@ -8,13 +8,17 @@
 
 namespace bmb_utilities {
 
-[[nodiscard]] Vector<double, 21> as_vector(const bmb_msgs::SensorMeasurements& msg);
+[[nodiscard]] Vector<double, bmb_msgs::SensorMeasurements::SIZE>
+    as_vector(const bmb_msgs::SensorMeasurements& msg);
 
-[[nodiscard]] bmb_msgs::SensorMeasurements as_msg(const Vector<double, 21>& sensor_measurements);
+[[nodiscard]] bmb_msgs::SensorMeasurements as_msg(
+    const Vector<double, bmb_msgs::SensorMeasurements::SIZE>& sensor_measurements);
 
-[[nodiscard]] Vector<double, 13> as_vector(const bmb_msgs::AircraftState& msg);
+[[nodiscard]] Vector<double, bmb_msgs::AircraftState::SIZE>
+    as_vector(const bmb_msgs::AircraftState& msg);
 
-[[nodiscard]] bmb_msgs::AircraftState as_msg(const Vector<double, 13>& aircraft_state);
+[[nodiscard]] bmb_msgs::AircraftState as_msg(
+    const Vector<double, bmb_msgs::AircraftState::SIZE>& aircraft_state);
 
 [[nodiscard]] Vector3<double> as_vector(const bmb_msgs::ControlInputs& msg);
 

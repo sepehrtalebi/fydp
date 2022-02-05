@@ -7,8 +7,9 @@
 
 namespace bmb_utilities {
 
-Vector<double, 18> as_vector(const bmb_msgs::SensorMeasurements& msg) {
-  Vector<double, 18> vec;
+Vector<double, bmb_msgs::SensorMeasurements::SIZE> as_vector(
+    const bmb_msgs::SensorMeasurements& msg) {
+  Vector<double, bmb_msgs::SensorMeasurements::SIZE> vec;
   vec[bmb_msgs::SensorMeasurements::PRESSURE] = msg.pressure_reading.fluid_pressure;
   vec[bmb_msgs::SensorMeasurements::RAIL_ANGLE] = msg.rail_detection.angle;
   vec[bmb_msgs::SensorMeasurements::RAIL_WIDTH] = msg.rail_detection.pixel_width;
@@ -33,7 +34,8 @@ Vector<double, 18> as_vector(const bmb_msgs::SensorMeasurements& msg) {
   return vec;
 }
 
-bmb_msgs::SensorMeasurements as_msg(const Vector<double, 18>& sensor_measurements) {
+bmb_msgs::SensorMeasurements as_msg(
+    const Vector<double, bmb_msgs::SensorMeasurements::SIZE>& sensor_measurements) {
   bmb_msgs::SensorMeasurements msg;
   msg.pressure_reading.fluid_pressure = sensor_meausrements[bmb_msgs::SensorMeasurements::PRESSURE];
   msg.rail_detection.angle = sensor_meausrements[bmb_msgs::SensorMeasurements::RAIL_ANGLE];
@@ -59,8 +61,8 @@ bmb_msgs::SensorMeasurements as_msg(const Vector<double, 18>& sensor_measurement
   return msg;
 }
 
-Vector<double, 13> as_vector(const bmb_msgs::AircraftState& msg) {
-  Vector<double, 13> vec;
+Vector<double, bmb_msgs::AircraftState::SIZE> as_vector(const bmb_msgs::AircraftState& msg) {
+  Vector<double, bmb_msgs::AircraftState::SIZE> vec;
   vec[bmb_msgs::AircraftState::PX] = msg.pose.position.x;
   vec[bmb_msgs::AircraftState::PY] = msg.pose.position.y;
   vec[bmb_msgs::AircraftState::PZ] = msg.pose.position.z;
@@ -77,7 +79,7 @@ Vector<double, 13> as_vector(const bmb_msgs::AircraftState& msg) {
   return vec;
 }
 
-bmb_msgs::AircraftState as_msg(const Vector<double, 13>& aircraft_state) {
+bmb_msgs::AircraftState as_msg(const Vector<double, bmb_msgs::AircraftState::SIZE>& aircraft_state) {
   bmb::msgs::AircraftState msg;
   msg.pose.position.x = aircraft_state[bmb_msgs::AircraftState::PX];
   msg.pose.position.y = aircraft_state[bmb_msgs::AircraftState::PY];
