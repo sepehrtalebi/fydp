@@ -19,7 +19,6 @@ TEST(TestPolynomial, testPolynomial) {
     test.print();
     for (int i = 0; i < 5; i++)
         ASSERT_EQ(test[i], 3 * truth[i]);
-    return true;
 }
 
 //test * edge cases
@@ -38,7 +37,6 @@ TEST(TestPolynomial, testEdgeCases) {
     test *= 0;
     for (int i = 0; i < 5; i++)
         ASSERT_EQ(test[i], 0);
-    return true;
 }
 
 //test composite method _of_
@@ -50,7 +48,6 @@ TEST(TestPolynomial, testComposition) {
     for (int i = 0; i < 7; i++)
         ASSERT_EQ(f_of_g[i], truth[i]);
     f_of_g.print();
-    return true;
 }
 
 int main(int argc, char** argv) {
