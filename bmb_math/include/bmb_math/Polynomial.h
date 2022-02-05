@@ -3,6 +3,7 @@
 #include <bmb_math/Vector.h>
 
 #include <algorithm>
+#include <cmath>
 #include <iostream>
 
 template <typename T, size_t n>
