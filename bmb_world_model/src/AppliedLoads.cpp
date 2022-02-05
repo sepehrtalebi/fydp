@@ -116,7 +116,7 @@ Matrix<double, 6, bmb_msgs::AircraftState::SIZE> AppliedLoads::getAppliedLoadsJa
     vel_to_lift_jac = LIFT_GAIN_AILERON * saturation(left_aileron_angle, M_PI_4) * 2 * velocity;
     wrench_jac[2][VX] -= vel_to_lift_jac;
     Vector3<double> vel_to_left_torque_jac = L_LEFT_AILERON.cross({0, 0, -vel_to_lift_jac});
-    for (size_t i = 0; i < 3; i++) wrench_jac[3 + i][State::VX] += vel_to_left_torque_jac[i];
+    for (size_t i = 0; i < 3; i++) wrench_jac[3 + i][VX] += vel_to_left_torque_jac[i];
 
     // elevator loads
     vel_to_lift_jac = LIFT_GAIN_ELEVATOR * saturation(current_control_inputs.elevator_angle, M_PI_4) * 2 * velocity;
