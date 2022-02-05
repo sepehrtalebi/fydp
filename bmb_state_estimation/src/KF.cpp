@@ -62,9 +62,7 @@ Vector<double, n> KF::f(const Vector<double, n> &state, const double &dt) const 
 }
 
 Vector<double, p> KF::h(const Vector<double, n> &state, const double & /** dt **/) {
-    const bmb_msgs::AircraftState state = getOutput();
-    const Vector3 accelerometer_bias = state.slice<accel_bx, accel_bz + 1>();
-    const Vector3 gyro_bias = state.slice<gyro_bx, gyro_bz + 1>();
     return bmb_utilities::as_vector(getSensorMeasurements(
-        state, accelerometer_bias, gyro_bias, current_accel));
+      getOutput(), state.slice<accel_bx, accel_bz + 1>(),
+          state.slice<gyro_bx, gyro_bz + 1>(), current_accel));
 }
