@@ -100,7 +100,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
   INCLUDE_DIRS include
-  LIBRARIES primes
+  LIBRARIES ${PROJECT_NAME}
 #  CATKIN_DEPENDS
 #  DEPENDS system_lib
 )
@@ -121,10 +121,10 @@ include_directories(
 #   src/${PROJECT_NAME}/bmb_math.cpp
 # )
 
-# Library for primes
-add_library(primes src/Primes.cpp)
-target_link_libraries(primes ${catkin_LIBRARIES})
-add_dependencies(primes ${catkin_EXPORTED_TARGETS})
+# Library for ${PROJECT_NAME}
+add_library(${PROJECT_NAME} src/Primes.cpp)
+target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES})
+add_dependencies(${PROJECT_NAME} ${catkin_EXPORTED_TARGETS})
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
@@ -173,7 +173,7 @@ add_dependencies(primes ${catkin_EXPORTED_TARGETS})
 
 ## Mark libraries for installation
 ## See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_libraries.html
-install(TARGETS primes
+install(TARGETS ${PROJECT_NAME}
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION}
