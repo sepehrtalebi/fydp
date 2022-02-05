@@ -56,7 +56,7 @@ static void railDetection(const Quaternion<double> &quat, const double &altitude
 }
 
 static void opticalFlow(const Vector3<double> &velocity, const double &altitude,
-                        bmb_msgs:: &sensor_measurements) {
+                        bmb_msgs::SensorMeasurements& sensor_measurements) {
     Vector3<double> pixel_velocity = velocity * OPTICAL_FLOW_VELOCITY_GAIN / altitude;
     sensor_measurements.optical_flow_reading.x_pixel_velocity = pixel_velocity.x;
     sensor_measurements.optical_flow_reading.y_pixel_velocity = pixel_velocity.y;
@@ -88,7 +88,7 @@ static void imu(const Quaternion<double> &quat,
     // TODO: implement noise stuff from here: https://www.mathworks.com/help/aeroblks/threeaxisaccelerometer.html
     //  and here: https://www.mathworks.com/help/aeroblks/threeaxisgyroscope.html
     sensor_measurements.imu_reading.linear_acceleration = measured_acceleration + accelerometer_bias;
-    sensor_measurements.imur_reading.angular_velocity = body_ang_velocity + gyroscope_bias;
+    sensor_measurements.imu_reading.angular_velocity = body_ang_velocity + gyroscope_bias;
 }
 
 static void gps(const Vector3<double> &position, bmb_msgs::SensorMeasurements &sensor_measurements) {
