@@ -11,7 +11,7 @@ static int roundDown(const double &num) {
 
 TEST(TestVector, testVector) {
     Vector<double, 5> x;
-    for (size_t i = 0; i < 5; i++) ASSErt_EQ(x[i], 0);
+    for (size_t i = 0; i < 5; i++) ASSERT_EQ(x[i], 0);
     Vector<double, 5> y;
     x[0] = 2;
     y[0] = 4;
