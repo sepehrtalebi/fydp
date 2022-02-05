@@ -1,7 +1,5 @@
 #include <bmb_math/Primes.h>
 #include <gtest/gtest.h>
-#include <cassert>
-#include <iostream>
 #include <vector>
 
 TEST(TestPrimes, testPrimeFactorization) {

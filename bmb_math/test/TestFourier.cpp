@@ -1,12 +1,11 @@
-#include "TestFourier.h"
 #include <bmb_math/Fourier.h>
 
+#include <gtest/gtest.h>
 #include <cmath>
 #include <chrono>
 #include <random>
 #include <vector>
 #include <complex>
-#include <cassert>
 #include <iostream>
 
 static unsigned seed = std::chrono::system_clock::now().time_since_epoch().count(); // NOLINT(cert-err58-cpp)
@@ -50,7 +49,14 @@ void testFFT(const size_t &N) {
     }
 }
 
-void testMultiplicationCount() {
+TEST(TestFourier, testFFT) {
+  for (size_t i = 2; i < 1000; i++) {
+    testFFT(i);
+  }
+  testFFT(10000);
+}
+
+TEST(TestFourier, testMultiplicationCount) {
     Fourier<double>::FactorTree* root = Fourier<double>::planFFT(100);
     unsigned int count1 = root->multiplicationCount();
     delete root;
@@ -73,16 +79,10 @@ void testMultiplicationCount() {
     unsigned int count2 = root->multiplicationCount();
     delete root;
 
-    assert(count1 == count2);
+    ASSERT_EQ(count1, count2);
 }
 
-void testFourier() {
-    testMultiplicationCount();
-
-    for (size_t i = 2; i < 1000; i++) {
-        testFFT(i);
-    }
-    testFFT(10000);
-
-    std::cout << "Passed All Tests for Fourier!\n";
+int main(int argc, char** argv) {
+  testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
 }
