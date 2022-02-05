@@ -1,7 +1,7 @@
 #pragma once
 
 #include <bmb_math/Vector.h>
-#include <geomety_msgs/Vector3.h>
+#include <geometry_msgs/Vector3.h>
 
 template<typename T>
 class Vector3 : public Vector<T, 3> {
