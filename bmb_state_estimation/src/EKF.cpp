@@ -69,8 +69,8 @@ void EKF::updateKF(const bmb_msgs::SensorMeasurements &sensor_measurements, cons
     auto [aircraft_state_to_h_jac, accelerometer_bias_to_h_jac, gyro_bias_to_h_jac, accel_to_h_jac] =
         getSensorMeasurementsJacobian(state, accelerometer_bias, gyro_bias, current_accel);
     h_jac += aircraft_state_to_h_jac;
-    h_jac.operator+=<accel_bx>(accelerometer_bias_to_h_jac);
-    h_jac.operator+=<gyro_bx>(gyro_bias_to_h_jac);
+    h_jac.operator+=<0, accel_bx>(accelerometer_bias_to_h_jac);
+    h_jac.operator+=<0, gyro_bx>(gyro_bias_to_h_jac);
     h_jac += accel_to_h_jac * accel_jac;
     Matrix<double, n, p> h_jac_transpose = h_jac.transpose();
 
