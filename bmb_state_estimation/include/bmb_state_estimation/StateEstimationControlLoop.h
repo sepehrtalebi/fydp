@@ -26,7 +26,7 @@ class StateEstimationControlLoop {
 
   void railDetectionCallback(const bmb_msgs::RailDetection& msg);
 
-  void opticalFlowCallback(const bmb_msgs::OpticalFlow& msg);
+  void opticalFlowCallback(const bmb_msgs::OpticalFlowReading& msg);
 
   void controlInputsCallback(const bmb_msgs::ControlInputs& msg);
 

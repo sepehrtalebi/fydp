@@ -39,7 +39,7 @@ void StateEstimationControlLoop::railDetectionCallback(const bmb_msgs::RailDetec
   latest_measurements.rail_detection = msg;
 }
 
-void StateEstimationControlLoop::opticalFlowCallback(const bmb_msgs::OpticalFlow& msg) {
+void StateEstimationControlLoop::opticalFlowCallback(const bmb_msgs::OpticalFlowReading& msg) {
   latest_measurements.optical_flow_reading = msg;
 }
 
@@ -47,7 +47,7 @@ void StateEstimationControlLoop::controlInputsCallback(const bmb_msgs::ControlIn
   latest_control_inputs = msg;
 }
 
-StateEstimationControlLoop::spin() {
+void StateEstimationControlLoop::spin() {
   ros::Rate rate{update_frequency};
   const double period = 1 / update_frequency;
   while (ros::ok()) {
@@ -61,6 +61,6 @@ StateEstimationControlLoop::spin() {
 int main(int argc, char** argv) {
   ros::init(argc, argv, "bmb_state_estimation");
   ros::NodeHandle nh;
-  StateEstimationControlLoop control_loop{nh};
+  StateEstimationControlLoop control_loop{nh, 60};
   control_loop.spin();
 }
