@@ -2,6 +2,7 @@
 #include <bmb_math/RationalFunction.h>
 
 #include <gtest/gtest.h>
+#include <ros/package.h>
 #include <fstream>
 
 const double EPSILON = 1E-4;
@@ -38,7 +39,7 @@ TEST(TestTransferFunction, testTransferFunction) {
     for (int i = 0; i < 2; i++)
       ASSERT_TRUE(AreSame(D.denominator_data(i), truth2.denominator_data(i)));
     Vector<double, 100000> output = D.step<100000>();
-    std::ofstream out("test/output/step_response.csv");
+    std::ofstream out(ros::package::getPath("bmb_math") + "/test/output/step_response.csv");
     ASSERT_TRUE(out);
     output.toCSV(out);
     out.close();
