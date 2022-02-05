@@ -10,6 +10,8 @@ struct Wrench {
     Vector3<T> force;
     Vector3<T> torque;
 
+    Wrench(const Vector3<T>& force, const Vector3<T>& torque) : force(force), torque(torque) {}
+
     Wrench(const geometry_msgs::Wrench& msg) : force(msg.force), torque(msg.torque) {}
 
     void copy_to(geometry_msgs::Wrench& msg) {
