@@ -49,8 +49,8 @@ void EKF::updateKF(const bmb_msgs::SensorMeasurements &sensor_measurements, cons
     // For simplicity, x_to_a_jac is simply written as a_jac when x represents the state
     // By the chain rule, b_to_c_jac * a_to_b_jac = a_to_c_jac
     const bmb_msgs::AircraftState state = getOutput();
-    const Vector3 accelerometer_bias = state.slice<accel_bx, accel_bz + 1>();
-    const Vector3 gyro_bias = state.slice<gyro_bx, gyro_bz + 1>();
+    const Vector3 accelerometer_bias = x.slice<accel_bx, accel_bz + 1>();
+    const Vector3 gyro_bias = x.slice<gyro_bx, gyro_bz + 1>();
     Matrix<double, 6, bmb_msgs::AircraftState::SIZE> wrench_jac =
         applied_loads.getAppliedLoadsJacobian(state); // derivative of wrench with respect to state
     Matrix<double, 6, bmb_msgs::AircraftState::SIZE> accel_jac = WRENCH_TO_ACCEL_JAC * wrench_jac;

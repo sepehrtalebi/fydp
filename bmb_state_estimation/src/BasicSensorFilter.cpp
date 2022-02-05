@@ -14,11 +14,11 @@ void BasicSensorFilter::update(const bmb_msgs::SensorMeasurements& sensor_measur
                                const double &dt) {
     Vector3<double> last_position{state.pose.position};
     Quaternion<double> last_orientation{state.pose.orientation};
-    Vector3<double> w_abs = orientation.unrotate(Vector3{state.twist.angular});
+    Vector3<double> w_abs = last_orientation.unrotate(Vector3<double>{state.twist.angular});
 
     Vector3<double> position;
     // TODO: x and y based on GPS
-    position.z = -sensorMeasurements.gps_altitude;
+    position.z = -sensor_measurements.gps_reading.altitude;
     position.copy_to(state.pose.position);
 
     Quaternion<double> orientation = last_orientation + last_orientation.E().transpose() * w_abs * (dt / 2);
