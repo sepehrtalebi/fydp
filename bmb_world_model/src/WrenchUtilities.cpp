@@ -1,4 +1,4 @@
-#include "bmb_utilities/WrenchUtilities.h"
+#include "bmb_world_model/WrenchUtilities.h"
 
 #include <bmb_math/Accel.h>
 #include <bmb_math/Wrench.h>
