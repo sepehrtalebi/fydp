@@ -87,7 +87,7 @@ public:
 
     template<size_t m>
     Polynomial& operator=(const Polynomial<T, m> &other) {
-        static_assert(n <= m);
+        static_assert(m <= n);
         for (size_t i = 0; i < m; i++) this->data[i] = other[i];
         for (size_t i = m; i < n; i++) this->data[i] = 0;
         return *this;
@@ -174,7 +174,7 @@ public:
 
     template<size_t m>
     void operator+=(const Polynomial<T, m> &other) {
-        static_assert(n <= m);
+        static_assert(m <= n);
         for (int i = 0; i < m; i++)
             this->data[i] += other[i];
     }
@@ -209,7 +209,7 @@ public:
 
     template<size_t m>
     void operator-=(const Polynomial<T, m> &other) {
-        static_assert(n <= m);
+        static_assert(m <= n);
         for (int i = 0; i < m; i++)
             this->data[i] -= other[i];
     }
