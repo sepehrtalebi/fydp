@@ -21,8 +21,8 @@ public:
 private:
     static const Matrix<ExprPtr, 3, 4> QUAT_TO_WEIGHT_JAC_EXPR;
 
-    bmb_msgs::ControlInputs current_control_inputs{0, 0, 0};
-    bmb_msgs::ControlInputs last_control_inputs{0, 0, 0};
+    bmb_msgs::ControlInputs current_control_inputs{};
+    bmb_msgs::ControlInputs last_control_inputs{};
     double last_propeller_ang_vel = 0;
 
     [[nodiscard]] double getPropellerAngVelocity() const;
