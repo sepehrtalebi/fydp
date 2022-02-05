@@ -49,15 +49,9 @@
   <!-- Use doc_depend for packages you need only for building documentation: -->
   <!--   <doc_depend>doxygen</doc_depend> -->
   <buildtool_depend>catkin</buildtool_depend>
-  <build_depend>bmb_msgs</build_depend>
-  <build_export_depend>bmb_msgs</build_export_depend>
-  <exec_depend>bmb_msgs</exec_depend>
-  <build_depend>bmb_math</build_depend>
-  <build_export_depend>bmb_math</build_export_depend>
-  <exec_depend>bmb_math</exec_depend>
-  <build_depend>bmb_differentiation</build_depend>
-  <build_export_depend>bmb_differentiation</build_export_depend>
-  <exec_depend>bmb_differentiation</exec_depend>
+  <depend>bmb_msgs</depend>
+  <depend>bmb_math</depend>
+  <depend>bmb_differentiation</depend>
 
 
   <!-- The export tag contains other, unspecified, tags -->
