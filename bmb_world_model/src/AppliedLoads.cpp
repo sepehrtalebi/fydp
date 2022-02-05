@@ -12,7 +12,6 @@
 #include <cmath>
 
 using bmb_utilities::saturation;
-static constexpr size_t n = bmb_msgs::AircraftState::SIZE;
 
 static Matrix<ExprPtr, 3, 4> getQuatToWeightJacExpr() {
     Matrix<ExprPtr, 3, 4> expr;
@@ -99,8 +98,8 @@ Wrench<double> AppliedLoads::getAppliedLoads(const bmb_msgs::AircraftState& stat
            getEnvironmentalLoads(state);
 }
 
-Matrix<double, 6, n> AppliedLoads::getAppliedLoadsJacobian(const bmb_msgs::AircraftState& state) const {
-    Matrix<double, 6, n> wrench_jac = Matrix<double, 6, n>::zeros();
+Matrix<double, 6, bmb_msgs::AircraftState::SIZE> AppliedLoads::getAppliedLoadsJacobian(const bmb_msgs::AircraftState& state) const {
+    auto wrench_jac = Matrix<double, 6, bmb_msgs::AircraftState::SIZE>::zeros();
     // propeller loads does not contribute since it does not depend on state
 
     static constexpr size_t VX = bmb_msgs::AircraftState::VX;
