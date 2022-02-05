@@ -1,11 +1,13 @@
 #include "bmb_world_model/SensorModels.h"
 
 #include <bmb_world_model/AppliedLoads.h>
+#include <bmb_world_model/Constants.h>
 #include <bmb_math/Vector3.h>
 #include <bmb_math/Quaternion.h>
 #include <bmb_msgs/SensorMeasurements.h>
 
 #include <cmath>
+#include <utility>
 
 // determines whether noise is added to the sensor measurements
 #define SENSOR_NOISE 1
@@ -17,9 +19,6 @@ static unsigned seed = std::chrono::system_clock::now().time_since_epoch().count
 static auto random_engine = std::default_random_engine(seed); // NOLINT(cert-err58-cpp)
 static std::normal_distribution<double> optical_flow_noise(0, 1); // NOLINT(cert-err58-cpp)
 #endif
-
-static constexpr size_t p = bmb_msgs::SensorMeasurements::SIZE;
-static constexpr size_t n = bmb_msgs::AircraftState::SIZE;
 
 static void railDetection(const Quaternion<double> &quat, const double &altitude,
                           bmb_msgs::SensorMeasurements &sensor_measurements) {
@@ -126,16 +125,17 @@ bmb_msgs::SensorMeasurements getSensorMeasurements(
     return sensor_measurements;
 }
 
-std::pair<Matrix<double, p, n>, Matrix<double, p, 3>, Matrix<double, p, 3>, Matrix<double, p, 6>>
+std::tuple<Matrix<double, p, bmb_msgs::AircraftState::SIZE>,
+          Matrix<double, p, 3>, Matrix<double, p, 3>, Matrix<double, p, 6>>
 getSensorMeasurementsJacobian(const bmb_msgs::AircraftState& state,
                               const Vector3<double>& accelerometer_bias,
                               const Vector3<double>& gyroscope_bias,
                               const Accel<double>& accel) {
     using namespace bmb_msgs;
-    Matrix<double, p, n> h_jac = Matrix<double, p, n>::zeros();
-    Matrix<double, p, 3> accelerometer_bias_to_h_jac = Matrix<double, p, 3>::zeros();
-    Matrix<double, p, 3> gyroscope_bias_to_h_jac = Matrix<double, p, 3>::zeros();
-    Matrix<double, p, 6> accel_to_h_jac = Matrix<double, p, 6>::zeros();
+    auto h_jac = Matrix<double, p, bmb_msgs::AircraftState::SIZE>::zeros();
+    auto accelerometer_bias_to_h_jac = Matrix<double, p, 3>::zeros();
+    auto gyroscope_bias_to_h_jac = Matrix<double, p, 3>::zeros();
+    auto accel_to_h_jac = Matrix<double, p, 6>::zeros();
 
     // TODO
     h_jac[SensorMeasurements::PRESSURE][AircraftState::PX] = AIR_DENSITY * GRAVITATIONAL_ACCELERATION;
