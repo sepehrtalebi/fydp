@@ -56,30 +56,38 @@ TEST(TestFourier, testFFT) {
   testFFT(10000);
 }
 
+/**
+ * We need to explicitly declare this function so that it can be declared a
+ * friend in Fourier.h
+ */
+void testMultiplicationCount() {
+  Fourier<double>::FactorTree* root = Fourier<double>::planFFT(100);
+  unsigned int count1 = root->multiplicationCount();
+  delete root;
+
+  root = new Fourier<double>::FactorTree();
+  root->value = 100;
+  root->left = new Fourier<double>::FactorTree();
+  root->left->value = 10;
+  root->left->left = new Fourier<double>::FactorTree();
+  root->left->left->value = 2;
+  root->left->right = new Fourier<double>::FactorTree();
+  root->left->right->value = 5;
+  root->right = new Fourier<double>::FactorTree();
+  root->right->value = 10;
+  root->right->left = new Fourier<double>::FactorTree();
+  root->right->left->value = 2;
+  root->right->right = new Fourier<double>::FactorTree();
+  root->right->right->value = 5;
+
+  unsigned int count2 = root->multiplicationCount();
+  delete root;
+
+  ASSERT_EQ(count1, count2);
+}
+
 TEST(TestFourier, testMultiplicationCount) {
-    Fourier<double>::FactorTree* root = Fourier<double>::planFFT(100);
-    unsigned int count1 = root->multiplicationCount();
-    delete root;
-
-    root = new Fourier<double>::FactorTree();
-    root->value = 100;
-    root->left = new Fourier<double>::FactorTree();
-    root->left->value = 10;
-    root->left->left = new Fourier<double>::FactorTree();
-    root->left->left->value = 2;
-    root->left->right = new Fourier<double>::FactorTree();
-    root->left->right->value = 5;
-    root->right = new Fourier<double>::FactorTree();
-    root->right->value = 10;
-    root->right->left = new Fourier<double>::FactorTree();
-    root->right->left->value = 2;
-    root->right->right = new Fourier<double>::FactorTree();
-    root->right->right->value = 5;
-
-    unsigned int count2 = root->multiplicationCount();
-    delete root;
-
-    ASSERT_EQ(count1, count2);
+  testMultiplicationCount();
 }
 
 int main(int argc, char** argv) {
