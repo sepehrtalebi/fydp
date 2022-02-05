@@ -6,11 +6,13 @@
 #include <iostream>
 #include <vector>
 
+// TODO: move to Utility.h
 template<typename T>
 static constexpr T abs_difference(const T& a, const T&b) {
     return a > b ? a - b : b - a;
 }
 
+// TODO: move to Utility.h
 template<typename T>
 static constexpr T heaviside_difference(const T& a, const T&b) {
     return a > b ? a - b : 0;
