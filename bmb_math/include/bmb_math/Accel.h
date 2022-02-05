@@ -8,6 +8,8 @@ struct Accel {
     Vector3<T> linear{};
     Vector3<T> angular{};
 
+    Accel() = default;
+
     Accel(const Vector3<T>& linear, const Vector3<T>& angular) : linear(linear), angular(angular) {}
 
     Accel(const geometry_msgs::Accel& msg) : linear(msg.linear), angular(msg.angular) {}
