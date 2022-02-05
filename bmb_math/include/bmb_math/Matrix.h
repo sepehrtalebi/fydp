@@ -70,7 +70,7 @@ public:
     }
 
     template<size_t start = 0, size_t stop = n, size_t step = 1>
-    Matrix<T, bmb_math::slice_count(start, stop, step), m> sliceRows() {
+    Matrix<T, bmb_math::slice_count(start, stop, step), m> sliceRows() const {
       static_assert(stop <= n);
       static constexpr size_t k = bmb_math::slice_count(start, stop, step);
       Matrix<T, k, m> mat;
@@ -79,7 +79,7 @@ public:
     }
 
     template<size_t start = 0, size_t stop = m, size_t step = 1>
-    Matrix<T, n, bmb_math::slice_count(start, stop, step)> sliceColumns() {
+    Matrix<T, n, bmb_math::slice_count(start, stop, step)> sliceColumns() const {
       static_assert(stop <= m);
       static constexpr size_t k = bmb_math::slice_count(start, stop, step);
       Matrix<T, n, k> mat;

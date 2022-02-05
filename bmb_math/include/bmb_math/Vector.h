@@ -78,7 +78,7 @@ public:
     }
 
     template<size_t start = 0, size_t stop = n, size_t step = 1>
-    Vector<T, bmb_math::slice_count(start, stop, step)> slice() {
+    Vector<T, bmb_math::slice_count(start, stop, step)> slice() const {
       static_assert(stop <= n);
       static constexpr size_t m = bmb_math::slice_count(start, stop, step);
       Vector<T, m> vec;
@@ -113,7 +113,7 @@ public:
       for (size_t i = 0; i < m; i++) data[start + step * i] += other[i];
     }
 
-    Vector<T, n> operator+(const double &scalar) {
+    Vector<T, n> operator+(const double &scalar) const {
         Vector<T, n> sum;
         for (size_t i = 0; i < n; i++) sum[i] = data[i] + scalar;
         return sum;
