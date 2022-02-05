@@ -10,11 +10,11 @@ struct Wrench {
     Vector3<T> force;
     Vector3<T> torque;
 
-    Wrench(const geometry_msgs::Wrench& msg) : force(msg.linear), torque(msg.angular) {}
+    Wrench(const geometry_msgs::Wrench& msg) : force(msg.force), torque(msg.torque) {}
 
     void copy_to(geometry_msgs::Wrench& msg) {
-      force.copy_to(msg.linear);
-      torque.copy_to(msg.angular);
+      force.copy_to(msg.force);
+      torque.copy_to(msg.torque);
     }
 
     Wrench<T> operator+(const Wrench<T> &other) {
