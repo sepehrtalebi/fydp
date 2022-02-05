@@ -3,7 +3,6 @@
 #include <bmb_world_model/AppliedLoads.h>
 #include <bmb_math/Vector3.h>
 #include <bmb_math/Quaternion.h>
-#include <bmb_state_estimation/KF.h>
 #include <bmb_msgs/SensorMeasurements.h>
 
 #include <cmath>
