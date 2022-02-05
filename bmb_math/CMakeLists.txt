@@ -8,6 +8,7 @@ add_compile_options(-std=c++17)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
+  geometry_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -102,7 +103,7 @@ catkin_package(
   INCLUDE_DIRS include
   LIBRARIES ${PROJECT_NAME}
 #  CATKIN_DEPENDS
-#  DEPENDS system_lib
+ DEPENDS geometry_msgs
 )
 
 ###########
