@@ -63,4 +63,4 @@ add_executable(
         test/TestDubinsPath.cpp
         test/TestPID.h
         test/TestPID.cpp
-        )
+        bmb_controllers/include/bmb_controllers/GlobalPathPlannerControlLoop.h bmb_controllers/include/bmb_controllers/GlobalPathPlanner.h bmb_controllers/src/GlobalPathPlanner.cpp bmb_controllers/src/GlobalPathPlannerControlLoop.cpp bmb_controllers/include/bmb_controllers/LocalPathPlanner.cpp)
