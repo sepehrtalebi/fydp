@@ -8,6 +8,8 @@
 
 template <typename T, size_t n>
 class Polynomial: public Vector<T, n> {
+    static_assert(n>0);
+
     template<int m>
     void operator*=(const Polynomial<T, m> &other) {
         Polynomial<T, n> foil;
@@ -23,7 +25,7 @@ class Polynomial: public Vector<T, n> {
     void operator*=(const Polynomial<T, n> &other) {
         Polynomial<T, n> foil;
         for (int i = n - 1; i >= 0; i--) {
-            if (this->data[i] != 0) {
+            if (this->data[i] != 0) { //ignore the higher order terms of max size polynomial, very hacky
                 for (int j = n - 1; j >= 0; j--) {
                     if (other[j] != 0)
                         foil[i + j] += other[j] * this->data[i];
@@ -93,7 +95,6 @@ public:
         for (size_t i = m; i < n; i++) this->data[i] = 0;
         return *this;
     }
-
 
     static Polynomial<T, n> identity() {
         Polynomial<T, n> p;
