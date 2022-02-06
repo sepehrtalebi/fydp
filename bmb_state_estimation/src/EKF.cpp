@@ -9,7 +9,7 @@
 #include <bmb_world_model/AppliedLoads.h>
 #include <bmb_world_model/Constants.h>
 #include <bmb_msgs/SensorMeasurements.h>
-#include <bmb_utilities/MessageUtilities.h>
+#include <bmb_math/MessageUtilities.h>
 
 #include <map>
 #include <string>
@@ -63,7 +63,7 @@ void EKF::updateKF(const bmb_msgs::SensorMeasurements &sensor_measurements, cons
     P = f_jac * P * f_jac.transpose() + Q;
 
     // update step
-    Vector<double, p> z = bmb_utilities::as_vector(sensor_measurements);
+    Vector<double, p> z = bmb_math::as_vector(sensor_measurements);
     Vector<double, p> h_vec = h(x, dt);
     Matrix<double, p, n> h_jac = Matrix<double, p, n>::zeros();
     auto [aircraft_state_to_h_jac, accelerometer_bias_to_h_jac, gyro_bias_to_h_jac, accel_to_h_jac] =

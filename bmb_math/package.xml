@@ -49,6 +49,8 @@
   <buildtool_depend>catkin</buildtool_depend>
   <depend>geometry_msgs</depend>
   <depend>roslib</depend>
+  <depend>bmb_utilities</depend>
+  <depend>bmb_msgs</depend>
 
 
   <!-- The export tag contains other, unspecified, tags -->

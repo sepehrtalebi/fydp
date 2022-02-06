@@ -2,22 +2,11 @@
 
 #include <bmb_math/Polynomial.h>
 #include <bmb_utilities/ConstexprUtils.h>
+#include <bmb_utilities/MathUtils.h>
 
 #include <algorithm>
 #include <iostream>
 #include <vector>
-
-// TODO: move to Utility.h
-template<typename T>
-static constexpr T abs_difference(const T& a, const T&b) {
-    return a > b ? a - b : b - a;
-}
-
-// TODO: move to Utility.h
-template<typename T>
-static constexpr T heaviside_difference(const T& a, const T&b) {
-    return a > b ? a - b : 0;
-}
 
 template <typename T, size_t n, size_t m>
 class RationalFunction {
@@ -84,8 +73,10 @@ public:
     }
 
     template<size_t p, size_t q>
-    using composite_rational = RationalFunction<T, (n - 1) * std::max(p - 1, q - 1) + (q - 1) * heaviside_difference(m, n) + 1,
-            (m - 1) * std::max(p - 1, q - 1) + (q - 1) * heaviside_difference(n, m) + 1>;
+    using composite_rational = RationalFunction<
+        T,
+        (n - 1) * std::max(p - 1, q - 1) + (q - 1) * bmb_utilities::heaviside_difference(m, n) + 1,
+        (m - 1) * std::max(p - 1, q - 1) + (q - 1) * bmb_utilities::heaviside_difference(n, m) + 1>;
 
     template<size_t p, size_t q>
     composite_rational<p, q> _of_(const RationalFunction<T, p, q> &g_of_x) const {
@@ -100,7 +91,7 @@ public:
         });
 
         if constexpr (n != m) { //because the denominators of the numerator and denominator are the same, they will cancel
-            static constexpr size_t abs_diff = abs_difference(m, n);
+            static constexpr size_t abs_diff = bmb_utilities::abs_difference(m, n);
             Polynomial<T, abs_diff + 1> canceled_denominators = g_of_x.denominator.pow<abs_diff>();
             if constexpr (m > n) return {num * canceled_denominators, den};
             else return {num, den * canceled_denominators};

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <bmb_math/Utility.h>
+#include <bmb_utilities/MathUtils.h>
 
 #include <array>
 #include <initializer_list>
@@ -78,9 +78,9 @@ public:
     }
 
     template<size_t start = 0, size_t stop = n, size_t step = 1>
-    Vector<T, bmb_math::slice_count(start, stop, step)> slice() const {
+    Vector<T, bmb_utilities::slice_count(start, stop, step)> slice() const {
       static_assert(stop <= n);
-      static constexpr size_t m = bmb_math::slice_count(start, stop, step);
+      static constexpr size_t m = bmb_utilities::slice_count(start, stop, step);
       Vector<T, m> vec;
       for (size_t i = 0; i < m; i++) vec[i] = data[start + i * step];
       return vec;

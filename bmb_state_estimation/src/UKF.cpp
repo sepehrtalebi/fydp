@@ -2,7 +2,7 @@
 #include <bmb_msgs/SensorMeasurements.h>
 #include <bmb_math/Vector.h>
 #include <bmb_math/Matrix.h>
-#include <bmb_utilities/MessageUtilities.h>
+#include <bmb_math/MessageUtilities.h>
 
 #include <cmath>
 
@@ -75,7 +75,7 @@ void UKF::updateKF(const bmb_msgs::SensorMeasurements &sensor_measurements,
     K = cross_covariance * measurement_covariance.inv();
 
     // kalman gain update
-    x = state_estimate + K * (bmb_utilities::as_vector(sensor_measurements) - measurement_estimate);
+    x = state_estimate + K * (bmb_math::as_vector(sensor_measurements) - measurement_estimate);
     P = state_covariance - K * measurement_covariance * K.transpose();
     // update P_cholesky
     P_cholesky = P.cholesky();

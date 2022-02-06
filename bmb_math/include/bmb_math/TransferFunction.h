@@ -1,6 +1,7 @@
 #pragma once
 
 #include <bmb_math/RationalFunction.h>
+#include <bmb_utilities/MathUtils.h>
 
 #include <array>
 #include <cassert>
@@ -85,14 +86,13 @@ public:
     TransferFunction<T, std::max(m, n), std::max(n, m)>
             discretize(T dt = 1E-4) const {
         //trapezoidal method, SCH looks hard
+        static constexpr size_t p = (n - 1) + bmb_utilities::heaviside_difference(m, n) + 1;
+        static constexpr size_t q = (m - 1) + bmb_utilities::heaviside_difference(n, m) + 1;
         RationalFunction<T, 2, 2> trapezoidal{Polynomial<T, 2>{-2, 2}, Polynomial<T, 2>{dt, dt}};
-        TransferFunction<T, (n - 1) + heaviside_difference(m, n) + 1, (m - 1) + heaviside_difference(n, m) + 1>
-            discrete = this->_of_(trapezoidal);
+        TransferFunction<T, p, q> discrete = this->_of_(trapezoidal);
         discrete.discretized = true;
-        size_t p = (n - 1) + heaviside_difference(m, n) + 1;
-        size_t q = (m - 1) + heaviside_difference(n, m) + 1;
-        for (int i = 0; i < p; i++) discrete.numerator[i] /= discrete.denominator[q - 1];
-        for (int i = 0; i < q; i++) discrete.denominator[i] /= discrete.denominator[q - 1];
+        for (size_t i = 0; i < p; i++) discrete.numerator[i] /= discrete.denominator[q - 1];
+        for (size_t i = 0; i < q; i++) discrete.denominator[i] /= discrete.denominator[q - 1];
         discrete.denominator[q - 1] = 1;
         return {discrete};
     }

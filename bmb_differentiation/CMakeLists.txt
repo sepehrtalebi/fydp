@@ -214,6 +214,10 @@ catkin_add_gtest(TestRuntimeDifferentiation test/TestRuntimeDifferentiation.cpp)
 if(TARGET TestRuntimeDifferentiation)
   target_link_libraries(TestRuntimeDifferentiation ${PROJECT_NAME})
 endif()
+catkin_add_gtest(TestTypeArray test/TestTypeArray.cpp)
+if(TARGET TestTypeArray)
+  target_link_libraries(TestTypeArray ${PROJECT_NAME})
+endif()
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
