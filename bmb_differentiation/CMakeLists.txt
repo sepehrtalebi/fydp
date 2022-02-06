@@ -8,6 +8,7 @@ add_compile_options(-std=c++17)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
+  bmb_math
 )
 
 ## System dependencies are found with CMake's conventions
@@ -102,7 +103,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES ${PROJECT_NAME}
-#  CATKIN_DEPENDS geometry_msgs std_msgs
+  CATKIN_DEPENDS bmb_math
 #  DEPENDS system_lib
 )
 
@@ -201,10 +202,18 @@ install(DIRECTORY include/${PROJECT_NAME}/
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_bmb_differentiation.cpp)
-# if(TARGET ${PROJECT_NAME}-test)
-#   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
-# endif()
+catkin_add_gtest(TestCompiledDifferentiation test/TestCompiledDifferentiation.cpp)
+if(TARGET TestCompiledDifferentiation)
+  target_link_libraries(TestCompiledDifferentiation ${PROJECT_NAME})
+endif()
+catkin_add_gtest(TestRatioPower test/TestRatioPower.cpp)
+if(TARGET TestRatioPower)
+  target_link_libraries(TestRatioPower ${PROJECT_NAME})
+endif()
+catkin_add_gtest(TestRuntimeDifferentiation test/TestRuntimeDifferentiation.cpp)
+if(TARGET TestRuntimeDifferentiation)
+  target_link_libraries(TestRuntimeDifferentiation ${PROJECT_NAME})
+endif()
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)

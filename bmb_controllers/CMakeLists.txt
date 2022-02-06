@@ -8,6 +8,7 @@ add_compile_options(-std=c++17)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
+  roslib
   roscpp
   bmb_math
   bmb_msgs
@@ -106,7 +107,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES ${PROJECT_NAME}
-  CATKIN_DEPENDS roscpp bmb_math bmb_msgs bmb_utilities bmb_world_model
+  CATKIN_DEPENDS roslib roscpp bmb_math bmb_msgs bmb_utilities bmb_world_model
 #  DEPENDS system_lib
 )
 
@@ -203,10 +204,18 @@ install(DIRECTORY include/${PROJECT_NAME}/
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_bmb_controllers.cpp)
-# if(TARGET ${PROJECT_NAME}-test)
-#   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
-# endif()
+catkin_add_gtest(TestDubinsPath test/TestDubinsPath.cpp)
+if(TARGET TestDubinsPath)
+  target_link_libraries(TestDubinsPath ${PROJECT_NAME})
+endif()
+catkin_add_gtest(TestPID test/TestPID.cpp)
+if(TARGET TestPID)
+  target_link_libraries(TestPID ${PROJECT_NAME})
+endif()
+catkin_add_gtest(TestPurePursuit test/TestPurePursuit.cpp)
+if(TARGET TestPurePursuit)
+  target_link_libraries(TestPurePursuit ${PROJECT_NAME})
+endif()
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)

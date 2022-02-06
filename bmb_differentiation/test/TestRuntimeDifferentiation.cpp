@@ -1,19 +1,18 @@
-#include "TestDifferentiation.h"
-
 #include <bmb_differentiation/runtime/Expression.h>
 #include <bmb_differentiation/runtime/Variable.h>
 #include <bmb_math/Vector.h>
 #include <bmb_math/Vector3.h>
 #include <bmb_math/Quaternion.h>
 #include <bmb_math/Matrix.h>
-#include <cassert>
-#include <iostream>
 
-void testDifferentiation() {
+#include <gtest/gtest.h>
+#include <string>
+
+TEST(TestRuntimeDifferentiation, testRuntimeDifferentiation) {
     ExprPtr x = Variable::make("x");
     ExprPtr test = 2 * (2 * x + 1);
-    assert(test->nodeCount() == 7);
-    assert(test->simplify()->nodeCount() == 5);
+    ASSERT_EQ(test->nodeCount(), 7);
+    ASSERT_EQ(test->simplify()->nodeCount(), 5);
 
     Quaternion<ExprPtr> quat{Variable::make("q0"),
                              Variable::make("q1"),
@@ -30,6 +29,9 @@ void testDifferentiation() {
         jac[i][j] = mat[i]->diff("q" + std::to_string(j));
         // std::cout << jac[i][j]->toStr() << std::endl;
     }
+}
 
-    std::cout << "Passed All Tests for Differentiation!\n";
+int main(int argc, char** argv) {
+  testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
 }

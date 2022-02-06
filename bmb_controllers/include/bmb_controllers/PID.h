@@ -15,7 +15,7 @@ public:
                                       Polynomial<T, 2>{low_pass * dt - 2, low_pass * dt + 2}, true}; //discrete version of Ns/(s + N)
     }
 
-    T update(T error) {
+    T update(const T& error) {
         double output_signal = 0;
         if (K_P) output_signal += K_P * error;
         if (K_I) {
@@ -27,7 +27,7 @@ public:
         return output_signal;
     }
 
-    static T proportional_signal(T K_P, T error) {
+    static T proportional_signal(const T& K_P, const T& error) {
         return K_P * error;
     }
 };

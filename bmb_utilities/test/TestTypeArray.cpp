@@ -1,8 +1,8 @@
-#include "TestTypeArray.h"
 #include <bmb_utilities/TypeArray.h>
 #include <bmb_differentiation/compiled/CDeepSimplify.h>
+#include <bmb_differentiation/compiled/CConstant.h>
 
-#include <iostream>
+#include <gtest/gtest.h>
 
 template<typename T1, typename T2>
 auto f(T1 state, T2 dt) {
@@ -14,12 +14,15 @@ auto f(T1 state, T2 dt) {
   return state4;
 }
 
-void testTypeArray() {
+TEST(TestTypeArray, testTypeArray) {
   using namespace compiled;
 
   auto state = get_variables_type_array_t<6>{};
   auto dt = 6_v;
   auto f_func = f(state, dt);
+}
 
-  std::cout << "Passed All Tests for Type Array!\n";
+int main(int argc, char** argv) {
+  testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
 }

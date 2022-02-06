@@ -62,13 +62,13 @@ public:
         return this->cong().rotate(vec);
     }
 
-    T get_roll() const {
+    T getRoll() const {
         double sinr_cosp = 2 * (q0 * q1 + q2 * q3);
         double cosr_cosp = 1 - 2 * (q0 * q1 + q2 * q3);
         return std::atan2(sinr_cosp, cosr_cosp);
     }
 
-    T get_pitch() const {
+    T getPitch() const {
         double sinp = 2 * (q0 * q1 - q2 * q3);
         if (std::abs(sinp) >= 1)
             return std::copysign(M_PI / 2, sinp); // use 90 degrees if out of range
@@ -76,7 +76,7 @@ public:
             return std::asin(sinp);
     }
 
-    T get_yaw() const {
+    T getYaw() const {
         double siny_cosp = 2 * (q0 * q1 + q2 * q3);
         double cosy_cosp = 1 - 2 * (q0 * q1 + q2 * q3);
         return std::atan2(siny_cosp, cosy_cosp);
@@ -85,9 +85,9 @@ public:
     Vector3<T> euler_angles() const {
         Vector3<T> angles;
 
-        angles[0] = get_roll();
-        angles[1] = get_pitch();
-        angles[2] = get_yaw();
+        angles[0] = getRoll();
+        angles[1] = getPitch();
+        angles[2] = getYaw();
         return angles;
     }
 
