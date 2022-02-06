@@ -5,7 +5,7 @@
 #include <bmb_math/Quaternion.h>
 #include <bmb_math/Matrix.h>
 
-#include <gtest/gtest.g>
+#include <gtest/gtest.h>
 #include <string>
 
 TEST(TestRuntimeDifferentiation, testRuntimeDifferentiation) {
