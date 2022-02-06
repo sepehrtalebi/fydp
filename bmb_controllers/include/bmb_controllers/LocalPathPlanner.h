@@ -3,11 +3,12 @@
 #include <bmb_controllers/DubinsPath.h>
 #include <bmb_controllers/PurePursuit.h>
 #include <bmb_controllers/PID.h>
+#include <ros/ros.h>
+#include <bmb_world_model/Constants.h>
 
-template<typename T>
 class LocalPathPlanner {
     using State = typename DubinsPath<T>::State;
-
+/**
     void spin() {
         State current_state; // TODO: read from KF
         typename PurePursuit<T>::Result result = pursuer.pursue(path, current_state);
@@ -24,10 +25,14 @@ class LocalPathPlanner {
 
         // send to low level controller
     }
+**/
 
+    bmb_msgs::StateCommand update(const bmb_msgs::ReferenceCommand& msg);
+
+    LocalPathPlanner() = default;
 private:
     State goal;
-    DubinsPath<T> path;
-    PurePursuit<T> pursuer;
-    PID<T> altitude_pid;
+    DubinsPath<double> path;
+    PurePursuit<double> pursuer;
+    PID<double> altitude_pid{ALTITUDE_GAIN.K_P, ALTITUDE_GAIN.K_I, ALTITUDE_GAIN.K_D};
 };
