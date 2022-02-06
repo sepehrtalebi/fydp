@@ -51,15 +51,16 @@ class Polynomial: public Vector<T, n> {
     }
 
     template<size_t p>
-    Polynomial<T, (n - 1) * p + 1> pow() {
+    Polynomial<T, (n - 1) * p + 1> pow() const {
+      static constexpr size_t p2 = p / 2;
       if constexpr (p == 0) {
         return Polynomial<T, (n - 1) * p + 1>::identity();
       }
       else if constexpr (p % 2 == 0) {
-        return ((*this) * (*this)).pow<p / 2>();
+        return ((*this) * (*this)).pow<p2>();
       }
       else {
-        return (*this) * ((*this) * (*this)).pow<p / 2>();
+        return (*this) * ((*this) * (*this)).pow<p2>();
       }
     }
 
