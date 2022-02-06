@@ -132,7 +132,7 @@ add_library(${PROJECT_NAME} src/BasicSensorFilter.cpp src/EKF.cpp src/KF.cpp src
 target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES})
 add_dependencies(${PROJECT_NAME} ${catkin_EXPORTED_TARGETS})
 
-add_executable(state_estimation_node src/StateEstimationControlLoop.cpp)
+add_executable(state_estimation_node src/StateEstimationNode.cpp)
 target_link_libraries(state_estimation_node ${PROJECT_NAME} ${catkin_LIBRARIES})
 add_dependencies(state_estimation_node ${catkin_EXPORTED_TARGETS})
 
