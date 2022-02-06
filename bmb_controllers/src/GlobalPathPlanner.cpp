@@ -3,7 +3,7 @@
 #include <ros/ros.h>
 #include <bmb_msgs/ReferenceCommand.h>
 #include <bmb_msgs/AircraftState.h>
-#include <bmb_utilities/MathUtils>
+#include <bmb_utilities/MathUtils.h>
 
 #include <fstream>
 #include <vector>
