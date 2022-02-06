@@ -41,4 +41,9 @@ std::common_type_t<T1, T2, T3> saturation(const T1& value, const T2& min, const 
   return value;
 }
 
+template <typename T>
+T squared(const T& val) {
+    return val * val;
+}
+
 }
