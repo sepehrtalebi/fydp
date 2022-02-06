@@ -19,7 +19,6 @@ void aircraftStateCallback(const bmb_msgs::AircraftState& msg) {
 }
 
 
-
 int main(int argc, char** argv) {
     ros::init(argc, argv, "bmb_global_path_planner");
     ros::NodeHandle nh;
