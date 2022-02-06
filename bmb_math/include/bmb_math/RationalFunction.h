@@ -83,10 +83,10 @@ public:
         Polynomial<T, (n - 1) * std::max(p - 1, q - 1) + 1> num;
         Polynomial<T, (m - 1) * std::max(p - 1, q - 1) + 1> den;
 
-        constexprFor<0, n>([](auto i) {
+        bmb_utilities::constexprFor<0, n>([&](auto i) {
           num += numerator[i] * g_of_x.numerator.pow<i>() * g_of_x.denominator.pow<n - 1 - i>();
         });
-        constexprFor<0, m>([](auto i) {
+        bmb_utilities::constexprFor<0, m>([&](auto i) {
           den += denominator[i] * g_of_x.numerator.pow<i>() * g_of_x.denominator.pow<m - 1 - i>();
         });
 

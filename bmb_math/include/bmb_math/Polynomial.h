@@ -76,7 +76,7 @@ class Polynomial: public Vector<T, n> {
         Polynomial<T, (n - 1) * (m - 1) + 1> f_of_g;
         f_of_g[0] = this->data[0];
 
-        constexprFor<1, n>([&](auto i) {
+        bmb_utilities::constexprFor<1, n>([&](auto i) {
           f_of_g += g_of_x.pow<i>() * this->data[i];
         });
         return f_of_g;
