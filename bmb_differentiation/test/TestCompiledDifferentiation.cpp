@@ -1,13 +1,11 @@
-#include "TestCompiledDifferentiation.h"
-
 #include <bmb_differentiation/compiled/CConstant.h>
 #include <bmb_differentiation/compiled/CDeepSimplify.h>
 #include <bmb_differentiation/compiled/CDerivative.h>
 #include <bmb_differentiation/compiled/CHigherDerivative.h>
 #include <bmb_differentiation/compiled/CVariable.h>
 
+#include <gtest/gtest.h>
 #include <array>
-#include <iostream>
 #include <string>
 #include <type_traits>
 
@@ -39,7 +37,7 @@ auto func(T x) {
   return 3_c * y * y;
 }
 
-void testCompiledDifferentiation() {
+TEST(TestCompiledDifferentiation, testCompiledDifferentiation) {
     using namespace compiled;
 
     auto x = 0_v;
@@ -77,6 +75,9 @@ void testCompiledDifferentiation() {
     // test func
     using func_type = decltype(getDerivative(0_v, func(0_v)));
     double value = func_type::apply(std::array<double, 1>{3.0});
+}
 
-    std::cout << "Passed All Tests for Compiled Differentiation!\n";
+int main(int argc, char** argv) {
+  testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
 }
