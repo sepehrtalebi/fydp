@@ -129,6 +129,11 @@ public:
         return negative;
     }
 
+    Vector<T, n> operator+() const {
+      Vector<T, n> positive = *this;
+      return positive;
+    }
+
     Vector<T, n> operator-(const Vector<T, n> &other) const {
         Vector<T, n> sum;
         for (size_t i = 0; i < n; i++) sum[i] = data[i] - other[i];
@@ -219,6 +224,14 @@ public:
 
     const_iterator end() const {
         return data.end();
+    }
+
+    const_iterator cbegin() const {
+      return data.begin();
+    }
+
+    const_iterator cend() const {
+      return data.end();
     }
 
     [[nodiscard]] std::string toStr() const {
