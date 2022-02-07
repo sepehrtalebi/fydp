@@ -127,11 +127,21 @@ include_directories(
 #   src/${PROJECT_NAME}/bmb_controllers.cpp
 # )
 
-add_library(${PROJECT_NAME} src/GlobalPathPlanner.cpp src/LocalPathPlanner.cpp)
+add_library(${PROJECT_NAME} src/LocalPathPlanner.cpp)
 target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES})
 add_dependencies(${PROJECT_NAME} ${catkin_EXPORTED_TARGETS})
 
-add_executable(global_path_planner_node src/GlobalPathPlannerControlLoop.cpp)
+## Add cmake target dependencies of the library
+## as an example, code may need to be generated before libraries
+## either from message generation or dynamic reconfigure
+# add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+
+## Declare a C++ executable
+## With catkin_make all packages are built within a single CMake context
+## The recommended prefix ensures that target names across packages don't collide
+# add_executable(${PROJECT_NAME}_node src/bmb_controllers_node.cpp)
+
+add_executable(global_path_planner_node src/GlobalPathPlannerNode.cpp)
 target_link_libraries(global_path_planner_node ${PROJECT_NAME} ${catkin_LIBRARIES})
 add_dependencies(global_path_planner_node ${catkin_EXPORTED_TARGETS})
 
@@ -142,17 +152,6 @@ add_dependencies(local_path_planner_node ${catkin_EXPORTED_TARGETS})
 add_executable(low_level_control_loop_node src/LowLevelControlLoop.cpp)
 target_link_libraries(low_level_control_loop_node ${PROJECT_NAME} ${catkin_LIBRARIES})
 add_dependencies(low_level_control_loop_node ${catkin_EXPORTED_TARGETS})
-
-## Add cmake target dependencies of the library
-## as an example, code may need to be generated before libraries
-## either from message generation or dynamic reconfigure
-# add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-
-# TODO: declare and install executables
-## Declare a C++ executable
-## With catkin_make all packages are built within a single CMake context
-## The recommended prefix ensures that target names across packages don't collide
-# add_executable(${PROJECT_NAME}_node src/bmb_controllers_node.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
