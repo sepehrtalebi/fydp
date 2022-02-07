@@ -12,4 +12,5 @@ rail_detection \
 optical_flow_reading \
 aircraft_state \
 reference_command \
-
+raw_image \
+rectified_image \
