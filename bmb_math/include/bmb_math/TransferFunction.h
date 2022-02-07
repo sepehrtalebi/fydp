@@ -55,8 +55,8 @@ public:
         this->numerator = other.numerator;
         this->denominator = other.denominator;
         this->discretized = other.discretized;
-        for (int i = 0; i < std::max<size_t>(n, 0); i++) this->past_inputs[i] = other.past_inputs[i];
-        for (int i = 0; i < std::max<size_t>(m - 1, 0); i++) this->past_outputs[i] = other.past_outputs[i];
+        for (size_t i = 0; i < std::max<size_t>(n, 0); i++) this->past_inputs[i] = other.past_inputs[i];
+        for (size_t i = 0; i < std::max<size_t>(m - 1, 0); i++) this->past_outputs[i] = other.past_outputs[i];
         return *this;
     }
 
@@ -102,13 +102,13 @@ public:
         Vector<T, output_size> step_response;
         if (this->discretized) {
             assert(m >= n);
-            for (int i = 0; i < output_size; i++) {
+            for (size_t i = 0; i < output_size; i++) {
                 step_response[i] = next_output(1);
             }
         }
         else {
             auto discrete = this->discretize(dt);
-            for (int i = 0; i < output_size; i++) {
+            for (size_t i = 0; i < output_size; i++) {
                 step_response[i] = discrete.next_output(1);
             }
         }
