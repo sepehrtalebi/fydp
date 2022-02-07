@@ -5,9 +5,13 @@
 #include <bmb_controllers/PID.h>
 #include <ros/ros.h>
 #include <bmb_world_model/Constants.h>
+#include <bmb_msgs/AircraftState.h>
+#include <bmb_msgs/ReferenceCommand.h>
+#include <bmb_msgs/StateCommand.h>
+
 
 class LocalPathPlanner {
-    using State = typename DubinsPath<T>::State;
+    using State = DubinsPath<double>::State;
 /**
     void spin() {
         State current_state; // TODO: read from KF
