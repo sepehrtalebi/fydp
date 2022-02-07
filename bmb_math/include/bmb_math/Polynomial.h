@@ -57,10 +57,10 @@ class Polynomial: public Vector<T, n> {
         return Polynomial<T, (n - 1) * p + 1>::identity();
       }
       else if constexpr (p % 2 == 0) {
-        return ((*this) * (*this)).pow<p2>();
+        return ((*this) * (*this)).template pow<p2>();
       }
       else {
-        return (*this) * ((*this) * (*this)).pow<p2>();
+        return (*this) * ((*this) * (*this)).template pow<p2>();
       }
     }
 
@@ -78,7 +78,7 @@ class Polynomial: public Vector<T, n> {
         f_of_g[0] = this->data[0];
 
         bmb_utilities::constexprFor<1, n>([&](auto i) {
-          f_of_g += g_of_x.pow<i>() * this->data[i];
+          f_of_g += g_of_x.template pow<i>() * this->data[i];
         });
         return f_of_g;
     }

@@ -84,15 +84,15 @@ public:
         Polynomial<T, (m - 1) * std::max(p - 1, q - 1) + 1> den;
 
         bmb_utilities::constexprFor<0, n>([&](auto i) {
-          num += numerator[i] * g_of_x.numerator.pow<i>() * g_of_x.denominator.pow<n - 1 - i>();
+          num += numerator[i] * g_of_x.numerator.template pow<i>() * g_of_x.denominator.template pow<n - 1 - i>();
         });
         bmb_utilities::constexprFor<0, m>([&](auto i) {
-          den += denominator[i] * g_of_x.numerator.pow<i>() * g_of_x.denominator.pow<m - 1 - i>();
+          den += denominator[i] * g_of_x.numerator.template pow<i>() * g_of_x.denominator.template pow<m - 1 - i>();
         });
 
         if constexpr (n != m) { //because the denominators of the numerator and denominator are the same, they will cancel
             static constexpr size_t abs_diff = bmb_utilities::abs_difference(m, n);
-            Polynomial<T, abs_diff + 1> canceled_denominators = g_of_x.denominator.pow<abs_diff>();
+            Polynomial<T, abs_diff + 1> canceled_denominators = g_of_x.denominator.template pow<abs_diff>();
             if constexpr (m > n) return {num * canceled_denominators, den};
             else return {num, den * canceled_denominators};
         }
