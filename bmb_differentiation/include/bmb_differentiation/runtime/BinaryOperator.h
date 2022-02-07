@@ -2,7 +2,7 @@
 
 #include <bmb_differentiation/runtime/Expression.h>
 
-#include <map>
+#include <unordered_map>
 #include <memory>
 #include <string>
 #include <utility>
@@ -13,9 +13,9 @@ public:
 
     explicit BinaryOperator(ExprPtr first, ExprPtr second) : first(std::move(first)), second(std::move(second)) {}
 
-    [[nodiscard]] double evaluate(const std::map<std::string, double> &variables) const final;
+    [[nodiscard]] double evaluate(const std::unordered_map<std::string, double> &variables) const final;
 
-    [[nodiscard]] ExprPtr subs(const std::map<std::string, ExprPtr> &subs) const final;
+    [[nodiscard]] ExprPtr subs(const std::unordered_map<std::string, ExprPtr> &subs) const final;
 
     [[nodiscard]] ExprPtr simplify() const override;
 

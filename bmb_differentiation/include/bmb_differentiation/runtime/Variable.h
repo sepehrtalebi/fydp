@@ -2,7 +2,7 @@
 
 #include <bmb_differentiation/runtime/Expression.h>
 
-#include <map>
+#include <unordered_map>
 #include <memory>
 #include <string>
 #include <utility>
@@ -15,11 +15,11 @@ public:
 
     static std::shared_ptr<Variable> make(const std::string &id);
 
-    [[nodiscard]] double evaluate(const std::map<std::string, double> &variables) const override;
+    [[nodiscard]] double evaluate(const std::unordered_map<std::string, double> &variables) const override;
 
     [[nodiscard]] ExprPtr diff(const std::string &id) const override;
 
-    [[nodiscard]] ExprPtr subs(const std::map<std::string, ExprPtr> &subs) const override;
+    [[nodiscard]] ExprPtr subs(const std::unordered_map<std::string, ExprPtr> &subs) const override;
 
     [[nodiscard]] ExprPtr simplify() const override;
 

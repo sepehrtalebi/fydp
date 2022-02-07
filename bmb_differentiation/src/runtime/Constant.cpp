@@ -6,7 +6,7 @@
 
 #include <cmath>
 #include <string>
-#include <map>
+#include <unordered_map>
 
 ConstPtr Constant::make(const double &value) {
     if (value == 0.) return Zero::INSTANCE;
@@ -15,7 +15,7 @@ ConstPtr Constant::make(const double &value) {
     return std::shared_ptr<Constant>(new Constant(value));
 }
 
-double Constant::evaluate(const std::map<std::string, double> &/** variables **/) const {
+double Constant::evaluate(const std::unordered_map<std::string, double> &/** variables **/) const {
     return value;
 }
 
@@ -23,7 +23,7 @@ ExprPtr Constant::diff(const std::string & /** identifier **/) const {
     return Zero::INSTANCE;
 }
 
-ExprPtr Constant::subs(const std::map<std::string, ExprPtr> & /** subs **/) const {
+ExprPtr Constant::subs(const std::unordered_map<std::string, ExprPtr> & /** subs **/) const {
     return make(value);
 }
 

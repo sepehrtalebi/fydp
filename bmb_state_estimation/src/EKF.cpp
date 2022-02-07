@@ -11,7 +11,7 @@
 #include <bmb_msgs/SensorMeasurements.h>
 #include <bmb_math/MessageUtilities.h>
 
-#include <map>
+#include <unordered_map>
 #include <string>
 
 static Matrix3D<ExprPtr, 4, 4, 3> getQuatToQuatJacExpr() {
@@ -92,7 +92,7 @@ std::pair<Matrix<double, n, n>, Matrix<double, n, 6>> EKF::fJacobian(const Vecto
     Matrix<double, 3, 3> DCM_inv = quat.cong().toDCM();
     Vector3<double> w_abs = quat.unrotate(Vector3<double>{x[wx], x[wy], x[wz]});
     Quaternion<double> quat_new = quat + quat.E().transpose() * w_abs * (dt / 2);
-    const std::map<std::string, double> subs = {{"q0", x[q0]},
+    const std::unordered_map<std::string, double> subs = {{"q0", x[q0]},
                                                 {"q1", x[q1]},
                                                 {"q2", x[q2]},
                                                 {"q3", x[q3]}};
