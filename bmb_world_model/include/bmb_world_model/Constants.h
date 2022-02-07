@@ -77,8 +77,8 @@ static constexpr const double LIFT_GAIN_ELEVATOR = 1;
 static const Vector3<double> L_ELEVATOR{0, 0, 0}; // NOLINT(cert-err58-cpp)
 
 // Kalman filter constants
-constexpr static const size_t n = 25; // number of states
-constexpr static const size_t p = bmb_msgs::SensorMeasurements::SIZE; // number of sensor measurements
+static constexpr const size_t n = 25; // number of states
+static constexpr const size_t p = bmb_msgs::SensorMeasurements::SIZE; // number of sensor measurements
 
 //controller constants
 static const PIDGains THROTTLE_GAIN{1, 1, 1, 1};
