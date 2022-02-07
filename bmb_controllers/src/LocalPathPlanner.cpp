@@ -1,4 +1,4 @@
-#include "bmb_comtrollers/LocalPathPlanner.h"
+#include "bmb_controllers/LocalPathPlanner.h"
 
 #include <bmb_controllers/DubinsPath.h>
 #include <bmb_controllers/PurePursuit.h>
