@@ -63,7 +63,7 @@ struct TypeArray<T, Ts...> {
     if constexpr (i == 0) return TypeArray<V, Ts...>{};
     else {
       using rec = decltype(TypeArray<Ts...>{}.set(TypeArrayIndex<i - 1>{}, std::declval<V>()));
-      return rec{}.push_head(std::declval<T>());
+      return decltype(rec{}.push_head(std::declval<T>())){};
     }
   }
 };
