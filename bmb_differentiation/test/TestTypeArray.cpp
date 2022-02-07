@@ -1,4 +1,4 @@
-#include <bmb_utilities/TypeArray.h>
+#include <bmb_differentiation/compiled/TypeArray.h>
 #include <bmb_differentiation/compiled/CDeepSimplify.h>
 #include <bmb_differentiation/compiled/CConstant.h>
 
