@@ -3,11 +3,12 @@
 #include <ros/ros.h>
 #include <bmb_msgs/ReferenceCommand.h>
 #include <bmb_msgs/AircraftState.h>
-#include <bmb_utilities/MathUtils>
+#include <bmb_utilities/MathUtil.hs>
 
 #include <fstream>
 #include <vector>
 #include <optional>
+#include <tgmath.h>
 
 GlobalPathPlanner::GlobalPathPlanner() waypoint_number(0) {
     std::ifstream hard_coded_coordinates{"hard_coded_coordinates.csv"}; //TODO: make hard coded coordinates csv
@@ -42,17 +43,20 @@ GlobalPathPlanner::GlobalPathPlanner() waypoint_number(0) {
 
 
 std::optional<sensor_msgs::ReferenceCommand> update(const bmb_msgs::AircraftState& msg) {
-    bmb_msgs::AircraftState ref_cmd = msg;
+    bmb_msgs::ReferenceCommand ref_cmd;
     if (squared(msg.pose.position.x - lattitude[waypoint_index]) +
-        squared(msg.pose.position.y - longitude[waypoint_index]) +
-        squared(msg.pose.position.altitude - altitude[waypoint_index]) <
+        squared(msg.pose.position.y - longitude[waypoint_index]) //+
+//        squared(msg.pose.position.altitude - altitude[waypoint_index])
+        <
         squared(RADIUS_TOL)) {
-        waypoint_index++;
+        waypoint_index = modulo(++waypoint_index, number_of_waypoints);
+        ref_cmd.x_vel = lattitude[modulo(waypoint_index + 1, number_of_waypoints)] -
+                lattitude[modulo(waypoint_index - 1, number_of_waypoints)];
+        ref_cmd.y_vel = longitude[modulo(waypoint_index + 1, number_of_waypoints)] -
+                        longitude[modulo(waypoint_index - 1, number_of_waypoints)];
+        ref_cmd.altitude = altitude[waypoint_index];
+        ref_cmd.x_pos = lattitude[waypoint_index];
+        ref_cmd.y_pos = longitude[waypoint_index];
         return ref_cmd;
     }
-    ref_cmd.pose.airspeed = airspeed[waypoint_index];
-    ref_cmd.pose.altitude = altitude[waypoint_index];
-    ref_cmd.pose.x = lattitude[waypoint_index];
-    ref_cmd.pose.y = longitude[waypoint_index];
-
 }
