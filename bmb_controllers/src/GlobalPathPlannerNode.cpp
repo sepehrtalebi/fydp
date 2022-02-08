@@ -20,7 +20,7 @@ GlobalPathPlannerNode::GlobalPathPlannerNode(ros::NodeHandle& nh) : waypoint_ind
 
     // TODO: implement hard coded coordinates csv
     std::ifstream hard_coded_coordinates{
-      ros::package::getPath("bmb_controllers") + "/config/hard_coded_coordinates.csv"};
+      ros::package::getPath("bmb_controllers") + "/config/reference_trajectory_loop.csv"};
     assert(hard_coded_coordinates);
     std::string data;
     while (std::getline(hard_coded_coordinates, data)) {
