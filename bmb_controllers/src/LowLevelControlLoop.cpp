@@ -1,5 +1,5 @@
 #include "bmb_controllers/LowLevelControlLoop.h"
-#include <bmb_controllers/PID.h>
+#include <bmb_controllers/PIDFFController.h>
 #include <bmb_math/Quaternion.h>
 #include <bmb_msgs/AircraftState.h>
 #include <bmb_msgs/ControlInputs.h>
@@ -24,10 +24,10 @@ bmb_msgs::ControlInputs LowLevelControlLoop::getControlInputs() {
 
   ControlInputs control_inputs{};
   control_inputs.propeller_voltage =
-      speed_pid.update(latest_state_command.speed - latest_aircraft_state.twist.linear.x);
+      speed_pid.update(latest_aircraft_state.twist.linear.x, latest_state_command.speed);
   control_inputs.right_aileron_angle =
-      roll_pid.update(latest_state_command.roll - roll);
-  control_inputs.elevator_angle = pitch_pid.update(latest_state_command.pitch - pitch);
+      roll_pid.update(roll, latest_state_command.roll);
+  control_inputs.elevator_angle = pitch_pid.update(pitch, latest_state_command.pitch);
   return control_inputs;
 }
 

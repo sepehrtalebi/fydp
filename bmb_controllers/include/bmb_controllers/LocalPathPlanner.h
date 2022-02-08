@@ -2,7 +2,8 @@
 
 #include <bmb_controllers/DubinsPath.h>
 #include <bmb_controllers/PurePursuit.h>
-#include <bmb_controllers/PID.h>
+#include <bmb_utilities/ControllerGains.h>
+#include <bmb_controllers/PIDFFController.h>
 #include <ros/ros.h>
 #include <bmb_world_model/Constants.h>
 #include <bmb_msgs/AircraftState.h>
@@ -38,5 +39,5 @@ private:
     State goal;
     DubinsPath<double> path;
     PurePursuit<double> pursuer;
-    PID<double> altitude_pid{ALTITUDE_GAIN.K_P, ALTITUDE_GAIN.K_I, ALTITUDE_GAIN.K_D};
+    PIDFFController<double> altitude_pid{ALTITUDE_GAIN};
 };
