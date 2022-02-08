@@ -47,5 +47,6 @@ private:
     State goal;
     DubinsPath<double> path;
     PurePursuit<double> pursuer;
-    PIDFFController<double> altitude_pid{ALTITUDE_GAIN};
+    // TODO: use update frequency of node instead of hard coding
+    PIDFFController<double> altitude_pid{ALTITUDE_GAIN, 1};
 };

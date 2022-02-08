@@ -4,9 +4,16 @@
 #include <bmb_msgs/AircraftState.h>
 #include <bmb_msgs/ControlInputs.h>
 #include <bmb_msgs/StateCommand.h>
+#include <bmb_world_model/Constants.h>
+#include <bmb_utilities/ControllerGains.h>
 
 LowLevelControlLoop::LowLevelControlLoop(
     ros::NodeHandle& nh, const double& update_frequency) : update_frequency(update_frequency) {
+  const double update_period = 1 / update_frequency;
+  speed_pid = PIDFFController<double>{THROTTLE_GAIN, update_period};
+  roll_pid = PIDFFController<double>{ROLL_GAIN, update_period};
+  pitch_pid = PIDFFController<double>{PITCH_GAIN, update_period};
+
   // initialize subscribers
   aircraft_state_sub_ = nh.subscribe(
       "aircraft_state", 1, &LowLevelControlLoop::aircraftStateCallback, this);
@@ -22,7 +29,7 @@ bmb_msgs::ControlInputs LowLevelControlLoop::getControlInputs() {
   const double pitch = orientation.getPitch();
   const double roll = orientation.getRoll();
 
-  ControlInputs control_inputs{};
+  bmb_msgs::ControlInputs control_inputs{};
   control_inputs.propeller_voltage =
       speed_pid.update(latest_aircraft_state.twist.linear.x, latest_state_command.speed);
   control_inputs.right_aileron_angle =
@@ -31,17 +38,16 @@ bmb_msgs::ControlInputs LowLevelControlLoop::getControlInputs() {
   return control_inputs;
 }
 
-void aircraftStateCallback(const bmb_msgs::AircraftState& msg) {
+void LowLevelControlLoop::aircraftStateCallback(const bmb_msgs::AircraftState& msg) {
   latest_aircraft_state = msg;
 }
 
-void stateCommandCallback(const bmb_msgs::StateCommand& msg) {
+void LowLevelControlLoop::stateCommandCallback(const bmb_msgs::StateCommand& msg) {
   latest_state_command = msg;
 }
 
 void LowLevelControlLoop::spin() {
   ros::Rate rate{update_frequency};
-  const double period = 1 / update_frequency;
   while (ros::ok()) {
     ros::spinOnce();
     control_inputs_pub_.publish(getControlInputs());
