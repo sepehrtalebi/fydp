@@ -25,16 +25,16 @@ bmb_msgs::StateCommand LocalPathPlanner::update(const bmb_msgs::AircraftState& s
     goal.vel[1] = ref_cmd.y_vel;
     State current_state;
     current_state.pos[0] = state_msg.pose.position.x;
-    current.pos[1] = state_msg.pose.position.y;
+    current_state.pos[1] = state_msg.pose.position.y;
     current_state.vel[0] = x_vel;
     current_state.vel[1] = state_msg.twist.linear.y;
     if (update_dubins) {
-        path = DubinsPath<T>::create(current_state, goal, MIN_RADIUS_CURVATURE);
-        this->update_dubins =  false;
+        path = DubinsPath<double>::create(current_state, goal, MIN_RADIUS_CURVATURE);
+        this->update_dubins = false;
     }
     typename PurePursuit<double>::Result result = pursuer.pursue(path, current_state);
     if (result.should_replan) {
-        path = DubinsPath<T>::create(current_state, goal, MIN_RADIUS_CURVATURE);
+        path = DubinsPath<double>::create(current_state, goal, MIN_RADIUS_CURVATURE);
         result = pursuer.pursue(path, current_state);
     }
     double ang_vel = result.angular_vel;
