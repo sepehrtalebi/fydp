@@ -10,6 +10,8 @@
 template <typename T, size_t n, size_t m>
 class TransferFunction: public RationalFunction<T, n, m> {
     static_assert(m > 0);
+    static_assert(m >= n, "Transfer function is not proper!");
+    static_assert(m > n, "Transfer function will result in algebraic loops, which are not supported!");
 
     Vector<T, m> past_inputs; // only use the n oldest of these values at each time step
     Vector<T, std::max<size_t>(m - 1, 0)> past_outputs;
@@ -86,7 +88,6 @@ public:
     }
 
     T next_output(T input) {
-        static_assert(m > n);
         assert(this->discretized);
         T next_output = 0;
         past_inputs = reallocate_push(past_inputs, input);
