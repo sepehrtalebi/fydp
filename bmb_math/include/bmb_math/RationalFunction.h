@@ -48,7 +48,7 @@ class RationalFunction {
     return (*this);
   }
 
-  void print(const char& independent_var = 's') {
+  void print(const char& independent_var = 's') const {
     numerator.print(independent_var);
     for (size_t i = 0; i < std::max(n, m); i++) {
       std::cout << "-----";

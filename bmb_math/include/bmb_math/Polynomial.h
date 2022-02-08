@@ -84,7 +84,7 @@ class Polynomial {
     return f_of_g;
   }
 
-  void print(const char& independent_var = 's') {
+  void print(const char& independent_var = 's') const {
     std::cout << data[0];
     if constexpr (n > 1) std::cout << " + " << data[1] << independent_var;
     for (size_t i = 2; i < n; i++) {
