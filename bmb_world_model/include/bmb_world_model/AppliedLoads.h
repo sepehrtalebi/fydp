@@ -35,5 +35,5 @@ private:
 
     [[nodiscard]] Wrench<double> getElevatorLoads(const double& velocity) const;
 
-    static Wrench<double> getEnvironmentalLoads(const bmb_msgs::AircraftState& state);
+    static Wrench<double> getBodyLoads(const bmb_msgs::AircraftState& state);
 };

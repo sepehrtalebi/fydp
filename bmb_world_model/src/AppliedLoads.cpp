@@ -70,7 +70,7 @@ Wrench<double> AppliedLoads::getElevatorLoads(const double &velocity) const {
     return {force, L_ELEVATOR.cross(force)};
 }
 
-Wrench<double> AppliedLoads::getEnvironmentalLoads(const bmb_msgs::AircraftState& state) {
+Wrench<double> AppliedLoads::getBodyLoads(const bmb_msgs::AircraftState& state) {
     Quaternion<double> quat{state.pose.orientation};
     Vector3<double> weight = quat.rotate(WEIGHT);
 
@@ -89,13 +89,19 @@ Wrench<double> AppliedLoads::getEnvironmentalLoads(const bmb_msgs::AircraftState
     return {weight + body_force + rudder_force, torque};
 }
 
+Wrench<double> AppliedLoads::getBodyAndWingLoads(const bmb_msgs::AircraftState& state) {
+    Wrench<double> bodyWrench = getBodyLoads(state);
+    //TODO: wing loads
+    return bodyWrench;
+}
+
 Wrench<double> AppliedLoads::getAppliedLoads(const bmb_msgs::AircraftState& state) const {
     const double& velocity = state.twist.linear.x;
     return getPropellerLoads() +
            getRightAileronLoads(velocity) +
            getLeftAileronLoads(velocity) +
            getElevatorLoads(velocity) +
-           getEnvironmentalLoads(state);
+           getBodyLoads(state);
 }
 
 Matrix<double, 6, bmb_msgs::AircraftState::SIZE> AppliedLoads::getAppliedLoadsJacobian(const bmb_msgs::AircraftState& state) const {
