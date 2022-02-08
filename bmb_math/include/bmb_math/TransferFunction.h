@@ -53,7 +53,7 @@ public:
 
     TransferFunction(const TransferFunction<T, n, m> &other) {
         *this = other;
-        if constexpr (n == m) std::cout << "Warning: do not use the output in an algebraic loop!";
+        if constexpr (n == m) std::cout << "Warning: do not use the output in an algebraic loop!\n";
     }
 
     void print() const {
