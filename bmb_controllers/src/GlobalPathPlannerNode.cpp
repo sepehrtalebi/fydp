@@ -11,7 +11,7 @@
 #include <vector>
 #include <optional>
 
-GlobalPathPlannerNode::GlobalPathPlannerNode() : waypoint_index(0) {
+GlobalPathPlannerNode::GlobalPathPlannerNode(ros::NodeHandle& nh) : waypoint_index(0) {
     aircraft_state_sub_ = nh.subscribe(
         "aircraft_state", 1,
         &GlobalPathPlannerNode::aircraftStateCallback, this);
@@ -26,7 +26,7 @@ GlobalPathPlannerNode::GlobalPathPlannerNode() : waypoint_index(0) {
     while (std::getline(hard_coded_coordinates, data)) {
         std::stringstream sep(data);
         std::string       field;
-        bmb_msgs::RefernceCommand command;
+        bmb_msgs::ReferenceCommand command;
 
         // First column is airspeed
         std::getline(sep, field, ',');

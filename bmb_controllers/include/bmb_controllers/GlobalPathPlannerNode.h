@@ -11,7 +11,7 @@
 // TODO: update based on the addition of velocity to ReferenceCommand
 class GlobalPathPlannerNode {
  public:
-  GlobalPathPlannerNode();
+  GlobalPathPlannerNode(ros::NodeHandle& nh);
 
   void spin();
 
