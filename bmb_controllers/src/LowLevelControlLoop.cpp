@@ -29,7 +29,7 @@ bmb_msgs::ControlInputs LowLevelControlLoop::getControlInputs() {
   const double pitch = orientation.getPitch();
   const double roll = orientation.getRoll();
 
-  ControlInputs control_inputs{};
+  bmb_msgs::ControlInputs control_inputs{};
   control_inputs.propeller_voltage =
       speed_pid.update(latest_aircraft_state.twist.linear.x, latest_state_command.speed);
   control_inputs.right_aileron_angle =
