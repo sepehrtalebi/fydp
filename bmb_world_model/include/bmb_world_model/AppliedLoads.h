@@ -2,6 +2,7 @@
 
 #include <bmb_math/Wrench.h>
 #include <bmb_math/Vector.h>
+#include <bmb_math/Quaternion.h>
 #include <bmb_math/Matrix.h>
 #include <bmb_msgs/ControlInputs.h>
 #include <bmb_world_model/Constants.h>

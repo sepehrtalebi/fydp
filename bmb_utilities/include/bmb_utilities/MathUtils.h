@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cmath>
+#include <initializer_list>
 #include <type_traits>
 
 namespace bmb_utilities {
