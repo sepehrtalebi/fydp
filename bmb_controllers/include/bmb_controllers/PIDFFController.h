@@ -11,6 +11,9 @@ class PIDFFController {
   TransferFunction<T, 2, 2> D;
 
  public:
+
+  PIDFFController() = default;
+
   PIDFFController(const ControllerGains& gains, const double& dt)
       : gains(gains) {
     // TODO: combine into single transfer function
@@ -21,6 +24,13 @@ class PIDFFController {
                        Polynomial<T, 2>{-2 * gains.N, 2 * gains.N},
                        Polynomial<T, 2>{gains.N * dt - 2, gains.N * dt + 2},
                        true};  // discrete version of Ns/(s + N)
+  }
+
+  PIDFFController<double>& operator=(const PIDFFController<double>& other) {
+    gains = other.gains;
+    I = other.I;
+    D = other.D;
+    return (*this);
   }
 
   T update(const T& actual, const T& expected) {
