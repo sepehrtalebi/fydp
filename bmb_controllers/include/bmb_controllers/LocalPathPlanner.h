@@ -1,10 +1,15 @@
 #pragma once
 
+#include <bmb_msgs/ReferenceCommand.h>
+#include <bmb_msgs/StateCommand.h>
+#include <bmb_msgs/AircraftState.h>
+
 #include <bmb_controllers/DubinsPath.h>
 #include <bmb_controllers/PurePursuit.h>
 #include <bmb_controllers/PID.h>
 #include <ros/ros.h>
 #include <bmb_world_model/Constants.h>
+#include <bmb_utilities/MathUtils.h>
 
 class LocalPathPlanner {
     using State = typename DubinsPath<T>::State;
@@ -27,10 +32,14 @@ class LocalPathPlanner {
     }
 **/
 
-    bmb_msgs::StateCommand update(const bmb_msgs::ReferenceCommand& msg);
+    void referenceCommandCallBack(bmb_msgs::ReferenceCommand ref_cmd);
+
+    bmb_msgs::StateCommand update(const bmb_msgs::AircraftState& state);
 
     LocalPathPlanner() = default;
 private:
+    bmb_msgs::ReferenceCommand ref_cmd;
+    bool update_dubins;
     State goal;
     DubinsPath<double> path;
     PurePursuit<double> pursuer;
