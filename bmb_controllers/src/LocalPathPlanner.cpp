@@ -32,12 +32,11 @@ bmb_msgs::StateCommand LocalPathPlanner::update(const bmb_msgs::AircraftState& s
         path = DubinsPath<double>::create(current_state, goal, MIN_RADIUS_CURVATURE);
         this->update_dubins = false;
     }
-    typename PurePursuit<double>::Result result = pursuer.pursue(path, current_state);
-    if (result.should_replan) {
+    auto [should_replan, angular_vel] = pursuer.pursue(path, current_state);
+    if (should_replan) {
         path = DubinsPath<double>::create(current_state, goal, MIN_RADIUS_CURVATURE);
         result = pursuer.pursue(path, current_state);
     }
-    double ang_vel = result.angular_vel;
     double vertical_force = altitude_pid.update(state_msg.pose.position.z - ref_cmd.altitude);
-    double horizontal_force = MASS * x_vel * ang_vel;
+    double horizontal_force = MASS * x_vel * angular_vel;
 }
