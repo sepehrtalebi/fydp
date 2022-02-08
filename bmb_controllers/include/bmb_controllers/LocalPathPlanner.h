@@ -16,7 +16,6 @@
 #include <bmb_msgs/StateCommand.h>
 
 class LocalPathPlanner {
-    using State = DubinsPath<double>::State;
 /**
     void spin() {
         State current_state; // TODO: read from KF
@@ -44,7 +43,7 @@ class LocalPathPlanner {
 private:
     bmb_msgs::ReferenceCommand ref_cmd;
     bool update_dubins;
-    State goal;
+    DubinsPath<double>::State goal;
     DubinsPath<double> path;
     PurePursuit<double> pursuer;
     // TODO: use update frequency of node instead of hard coding

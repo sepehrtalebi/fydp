@@ -11,7 +11,7 @@
 #include <bmb_world_model/Constants.h>
 
 
-using State = typename DubinsPath<T>::State;
+using State = typename DubinsPath<double>::State;
 
 void referenceCommandCallBack(bmb_msgs::ReferenceCommand ref_msg) {
     this->ref_cmd = ref_msg;
