@@ -16,28 +16,28 @@ constexpr bool AreSame(T a, T b)
 
 TEST(TestTransferFunction, testTransferFunction) {
     TransferFunction<double, 1, 3> P{4, 1, 2, 3};
-    TransferFunction<double, 4, 2> C{3, 4, 5, 1, 4, 1};
-    TransferFunction<double, 4, 4> CP = C*P;
+    TransferFunction<double, 2, 4> C{3, 4, 5, 1, 4, 1};
+    TransferFunction<double, 2, 7> CP = C*P;
     CP.print();
-    TransferFunction<double, 4, 4> truth{12, 16, 20, 4, 4, 9, 14, 3};
-    for (int i = 0; i < 4; i++)
+    TransferFunction<double, 2, 7> truth{12, 16, 10, 12, 10, 25, 5, 12, 3};
+    for (size_t i = 0; i < 4; i++)
         ASSERT_EQ(CP.numerator_data(i), truth.numerator_data(i));
-    for (int i = 0; i < 4; i++)
+    for (size_t i = 0; i < 4; i++)
         ASSERT_EQ(CP.denominator_data(i), truth.denominator_data(i));
     TransferFunction<double, 2, 2> C2{2.6354*69.5, 2.6354, 38, 1};
     auto fbl = C2.feedbackLoop();
     fbl.print();
     TransferFunction<double, 2, 2> truth1{2.6354*69.5, 2.6354, 2.6354*69.5+38, 3.6354};
-    for (int i = 0; i < 2; i++)
+    for (size_t i = 0; i < 2; i++)
         ASSERT_EQ(fbl.numerator_data(i), truth1.numerator_data(i));
-    for (int i = 0; i < 2; i++)
+    for (size_t i = 0; i < 2; i++)
         ASSERT_EQ(fbl.denominator_data(i), truth1.denominator_data(i));
     auto D = fbl.discretize();
     D.print();
     TransferFunction<double, 2, 2> truth2{-0.7202, 0.7252, -0.9939, 1};
-    for (int i = 0; i < 2; i++)
+    for (size_t i = 0; i < 2; i++)
       ASSERT_TRUE(AreSame(D.numerator_data(i), truth2.numerator_data(i)));
-    for (int i = 0; i < 2; i++)
+    for (size_t i = 0; i < 2; i++)
       ASSERT_TRUE(AreSame(D.denominator_data(i), truth2.denominator_data(i)));
     Vector<double, 100000> output = D.step<100000>();
     std::ofstream out(ros::package::getPath("bmb_math") + "/test/output/step_response.csv");
