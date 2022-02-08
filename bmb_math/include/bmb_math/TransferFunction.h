@@ -9,9 +9,7 @@
 
 template <typename T, size_t n, size_t m>
 class TransferFunction: public RationalFunction<T, n, m> {
-    static_assert(m > 0);
     static_assert(m >= n, "Transfer function is not proper!");
-    static_assert(m > n, "Transfer function will result in algebraic loops, which are not supported!");
 
     Vector<T, m> past_inputs; // only use the n oldest of these values at each time step
     Vector<T, std::max<size_t>(m - 1, 0)> past_outputs;
@@ -20,7 +18,7 @@ class TransferFunction: public RationalFunction<T, n, m> {
     template<size_t p>
     static Vector<T, p> reallocate_push(const Vector<T, p> &other, T val) { //deletes pth element, inserts 0th element
         Vector<T, p> copy;
-        for (int i = 1; i < p; i++) copy[i] = other[i - 1];
+        for (size_t i = 1; i < p; i++) copy[i] = other[i - 1];
         copy[0] = val;
         return copy;
     }
@@ -30,15 +28,18 @@ class TransferFunction: public RationalFunction<T, n, m> {
     template<typename>
     friend class PID;
 public:
-    TransferFunction() = default;
+    TransferFunction() {
+      if constexpr (n == m) std::cout << "Warning: do not use the output in an algebraic loop!";
+    };
 
     TransferFunction(const Polynomial<T, n> &numerator, const Polynomial<T, m> &denominator, bool discrete = false):
             RationalFunction<T, n, m>(numerator, denominator), past_inputs(), past_outputs(), discretized(discrete) {
+      if constexpr (n == m) std::cout << "Warning: do not use the output in an algebraic loop!";
     }
 
     using RationalFunction<T, n, m>::RationalFunction;
 
-    TransferFunction(RationalFunction<T, n, m> rf):
+    TransferFunction(RationalFunction<T, n, m> rf) :
         TransferFunction(rf.numerator, rf.denominator) {}  // NOLINT(google-explicit-constructor)
 
     TransferFunction& operator=(const TransferFunction<T, n, m> &other) {
@@ -52,9 +53,10 @@ public:
 
     TransferFunction(const TransferFunction<T, n, m> &other) {
         *this = other;
+        if constexpr (n == m) std::cout << "Warning: do not use the output in an algebraic loop!";
     }
 
-    void print() {
+    void print() const {
         if (this->discretized) RationalFunction<T, n, m>::print('z');
         else RationalFunction<T, n, m>::print();
     }
@@ -74,7 +76,7 @@ public:
     }
 
     TransferFunction<T, std::max(m, n), std::max(n, m)>
-            discretize(T dt = 1E-4) const {
+            discretize(const T& dt = 1E-4) const {
         //trapezoidal method, SCH looks hard
         static constexpr size_t p = (n - 1) + bmb_utilities::heaviside_difference(m, n) + 1;
         static constexpr size_t q = (m - 1) + bmb_utilities::heaviside_difference(n, m) + 1;
@@ -87,7 +89,7 @@ public:
         return {discrete};
     }
 
-    T next_output(T input) {
+    T next_output(const T& input) {
         assert(this->discretized);
         T next_output = 0;
         past_inputs = reallocate_push(past_inputs, input);
