@@ -55,6 +55,7 @@ GlobalPathPlannerNode::GlobalPathPlannerNode(ros::NodeHandle& nh) : waypoint_ind
 
 
 void GlobalPathPlannerNode::aircraftStateCallback(const bmb_msgs::AircraftState& msg) {
+    using bmb_utilities::squared;
     static constexpr double RADIUS_TOL_SQUARED = bmb_utilities::squared(RADIUS_TOL);
     const bmb_msgs::ReferenceCommand& command = reference_commands[waypoint_index];
     if (squared(msg.pose.position.x - command.x_pos) +
