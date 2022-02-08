@@ -8,6 +8,7 @@
 #include <optional>
 #include <vector>
 
+// TODO: update based on the addition of velocity to ReferenceCommand
 class GlobalPathPlannerNode {
  public:
   GlobalPathPlannerNode();
