@@ -28,21 +28,25 @@ GlobalPathPlannerNode::GlobalPathPlannerNode(ros::NodeHandle& nh) : waypoint_ind
         std::string       field;
         bmb_msgs::ReferenceCommand command;
 
-        // First column is airspeed
-        std::getline(sep, field, ',');
-        command.airspeed = std::stod(field);
-
-        // Second column is altitude
-        std::getline(sep, field, ',');
-        command.altitude = std::stod(field);
-
-        // Third column is x coord latitude, north is positive
+        // First column is x coord (latitude, north is positive)
         std::getline(sep, field, ',');
         command.latitude = std::stod(field);
 
-        // Fourth column is y coord longitude, east is positive
+        // Second column is y coord (longitude, east is positive)
         std::getline(sep, field, ',');
         command.longitude = std::stod(field);
+
+        // Third column is x_vel
+        std::getline(sep, field, ',');
+        command.x_vel = std::stod(field);
+
+        // Fourth column is y_vel
+        std::getline(sep, field, ',');
+        command.y_vel = std::stod(field);
+
+        // Fifth column is altitude
+        std::getline(sep, field, ',');
+        command.altitude = std::stod(field);
 
         reference_commands.push_back(command);
     }
