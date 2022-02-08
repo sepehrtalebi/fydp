@@ -9,9 +9,9 @@
 #include <sensor_msgs/Imu.h>
 #include <sensor_msgs/NavSatFix.h>
 
-class StateEstimationControlLoop {
+class StateEstimationNode {
  public:
-  StateEstimationControlLoop(ros::NodeHandle& nh, const double& update_frequency);
+  StateEstimationNode(ros::NodeHandle& nh, const double& update_frequency);
 
   void spin();
 

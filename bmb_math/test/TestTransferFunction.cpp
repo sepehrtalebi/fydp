@@ -1,5 +1,6 @@
 #include <bmb_math/TransferFunction.h>
 #include <bmb_math/RationalFunction.h>
+#include <bmb_utilities/MathUtils.h>
 
 #include <gtest/gtest.h>
 #include <ros/package.h>
@@ -10,7 +11,7 @@ const double EPSILON = 1E-4;
 template<typename T>
 constexpr bool AreSame(T a, T b)
 {
-    return abs_difference(a, b) < EPSILON;
+    return bmb_utilities::abs_difference(a, b) < EPSILON;
 }
 
 TEST(TestTransferFunction, testTransferFunction) {

@@ -7,7 +7,7 @@
 #include <bmb_msgs/SensorMeasurements.h>
 #include <bmb_msgs/ControlInputs.h>
 #include <bmb_msgs/AircraftState.h>
-#include <bmb_utilities/MessageUtilities.h>
+#include <bmb_math/MessageUtilities.h>
 
 KF::KF() {
     x[q0] = 1;
@@ -28,7 +28,7 @@ void KF::update(const bmb_msgs::SensorMeasurements &sensor_measurements,
 }
 
 bmb_msgs::AircraftState KF::getOutput() const {
-  return bmb_utilities::as_msg(x.slice<0, bmb_msgs::AircraftState::SIZE>());
+  return bmb_math::as_msg(x.slice<0, bmb_msgs::AircraftState::SIZE>());
 }
 
 Vector<double, n> KF::f(const Vector<double, n> &state, const double &dt) const {
@@ -62,7 +62,7 @@ Vector<double, n> KF::f(const Vector<double, n> &state, const double &dt) const 
 }
 
 Vector<double, p> KF::h(const Vector<double, n> &state, const double & /** dt **/) {
-    return bmb_utilities::as_vector(getSensorMeasurements(
+    return bmb_math::as_vector(getSensorMeasurements(
       getOutput(), state.slice<accel_bx, accel_bz + 1>(),
           state.slice<gyro_bx, gyro_bz + 1>(), current_accel));
 }

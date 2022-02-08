@@ -2,7 +2,6 @@
 
 #include <bmb_differentiation/runtime/BinaryOperator.h>
 
-#include <map>
 #include <memory>
 #include <string>
 #include <utility>

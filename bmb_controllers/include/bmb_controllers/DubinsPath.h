@@ -2,7 +2,7 @@
 
 #include <bmb_math/Vector.h>
 #include <bmb_math/Matrix.h>
-#include <bmb_utilities/MathUtils.h>
+#include <bmb_math/Utility.h>
 
 #include <array>
 #include <cmath>
@@ -85,7 +85,7 @@ public:
          * @return The point on this Curve closest to the specified point
          */
         [[nodiscard]] Vector<T, 2> closestPoint(const Vector<T, 2> &p) const {
-            using bmb_utilities::getRotationMatrix;
+            using bmb_math::getRotationMatrix;
 
             if (!is_turning) {
                 Vector2 d = end_pos - start_pos;
@@ -155,7 +155,7 @@ public:
             } else {
                 for (size_t i = 0; i < NUM_SAMPLES; i++) {
                     T theta = start_angle + delta_angle * (i / static_cast<T>(NUM_SAMPLES));
-                    Vector<T, 2> pos = center + bmb_utilities::getRotationMatrix(theta) * Vector2{radius, 0};
+                    Vector<T, 2> pos = center + bmb_math::getRotationMatrix(theta) * Vector2{radius, 0};
                     out << pos[0] << "," << pos[1] << std::endl;
                 }
             }

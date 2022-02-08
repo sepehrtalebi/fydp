@@ -68,8 +68,8 @@ template <typename R1, typename R2>
 struct ratio_power {
   static_assert(can_ratio_power_v<R1, R2>,
                 "Result cannot be computed as an std::ratio!");
-
-  using type = decltype([]() {
+ private:
+  static constexpr auto impl() {
     // 0 ^ 0 -> 1
     if constexpr (is_ratio_zero_v<R1> && is_ratio_zero_v<R2>)
       return std::ratio<1>{};
@@ -102,7 +102,10 @@ struct ratio_power {
     else
       return std::ratio_multiply<R1,
                                  ratio_power_t<R1, std::ratio<R2::num - 1>>>{};
-  }());
+  }
+
+ public:
+  using type = decltype(impl());
 };
 
 }  // namespace compiled

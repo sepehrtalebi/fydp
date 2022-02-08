@@ -2,10 +2,10 @@
 
 #include <bmb_differentiation/runtime/Constant.h>
 
-#include <map>
+#include <unordered_map>
 #include <string>
 
-double UnaryOperator::evaluate(const std::map<std::string, double> &variables) const {
+double UnaryOperator::evaluate(const std::unordered_map<std::string, double> &variables) const {
     return call(operand->evaluate(variables));
 }
 
@@ -13,7 +13,7 @@ ExprPtr UnaryOperator::diff(const std::string &id) const {
     return derivative(operand) * operand->diff(id);
 }
 
-ExprPtr UnaryOperator::subs(const std::map<std::string, ExprPtr> & subs) const {
+ExprPtr UnaryOperator::subs(const std::unordered_map<std::string, ExprPtr> & subs) const {
     return call(operand->subs(subs));
 }
 

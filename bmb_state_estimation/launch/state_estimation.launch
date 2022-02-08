@@ -1,0 +1,4 @@
+<launch>
+    <node name="state_estimation_node" pkg="bmb_state_estimation" type="state_estimation_node"
+          output="screen"/>
+</launch>

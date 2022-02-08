@@ -2,7 +2,7 @@
 
 #include <bmb_differentiation/runtime/Constant.h>
 
-#include <map>
+#include <unordered_map>
 #include <memory>
 #include <string>
 #include <limits>
@@ -17,7 +17,7 @@ public:
 
     [[nodiscard]] ExprPtr diff(const std::string &identifier) const override;
 
-    [[nodiscard]] ExprPtr subs(const std::map<std::string, ExprPtr> &subs) const override;
+    [[nodiscard]] ExprPtr subs(const std::unordered_map<std::string, ExprPtr> &subs) const override;
 
     [[nodiscard]] ExprPtr simplify() const override;
 

@@ -1,11 +1,11 @@
-#include "bmb_utilities/MessageUtilities.h"
+#include "bmb_math/MessageUtilities.h"
 #include <bmb_msgs/SensorMeasurements.h>
 #include <bmb_msgs/AircraftState.h>
 #include <bmb_msgs/ControlInputs.h>
 #include <bmb_math/Vector.h>
 #include <bmb_math/Vector3.h>
 
-namespace bmb_utilities {
+namespace bmb_math {
 
 Vector<double, bmb_msgs::SensorMeasurements::SIZE> as_vector(
     const bmb_msgs::SensorMeasurements& msg) {

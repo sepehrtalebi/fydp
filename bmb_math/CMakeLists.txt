@@ -10,6 +10,8 @@ add_compile_options(-std=c++17)
 find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
   roslib
+  bmb_utilities
+  bmb_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -103,7 +105,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES ${PROJECT_NAME}
-  CATKIN_DEPENDS geometry_msgs roslib
+  CATKIN_DEPENDS geometry_msgs roslib bmb_utilities bmb_msgs
 # DEPENDS
 )
 
@@ -124,7 +126,7 @@ include_directories(
 # )
 
 # Library for ${PROJECT_NAME}
-add_library(${PROJECT_NAME} src/Primes.cpp)
+add_library(${PROJECT_NAME} src/Primes.cpp src/MessageUtilities.cpp)
 target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES})
 add_dependencies(${PROJECT_NAME} ${catkin_EXPORTED_TARGETS})
 

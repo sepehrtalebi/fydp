@@ -1,11 +1,11 @@
 #include "bmb_differentiation/runtime/Zero.h"
 
-#include <map>
+#include <unordered_map>
 #include <string>
 
 const ConstPtr Zero::INSTANCE = std::shared_ptr<Zero>(new Zero()); // NOLINT(cert-err58-cpp)
 
-ExprPtr Zero::subs(const std::map<std::string, ExprPtr> & /** subs **/) const {
+ExprPtr Zero::subs(const std::unordered_map<std::string, ExprPtr> & /** subs **/) const {
     return Zero::INSTANCE;
 }
 

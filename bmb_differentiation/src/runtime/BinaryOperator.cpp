@@ -2,11 +2,14 @@
 
 #include <bmb_differentiation/runtime/Constant.h>
 
-double BinaryOperator::evaluate(const std::map<std::string, double> &variables) const {
+#include <unordered_map>
+#include <string>
+
+double BinaryOperator::evaluate(const std::unordered_map<std::string, double> &variables) const {
     return call(first->evaluate(variables), second->evaluate(variables));
 }
 
-ExprPtr BinaryOperator::subs(const std::map<std::string, ExprPtr> &subs) const {
+ExprPtr BinaryOperator::subs(const std::unordered_map<std::string, ExprPtr> &subs) const {
     return call(first->subs(subs), second->subs(subs));
 }
 

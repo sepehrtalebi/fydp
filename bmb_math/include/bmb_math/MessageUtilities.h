@@ -6,7 +6,7 @@
 #include <bmb_math/Vector.h>
 #include <bmb_math/Vector3.h>
 
-namespace bmb_utilities {
+namespace bmb_math {
 
 [[nodiscard]] Vector<double, bmb_msgs::SensorMeasurements::SIZE>
     as_vector(const bmb_msgs::SensorMeasurements& msg);

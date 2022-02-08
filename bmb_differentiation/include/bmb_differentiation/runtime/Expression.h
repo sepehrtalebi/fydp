@@ -1,6 +1,6 @@
 #pragma once
 
-#include <map>
+#include <unordered_map>
 #include <memory>
 #include <string>
 
@@ -13,12 +13,11 @@ class Expression {
     // Thus we also can't have them as elements in Vector
     // The workaround is to use ExprPtr in its place, and define global arithmetic operators to work with it
 public:
-    [[nodiscard]] virtual double evaluate(const std::map<std::string, double> &variables) const = 0;
+    [[nodiscard]] virtual double evaluate(const std::unordered_map<std::string, double> &variables) const = 0;
 
     [[nodiscard]] virtual ExprPtr diff(const std::string &id) const = 0;
 
-    // TODO: switch to unordered_map
-    [[nodiscard]] virtual ExprPtr subs(const std::map<std::string, ExprPtr> &subs) const = 0;
+    [[nodiscard]] virtual ExprPtr subs(const std::unordered_map<std::string, ExprPtr> &subs) const = 0;
 
     [[nodiscard]] virtual ExprPtr simplify() const = 0;
 

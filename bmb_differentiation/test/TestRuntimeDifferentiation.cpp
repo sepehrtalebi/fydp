@@ -7,6 +7,7 @@
 
 #include <gtest/gtest.h>
 #include <string>
+#include <unordered_map>
 
 TEST(TestRuntimeDifferentiation, testRuntimeDifferentiation) {
     ExprPtr x = Variable::make("x");
@@ -29,6 +30,15 @@ TEST(TestRuntimeDifferentiation, testRuntimeDifferentiation) {
         jac[i][j] = mat[i]->diff("q" + std::to_string(j));
         // std::cout << jac[i][j]->toStr() << std::endl;
     }
+
+    Vector<ExprPtr, 3> expr{Variable::make("x"),
+                            Variable::make("y"),
+                            Variable::make("z")};
+    const std::unordered_map<std::string, double> subs{{"x", 0},
+                                             {"y", 1},
+                                             {"z", 2}};
+    Vector<double, 3> expr_sub = expr.applyFunc<double>([&subs](const ExprPtr &e) { return e->evaluate(subs); });
+    for (size_t i = 0; i < 3; i++) ASSERT_EQ(expr_sub[i], i);
 }
 
 int main(int argc, char** argv) {

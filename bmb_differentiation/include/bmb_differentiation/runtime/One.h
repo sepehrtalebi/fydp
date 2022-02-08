@@ -2,7 +2,7 @@
 
 #include <bmb_differentiation/runtime/Constant.h>
 
-#include <map>
+#include <unordered_map>
 #include <memory>
 #include <string>
 
@@ -14,7 +14,7 @@ public:
 
     void operator=(const One &) = delete;
 
-    [[nodiscard]] ExprPtr subs(const std::map<std::string, ExprPtr> &subs) const override;
+    [[nodiscard]] ExprPtr subs(const std::unordered_map<std::string, ExprPtr> &subs) const override;
 
     [[nodiscard]] ExprPtr simplify() const override;
 

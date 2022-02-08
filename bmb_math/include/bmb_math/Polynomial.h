@@ -1,226 +1,232 @@
 #pragma once
 
 #include <bmb_math/Vector.h>
-
+#include <bmb_utilities/ConstexprUtils.h>
 #include <algorithm>
 #include <cmath>
 #include <iostream>
 
 template <typename T, size_t n>
-class Polynomial: public Vector<T, n> {
-    static_assert(n>0);
+class Polynomial {
+  static_assert(n > 0);
 
-    template<int m>
-    void operator*=(const Polynomial<T, m> &other) {
-        Polynomial<T, n> foil;
-        for (int i = 0; i < n; i++) {
-            for (int j = n - 1; j >= 0; j--) {
-                if (other[j] != 0)
-                    foil[i + j] += other[j] * this->data[i];
-            }
-        }
-        (*this) = foil;
+ private:
+  Vector<T, n> data{};
+
+ public:
+  using iterator = typename Vector<T, n>::iterator;
+  using const_iterator = typename Vector<T, n>::const_iterator;
+
+  Polynomial() = default;
+
+  Polynomial(std::initializer_list<T> elements) {
+    // Function caller must ensure the number of arguments matches the template argument
+    // Excess arguments will be ignored
+    size_t i = 0;
+    for (auto it = elements.begin(); i < n && it != elements.end(); it++)
+      data[i++] = *it;
+  }
+
+  explicit Polynomial(const std::array<T, n>& arr) {
+    for (size_t i = 0; i < n; i++) data[i] = arr[i];
+  }
+
+  Polynomial(const Vector<T, n>& vec) {  // NOLINT(google-explicit-constructor)
+    for (size_t i = 0; i < n; i++) data[i] = vec[i];
+  }
+
+  template <size_t m>
+  Polynomial(const Polynomial<T, m>& other) {  // NOLINT(google-explicit-constructor)
+    *this = other;
+  }
+
+  template <size_t m>
+  Polynomial& operator=(const Polynomial<T, m>& other) {
+    static_assert(m <= n);
+    for (size_t i = 0; i < m; i++) data[i] = other[i];
+    for (size_t i = m; i < n; i++) data[i] = 0;
+    return *this;
+  }
+
+  static Polynomial<T, n> identity() {
+    Polynomial<T, n> p{};
+    p[0] = 1;
+    return p;
+  }
+
+  template <size_t p>
+  Polynomial<T, (n - 1) * p + 1> pow() const {
+    if constexpr (p == 0) {
+      return Polynomial<T, (n - 1) * p + 1>::identity();
+    } else if constexpr (p % 2 == 0) {
+      return ((*this) * (*this)).template pow<p / 2>();
+    } else {
+      return (*this) * ((*this) * (*this)).template pow<p / 2>();
     }
+  }
 
-    void operator*=(const Polynomial<T, n> &other) {
-        Polynomial<T, n> foil;
-        for (int i = n - 1; i >= 0; i--) {
-            if (this->data[i] != 0) { //ignore the higher order terms of max size polynomial, very hacky
-                for (int j = n - 1; j >= 0; j--) {
-                    if (other[j] != 0)
-                        foil[i + j] += other[j] * this->data[i];
-                }
-            }
-        }
-        (*this) = foil;
+  T _of_(const T& scalar) const {
+    T f_of_scalar = data[0];
+    for (size_t i = 1; i < n; i++) {
+      f_of_scalar += data[i] * std::pow(scalar, i);
     }
+    return f_of_scalar;
+  }
 
-    void pow(const size_t& p) {
-        Polynomial<T, n> factor = *this;
-        *this = Polynomial::identity();
-        size_t pos = p;
-        while (pos > 0) {
-            if (pos % 2 == 1) {
-                (*this) *= factor;
-            }
-            pos /= 2;
-            factor *= factor;
-        }
+  template <size_t m>
+  Polynomial<T, (n - 1) * (m - 1) + 1> _of_(
+      const Polynomial<T, m>& g_of_x) const {
+    Polynomial<T, (n - 1) * (m - 1) + 1> f_of_g;
+    f_of_g[0] = data[0];
+
+    bmb_utilities::constexprFor<1, n>(
+        [&](auto i) { f_of_g += g_of_x.template pow<i>() * data[i]; });
+    return f_of_g;
+  }
+
+  void print(const char& independent_var = 's') {
+    std::cout << data[0];
+    if constexpr (n > 1) std::cout << " + " << data[1] << independent_var;
+    for (size_t i = 2; i < n; i++) {
+      if (data[i] != 0)
+        std::cout << " + " << data[i] << independent_var << "^" << i;
     }
+    std::cout << '\n';
+  }
 
-    template<size_t m>
-    static Polynomial<T, std::max(n, m)> hacky_product(Polynomial<T, n> first, Polynomial<T, m> other) {
-        Polynomial<T, std::max(n, m)> foil;
-        for (int i = 0; i < n; i++)
-            for (int j = 0; j < m; j++)
-                if ((i + j) < std::max(n, m)) foil[i + j] += other[j] * first[i];
-        return foil;
-    }
+  template <size_t m>
+  Polynomial<T, std::max(n, m)> operator+(const Polynomial<T, m>& other) const {
+    Polynomial<T, std::max(n, m)> sum = *this;
+    for (size_t i = 0; i < m; i++) sum[i] += other[i];
+    return sum;
+  }
 
-    template<typename, size_t>
-    friend class Polynomial;
-    template<typename, size_t, size_t>
-    friend class RationalFunction;
-    template<typename, size_t, size_t>
-    friend class TransferFunction;
-public:
-    using Vector<T, n>::Vector;
+  Polynomial<T, n> operator+(const T& scalar) const {
+    Polynomial<T, n> sum = (*this);
+    sum[0] += scalar;
+    return sum;
+  }
 
-    Polynomial(const Polynomial<T, n> &other) {
-        *this = other;
-    }
+  Polynomial<T, n> operator+() const {
+    Polynomial<T, n> result = (*this);
+    return result;
+  }
 
-    template<size_t m>
-    Polynomial(const Polynomial<T, m> &other) { // NOLINT(google-explicit-constructor)
-        *this = other;
-    }
+  template <size_t m>
+  void operator+=(const Polynomial<T, m>& other) {
+    static_assert(m <= n);
+    for (size_t i = 0; i < m; i++) this->data[i] += other[i];
+  }
 
-    explicit Polynomial(const std::array<T, n> &arr) {
-        for (int i = 0; i < n; i++) this->data[i] = arr[i];
-    }
+  void operator+=(const T& scalar) {
+    data[0] += scalar;
+  }
 
-    Polynomial(const Vector<T, n> &vec) { // NOLINT(google-explicit-constructor)
-        for (int i = 0; i < n; i++) this->data[i] = vec[i];
-    }
+  template <size_t m>
+  Polynomial<T, std::max(n, m)> operator-(const Polynomial<T, m>& other) const {
+    Polynomial<T, std::max(n, m)> diff = *this;
+    for (size_t i = 0; i < m; i++) diff[i] -= other[i];
+    return diff;
+  }
 
-    Polynomial& operator=(const Polynomial<T, n> &other) {
-        for (size_t i = 0; i < n; i++) this->data[i] = other[i];
-        return *this;
-    }
+  Polynomial<T, n> operator-(const T& scalar) const {
+    Polynomial<T, n> diff = (*this);
+    diff[0] -= scalar;
+    return diff;
+  }
 
-    template<size_t m>
-    Polynomial& operator=(const Polynomial<T, m> &other) {
-        static_assert(m <= n);
-        for (size_t i = 0; i < m; i++) this->data[i] = other[i];
-        for (size_t i = m; i < n; i++) this->data[i] = 0;
-        return *this;
-    }
+  Polynomial<T, n> operator-() const {
+    Polynomial<T, n> result;
+    for (size_t i = 0; i < n; i++) result[i] = -data[i];
+    return result;
+  }
 
-    static Polynomial<T, n> identity() {
-        Polynomial<T, n> p;
-        p[0] = 1;
-        return p;
-    }
+  template <size_t m>
+  void operator-=(const Polynomial<T, m>& other) {
+    static_assert(m <= n);
+    for (size_t i = 0; i < m; i++) this->data[i] -= other[i];
+  }
 
-    T _of_(T scalar) const {
-        T f_of_scalar = this->data[0];
-        for (size_t i = n - 1; i > 0; i++) {
-            f_of_scalar += this->data[i] * std::pow(scalar, i);
-        }
-        return f_of_scalar;
-    }
+  void operator-=(const T& scalar) {
+    data[0] -= scalar;
+  }
 
-    template<size_t m>
-    Polynomial<T, (n - 1) * (m - 1) + 1> _of_(const Polynomial<T, m> &g_of_x) const {
-        Polynomial<T, (n - 1) * (m - 1) + 1> f_of_g;
-        f_of_g[0] = this->data[0];
-        for (size_t i = n - 1; i > 0; i--) {
-            Polynomial<T, (n - 1) * (m - 1) + 1> poly_expansion{g_of_x};
-            poly_expansion.pow(i);
-            f_of_g += poly_expansion * this->data[i];
-        }
-        return f_of_g;
-    }
+  template <size_t m>
+  Polynomial<T, m + n - 1> operator*(const Polynomial<T, m>& other) const {
+    Polynomial<T, m + n - 1> foil;
+    for (size_t i = 0; i < n; i++)
+      for (size_t j = 0; j < m; j++) foil[i + j] += other[j] * this->data[i];
+    return foil;
+  }
 
-    void print(char independent_var = 's') {
-        std::cout << this->data[0];
-        if (n > 1)  std::cout << " + " << this->data[1] << independent_var;
-        for (int i = 2; i < n; i++) {
-            if (this->data[i] != 0)
-                std::cout << " + " << this->data[i] << independent_var << "^" << i ;
-        }
-        std::cout << std::endl;
-    }
+  Polynomial<T, n> operator*(const T& scalar) const {
+    Polynomial<T, n> product;
+    for (size_t i = 0; i < n; i++) product[i] = scalar * data[i];
+    return product;
+  }
 
-    using Vector<T, n>::operator*;
+  void operator*=(const T& scalar) {
+    for (size_t i = 0; i < n; i++) data[i] *= scalar;
+  }
 
-    Polynomial<T, 2 * n - 1> operator*(const Polynomial<T, n> &other) const {
-        Polynomial<T, 2 * n - 1> foil;
-        for (int i = 0; i < n; i++)
-            for (int j = 0; j < n; j++)
-                foil[i + j] += other[j] * this->data[i];
-        return foil;
-    }
+  Polynomial<T, n> operator/(const T& scalar) const {
+    Polynomial<T, n> quotient;
+    for (size_t i = 0; i < n; i++) quotient[i] = data[i] / scalar;
+    return quotient;
+  }
 
-    template<size_t m>
-    Polynomial<T, m + n - 1> operator*(const Polynomial<T, m> &other) const {
-        Polynomial<T, m + n - 1> foil;
-        for (int i = 0; i < n; i++)
-            for (int j = 0; j < m; j++)
-                foil[i + j] += other[j] * this->data[i];
-        return foil;
-    }
+  void operator/=(const T& scalar) {
+    for (size_t i = 0; i < n; i++) data[i] /= scalar;
+  }
 
-    using Vector<T, n>::operator*=;
+  const T& operator[](const size_t& idx) const {
+    return data[idx];
+  }
 
-    using Vector<T, n>::operator+;
+  T& operator[](const size_t& idx) {
+    return data[idx];
+  }
 
-    Polynomial<T, n> operator+(T &scalar) const {
-        Polynomial<T, n> sum = (*this);
-        sum[0] += scalar;
-        return sum;
-    }
+  iterator begin() {
+    return data.begin();
+  }
 
-    template<size_t m>
-    Polynomial<T, std::max(n, m)> operator+(const Polynomial<T, m> &other) const {
-        Polynomial<T, std::max(n, m)> sum;
-        for (size_t i = 0; i < n; i++) sum[i] += this->data[i];
-        for (size_t i = 0; i < m; i++) sum[i] += other[i];
-        return sum;
-    }
+  iterator end() {
+    return data.end();
+  }
 
-    void operator+=(const Polynomial<T, n> &other) {
-        for (int i = 0; i < n; i++)
-            this->data[i] += other[i];
-    }
+  const_iterator begin() const {
+    return data.begin();
+  }
 
-    template<size_t m>
-    void operator+=(const Polynomial<T, m> &other) {
-        static_assert(m <= n);
-        for (int i = 0; i < m; i++)
-            this->data[i] += other[i];
-    }
+  const_iterator end() const {
+    return data.end();
+  }
 
-    using Vector<T, n>::operator-;
+  const_iterator cbegin() const {
+    return data.begin();
+  }
 
-    Polynomial<T, n> operator-(T &scalar) const {
-        Polynomial<T, n> diff = (*this);
-        diff[0] -= scalar;
-        return diff;
-    }
-
-    template<size_t m>
-    Polynomial<T, n> operator-(const Polynomial<T, n> &other) const {
-        Polynomial<T, n> diff;
-        for (size_t i = 0; i < n; i++) diff[i] = this->data[i] - other[i];
-        return diff;
-    }
-
-    template<size_t m>
-    Polynomial<T, std::max(n, m)> operator-(const Polynomial<T, m> &other) const {
-        Polynomial<T, std::max(n, m)> diff;
-        for (size_t i = 0; i < n; i++) diff[i] -= this->data[i];
-        for (size_t i = 0; i < m; i++) diff[i] -= other[i];
-        return diff;
-    }
-
-    void operator-=(const Polynomial<T, n> &other) {
-        for (int i = 0; i < n; i++)
-            this->data[i] -= other[i];
-    }
-
-    template<size_t m>
-    void operator-=(const Polynomial<T, m> &other) {
-        static_assert(m <= n);
-        for (int i = 0; i < m; i++)
-            this->data[i] -= other[i];
-    }
+  const_iterator cend() const {
+    return data.end();
+  }
 };
 
 template<typename T, size_t n>
-Polynomial<T, n> operator*(const T &scalar, const Polynomial<T, n> &poly) {
-    Polynomial<T, n> prod;
-    for (size_t i = 0; i < n; i++)
-        prod[i] = scalar * poly[i]; // respect operator order in case underlying type is non-commutative
-    return prod;
+Polynomial<T, n> operator+(const T& scalar, const Polynomial<T, n>& poly) {
+  return poly + scalar;
+}
+
+template<typename T, size_t n>
+Polynomial<T, n> operator-(const T& scalar, const Polynomial<T, n>& poly) {
+  return (-poly) + scalar;
+}
+
+template <typename T, size_t n>
+Polynomial<T, n> operator*(const T& scalar, const Polynomial<T, n>& poly) {
+  Polynomial<T, n> prod;
+  for (size_t i = 0; i < n; i++)
+    prod[i] = scalar * poly[i];  // respect operator order in case underlying
+                                 // type is non-commutative
+  return prod;
 }

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <bmb_math/Vector.h>
-#include <bmb_math/Utility.h>
+#include <bmb_utilities/MathUtils.h>
 
 #include <array>
 #include <cmath>
@@ -70,18 +70,18 @@ public:
     }
 
     template<size_t start = 0, size_t stop = n, size_t step = 1>
-    Matrix<T, bmb_math::slice_count(start, stop, step), m> sliceRows() const {
+    Matrix<T, bmb_utilities::slice_count(start, stop, step), m> sliceRows() const {
       static_assert(stop <= n);
-      static constexpr size_t k = bmb_math::slice_count(start, stop, step);
+      static constexpr size_t k = bmb_utilities::slice_count(start, stop, step);
       Matrix<T, k, m> mat;
       for (size_t i = 0; i < k; i++) mat[i] = data[start + i * step];
       return mat;
     }
 
     template<size_t start = 0, size_t stop = m, size_t step = 1>
-    Matrix<T, n, bmb_math::slice_count(start, stop, step)> sliceColumns() const {
+    Matrix<T, n, bmb_utilities::slice_count(start, stop, step)> sliceColumns() const {
       static_assert(stop <= m);
-      static constexpr size_t k = bmb_math::slice_count(start, stop, step);
+      static constexpr size_t k = bmb_utilities::slice_count(start, stop, step);
       Matrix<T, n, k> mat;
       for (size_t i = 0; i < n; i++) for (size_t j = 0; j < k; j++)
           mat[i][j] = data[i][start + j * step];

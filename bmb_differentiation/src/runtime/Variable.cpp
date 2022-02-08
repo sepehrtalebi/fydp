@@ -3,7 +3,7 @@
 #include <bmb_differentiation/runtime/Zero.h>
 #include <bmb_differentiation/runtime/One.h>
 
-#include <map>
+#include <unordered_map>
 #include <memory>
 #include <string>
 
@@ -11,7 +11,7 @@ std::shared_ptr<Variable> Variable::make(const std::string &id) {
     return std::make_shared<Variable>(id);
 }
 
-double Variable::evaluate(const std::map<std::string, double> &variables) const {
+double Variable::evaluate(const std::unordered_map<std::string, double> &variables) const {
     return variables.at(identifier);
 }
 
@@ -20,7 +20,7 @@ ExprPtr Variable::diff(const std::string &id) const {
     return Zero::INSTANCE;
 }
 
-ExprPtr Variable::subs(const std::map<std::string, ExprPtr> & subs) const {
+ExprPtr Variable::subs(const std::unordered_map<std::string, ExprPtr> & subs) const {
     auto it = subs.find(identifier);
     if (it == subs.end()) return Variable::make(identifier);
     return it->second;

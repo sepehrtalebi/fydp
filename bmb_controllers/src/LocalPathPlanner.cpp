@@ -1,4 +1,4 @@
-#include "bmb_comtrollers/LocalPathPlanner.h"
+#include "bmb_controllers/LocalPathPlanner.h"
 
 #include <bmb_msgs/ReferenceCommand.h>
 #include <bmb_msgs/StateCommand.h>
@@ -6,7 +6,7 @@
 
 #include <bmb_controllers/DubinsPath.h>
 #include <bmb_controllers/PurePursuit.h>
-#include <bmb_controllers/PID.h>
+#include <bmb_controllers/PIDFFController.h>
 #include <ros/ros.h>
 #include <bmb_world_model/Constants.h>
 

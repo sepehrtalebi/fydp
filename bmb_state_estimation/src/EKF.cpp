@@ -9,9 +9,9 @@
 #include <bmb_world_model/AppliedLoads.h>
 #include <bmb_world_model/Constants.h>
 #include <bmb_msgs/SensorMeasurements.h>
-#include <bmb_utilities/MessageUtilities.h>
+#include <bmb_math/MessageUtilities.h>
 
-#include <map>
+#include <unordered_map>
 #include <string>
 
 static Matrix3D<ExprPtr, 4, 4, 3> getQuatToQuatJacExpr() {
@@ -63,7 +63,7 @@ void EKF::updateKF(const bmb_msgs::SensorMeasurements &sensor_measurements, cons
     P = f_jac * P * f_jac.transpose() + Q;
 
     // update step
-    Vector<double, p> z = bmb_utilities::as_vector(sensor_measurements);
+    Vector<double, p> z = bmb_math::as_vector(sensor_measurements);
     Vector<double, p> h_vec = h(x, dt);
     Matrix<double, p, n> h_jac = Matrix<double, p, n>::zeros();
     auto [aircraft_state_to_h_jac, accelerometer_bias_to_h_jac, gyro_bias_to_h_jac, accel_to_h_jac] =
@@ -92,7 +92,7 @@ std::pair<Matrix<double, n, n>, Matrix<double, n, 6>> EKF::fJacobian(const Vecto
     Matrix<double, 3, 3> DCM_inv = quat.cong().toDCM();
     Vector3<double> w_abs = quat.unrotate(Vector3<double>{x[wx], x[wy], x[wz]});
     Quaternion<double> quat_new = quat + quat.E().transpose() * w_abs * (dt / 2);
-    const std::map<std::string, double> subs = {{"q0", x[q0]},
+    const std::unordered_map<std::string, double> subs = {{"q0", x[q0]},
                                                 {"q1", x[q1]},
                                                 {"q2", x[q2]},
                                                 {"q3", x[q3]}};

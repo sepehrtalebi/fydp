@@ -1,0 +1,8 @@
+<launch>
+    <node name="global_path_planner_node" pkg="bmb_controllers" type="global_path_planner_node"
+          output="screen"/>
+    <node name="local_path_planner_node" pkg="bmb_controllers" type="local_path_planner_node"
+          output="screen"/>
+    <node name="low_level_control_loop_node" pkg="bmb_controllers" type="low_level_control_loop_node"
+          output="screen"/>
+</launch>

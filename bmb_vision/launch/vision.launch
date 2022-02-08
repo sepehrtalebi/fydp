@@ -1,0 +1,8 @@
+<launch>
+    <node name="defisheye_node" pkg="bmb_vision" type="defisheye_node.py"
+          output="screen"/>
+    <node name="optical_flow_node" pkg="bmb_vision" type="optical_flow_node.py"
+          output="screen"/>
+    <node name="rail_detection_node" pkg="bmb_vision" type="rail_detection_node.py"
+          output="screen"/>
+</launch>

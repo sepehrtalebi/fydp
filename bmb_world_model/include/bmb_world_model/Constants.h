@@ -2,7 +2,7 @@
 
 #include <bmb_math/Vector3.h>
 #include <bmb_math/Matrix.h>
-#include <bmb_utilities/PIDGains.h>
+#include <bmb_utilities/ControllerGains.h>
 #include <bmb_msgs/SensorMeasurements.h>
 
 // TODO: move to yaml file and read from parameter server
@@ -78,17 +78,17 @@ static constexpr const double LIFT_GAIN_ELEVATOR = 1;
 static const Vector3<double> L_ELEVATOR{0, 0, 0}; // NOLINT(cert-err58-cpp)
 
 // Kalman filter constants
-constexpr static const size_t n = 25; // number of states
-constexpr static const size_t p = bmb_msgs::SensorMeasurements::SIZE; // number of sensor measurements
+static constexpr const size_t n = 25; // number of states
+static constexpr const size_t p = bmb_msgs::SensorMeasurements::SIZE; // number of sensor measurements
 
 //controller constants
-static const PIDGains THROTTLE_GAIN{1, 1, 1, 1};
-static const PIDGains ROLL_GAIN{1, 1, 1};
-static const PIDGains ELEVATOR_GAIN{1, 1, 1, 1};
-constexpr static const double PROPELLER_K_P = 1;
-static const PIDGains AILERON_GAIN{1, 1, 1, 1};
-static const PIDGains PITCH_GAIN{1, 1, 1};
-static const PIDGains ALTITUDE_GAIN{1, 1, 1};
+static const ControllerGains THROTTLE_GAIN{1, 1, 1, 1};
+static const ControllerGains ROLL_GAIN{1, 1, 1};
+static const ControllerGains ELEVATOR_GAIN{1, 1, 1, 1};
+static constexpr const double PROPELLER_K_P = 1;
+static const ControllerGains AILERON_GAIN{1, 1, 1, 1};
+static const ControllerGains PITCH_GAIN{1, 1, 1};
+static const ControllerGains ALTITUDE_GAIN{1, 1, 1};
 static constexpr const double BASELINE_VELOCITY = 10; //m/s
 static constexpr const double TRIM = 7 * M_PI / 180.0; //rad. This is used for sin of trim. Alternatively can use length ratios
 static constexpr const double SAMPLING_TIME = 1e-3; //s

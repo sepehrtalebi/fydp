@@ -1,9 +1,6 @@
 #include <bmb_math/Vector.h>
-// #include <bmb_differentiation/runtime/Expression.h>
-// #include <bmb_differentiation/runtime/Variable.h>
 
 #include <gtest/gtest.h>
-// #include <map>
 
 static int roundDown(const double &num) {
     return (int) num;
@@ -44,16 +41,6 @@ TEST(TestVector, testVector) {
 
     Vector<int, 5> test_sq_int = test.applyFunc<int>([](const double &d) { return (int) (d * d); });
     for (size_t i = 0; i < 5; i++) ASSERT_EQ(test_sq_int[i], (int) (test[i] * test[i]));
-
-    // TODO: move this test to bmb_differentiation and make bmb_math a test dependency
-//    Vector<ExprPtr, 3> expr{Variable::make("x"),
-//                            Variable::make("y"),
-//                            Variable::make("z")};
-//    const std::map<std::string, double> subs{{"x", 0},
-//                                             {"y", 1},
-//                                             {"z", 2}};
-//    Vector<double, 3> expr_sub = expr.applyFunc<double>([&subs](const ExprPtr &e) { return e->evaluate(subs); });
-//    for (size_t i = 0; i < 3; i++) assert(expr_sub[i] == i);
 }
 
 int main(int argc, char** argv) {
