@@ -9,6 +9,7 @@
 #include <bmb_controllers/PIDFFController.h>
 #include <ros/ros.h>
 #include <bmb_world_model/Constants.h>
+#include <tuple>
 
 using State = typename DubinsPath<double>::State;
 
@@ -35,7 +36,7 @@ bmb_msgs::StateCommand LocalPathPlanner::update(const bmb_msgs::AircraftState& s
     auto [should_replan, angular_vel] = pursuer.pursue(current_state);
     if (should_replan) {
         path = DubinsPath<double>::create(current_state, goal, MIN_RADIUS_CURVATURE);
-        result = pursuer.pursue(path, current_state);
+        std::tie(should_replan, angular_vel) = pursuer.pursue(path, current_state);
     }
     double vertical_force = altitude_pid.update(state_msg.pose.position.z - ref_cmd.altitude);
     double horizontal_force = MASS * x_vel * angular_vel;
