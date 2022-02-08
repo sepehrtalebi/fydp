@@ -18,15 +18,16 @@ void LocalPathPlanner::referenceCommandCallBack(bmb_msgs::ReferenceCommand ref_m
 }
 
 bmb_msgs::StateCommand LocalPathPlanner::update(const bmb_msgs::AircraftState& state_msg) {
+    const double& x_vel = state_msg.twist.linear.x;
     goal.pos[0] = ref_cmd.x_pos;
     goal.pos[1] = ref_cmd.y_pos;
     goal.vel[0] = ref_cmd.x_vel;
     goal.vel[1] = ref_cmd.y_vel;
     State current_state;
-    current_state.pos[0] = state_msg.x_pos;
-    current.pos[1] = state_msg.y_pos;
-    current_state.vel[0] = state_msg.x_vel;
-    current_state.vel[1] = state_msg.y_vel;
+    current_state.pos[0] = state_msg.pose.position.x;
+    current.pos[1] = state_msg.pose.position.y;
+    current_state.vel[0] = x_vel;
+    current_state.vel[1] = state_msg.twist.linear.y;
     if (update_dubins) {
         path = DubinsPath<T>::create(current_state, goal, MIN_RADIUS_CURVATURE);
         this->update_dubins =  false;
@@ -38,5 +39,5 @@ bmb_msgs::StateCommand LocalPathPlanner::update(const bmb_msgs::AircraftState& s
     }
     double ang_vel = result.angular_vel;
     double vertical_force = altitude_pid.update(state_msg.pose.position.z - ref_cmd.altitude);
-    double horizontal_force = MASS * state_msg.x_vel * ang_vel;
+    double horizontal_force = MASS * x_vel * ang_vel;
 }
