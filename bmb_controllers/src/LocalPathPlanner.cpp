@@ -10,16 +10,14 @@
 #include <ros/ros.h>
 #include <bmb_world_model/Constants.h>
 
-
 using State = typename DubinsPath<double>::State;
 
-void referenceCommandCallBack(bmb_msgs::ReferenceCommand ref_msg) {
+void LocalPathPlanner::referenceCommandCallBack(bmb_msgs::ReferenceCommand ref_msg) {
     this->ref_cmd = ref_msg;
     this->update_dubins = true;
 }
 
-
-bmb_msgs::StateCommand update(const bmb_msgs::AircraftState& state_msg) {
+bmb_msgs::StateCommand LocalPathPlanner::update(const bmb_msgs::AircraftState& state_msg) {
     goal.pos[0] = ref_cmd.x_pos;
     goal.pos[1] = ref_cmd.y_pos;
     goal.vel[0] = ref_cmd.x_vel;
