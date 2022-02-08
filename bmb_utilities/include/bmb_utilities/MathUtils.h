@@ -42,8 +42,21 @@ std::common_type_t<T1, T2, T3> saturation(const T1& value, const T2& min, const 
 }
 
 template <typename T>
-T squared(const T& val) {
+static constexpr T squared(const T& val) {
     return val * val;
 }
 
+template <typename T>
+static T modulo(const T& dividend, const T& divisor) {
+    return dividend - floor(dividend / divisor) * divisor;
+}
+
+template <typename T>
+static T magnitude(std::initializer_list<T> num_list) {
+    T mag;
+    size_t i = 0;
+    for (auto it = num_list.begin(); it != num_list.end(); it++)
+        mag += squared(*it);
+    return std::sqrt(mag);
+}
 }
