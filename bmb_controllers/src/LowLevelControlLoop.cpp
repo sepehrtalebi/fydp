@@ -31,11 +31,11 @@ bmb_msgs::ControlInputs LowLevelControlLoop::getControlInputs() {
   return control_inputs;
 }
 
-void aircraftStateCallback(const bmb_msgs::AircraftState& msg) {
+void LowLevelControlLoop::aircraftStateCallback(const bmb_msgs::AircraftState& msg) {
   latest_aircraft_state = msg;
 }
 
-void stateCommandCallback(const bmb_msgs::StateCommand& msg) {
+void LowLevelControlLoop::stateCommandCallback(const bmb_msgs::StateCommand& msg) {
   latest_state_command = msg;
 }
 
