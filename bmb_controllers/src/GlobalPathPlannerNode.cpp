@@ -28,13 +28,13 @@ GlobalPathPlannerNode::GlobalPathPlannerNode(ros::NodeHandle& nh) : waypoint_ind
         std::string       field;
         bmb_msgs::ReferenceCommand command;
 
-        // First column is x coord (latitude, north is positive)
+        // First column is x_pos
         std::getline(sep, field, ',');
-        command.latitude = std::stod(field);
+        command.x_pos = std::stod(field);
 
-        // Second column is y coord (longitude, east is positive)
+        // Second column is y_pos
         std::getline(sep, field, ',');
-        command.longitude = std::stod(field);
+        command.y_pos = std::stod(field);
 
         // Third column is x_vel
         std::getline(sep, field, ',');
@@ -55,7 +55,7 @@ GlobalPathPlannerNode::GlobalPathPlannerNode(ros::NodeHandle& nh) : waypoint_ind
 
 
 void GlobalPathPlannerNode::aircraftStateCallback(const bmb_msgs::AircraftState& msg) {
-    static constexpr double RADIUS_TOL_SQUARED = squared(RADIUS_TOL);
+    static constexpr double RADIUS_TOL_SQUARED = bmb_utilities::squared(RADIUS_TOL);
     const bmb_msgs::ReferenceCommand& command = reference_commands[waypoint_index];
     if (squared(msg.pose.position.x - command.x_pos) +
         squared(msg.pose.position.y - command.y_pos) +
