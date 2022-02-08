@@ -219,7 +219,7 @@ RationalFunction<T, std::max(n, p* m), m> operator+(
 
 template <typename T, size_t n, size_t m>
 RationalFunction<T, std::max(n, m), m> operator+(
-    const T& scalar, const RationalFunction<T, n, m>& rf) const {
+    const T& scalar, const RationalFunction<T, n, m>& rf) {
   return rf + scalar;
 }
 
@@ -231,6 +231,6 @@ RationalFunction<T, std::max(n, p* m), m> operator-(
 
 template <typename T, size_t n, size_t m>
 RationalFunction<T, std::max(n, m), m> operator-(
-    const T& scalar, const RationalFunction<T, n, m>& rf) const {
+    const T& scalar, const RationalFunction<T, n, m>& rf) {
   return -rf + scalar;
 }
