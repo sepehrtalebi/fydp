@@ -41,7 +41,7 @@ static const Vector<double, 2> STARTING_COORDINATES{43.47308029580669, -80.54007
 static const double EARTH_RADIUS =  6.3781e6; // m
 
 // aircraft inertial constants
-static constexpr const double MASS = 1; // aircraft mass, kg
+static constexpr const double MASS = 3.615; // aircraft mass, kg
 static const Vector3<double> WEIGHT{0, 0, MASS * GRAVITATIONAL_ACCELERATION}; // NOLINT(cert-err58-cpp)
 static const Matrix<double, 3, 3> INERTIA_TENSOR{1, 0, 0, 0, 1, 0, 0, 0, 1}; // NOLINT(cert-err58-cpp)
 static const Matrix<double, 3, 3> INERTIA_TENSOR_INV = INERTIA_TENSOR.inv(); // NOLINT(cert-err58-cpp)
@@ -55,6 +55,7 @@ static const Vector3<double> L_LEFT_AILERON{L_RIGHT_AILERON[0], -L_RIGHT_AILERON
 // aircraft body aerodynamic constants
 static constexpr const double DRAG_GAIN_BODY = 1;
 static constexpr const double LIFT_GAIN_BODY = 1;
+static constexpr const double MIN_RADIUS_CURVATURE = 30; //calculated to be 23.5 m, at 50 km/h
 // displacement of aerodynamic center of the body from the center of mass
 static const Vector3<double> L_BODY{0, 0, 0}; // NOLINT(cert-err58-cpp)
 
