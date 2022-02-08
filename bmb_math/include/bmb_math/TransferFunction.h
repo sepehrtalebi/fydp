@@ -8,23 +8,9 @@
 
 template <typename T, size_t n, size_t m>
 class TransferFunction: public RationalFunction<T, n, m> {
-    static_assert(m > 0);
-
     Vector<T, m> past_inputs;
     Vector<T, std::max<size_t>(m - 1, 0)> past_outputs;
     bool discretized;
-
-    T next_output(T input) {
-        assert(this->discretized);
-        T next_output = 0;
-        past_inputs = reallocate_push(past_inputs, input);
-        if (m > 1)
-            for (int i = 0; i < m - 1; i++) next_output -= this->denominator[i] * past_outputs[m - 2 - i];
-        for (int i = 0; i < m && i < n; i++) next_output += this->numerator[i] * past_inputs[m - 1 - i];
-        next_output /= this->denominator[m - 1];
-        past_outputs = reallocate_push(past_outputs, next_output);
-        return next_output;
-    }
 
     template<size_t p>
     static Vector<T, p> reallocate_push(const Vector<T, p> &other, T val) { //deletes pth element, inserts 0th element
@@ -97,11 +83,23 @@ public:
         return {discrete};
     }
 
+    T next_output(T input) {
+        static_assert(m > n);
+        assert(this->discretized);
+        T next_output = 0;
+        past_inputs = reallocate_push(past_inputs, input);
+        if (m > 1)
+            for (int i = 0; i < m - 1; i++) next_output -= this->denominator[i] * past_outputs[m - 2 - i];
+        for (int i = 0; i < m && i < n; i++) next_output += this->numerator[i] * past_inputs[m - 1 - i];
+        next_output /= this->denominator[m - 1];
+        past_outputs = reallocate_push(past_outputs, next_output);
+        return next_output;
+    }
+
     template<size_t output_size>
     Vector<T, output_size> step(T dt = 1E-4) {
         Vector<T, output_size> step_response;
         if (this->discretized) {
-            assert(m >= n);
             for (int i = 0; i < output_size; i++) {
                 step_response[i] = next_output(1);
             }
