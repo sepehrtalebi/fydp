@@ -70,32 +70,41 @@ Wrench<double> AppliedLoads::getElevatorLoads(const double &velocity) const {
     return {force, L_ELEVATOR.cross(force)};
 }
 
-Wrench<double> AppliedLoads::getEnvironmentalLoads(const bmb_msgs::AircraftState& state) {
-    Quaternion<double> quat{state.pose.orientation};
-    Vector3<double> weight = quat.rotate(WEIGHT);
+Wrench<double> AppliedLoads::getRudderLoads(const Vector3<double>& b_vel) const {
+  double sin_of_rudder_angle_of_attack = b_vel.y / b_vel.x;
+  double rudder_lift = -LIFT_GAIN_RUDDER * sin_of_rudder_angle_of_attack *
+                       (b_vel.x * b_vel.x + b_vel.y * b_vel.y);
+  Vector3<double> rudder_force{0, rudder_lift, 0};
+  return {rudder_force, L_RUDDER.cross(rudder_force)};
+}
 
-    Vector3<double> b_vel{state.twist.linear}; // body velocity
+Wrench<double> AppliedLoads::getBodyLoads(const Vector3<double>& b_vel) const {
+  double drag = -DRAG_GAIN_BODY * b_vel.x * b_vel.x;
+  double sin_of_angle_of_attack = b_vel.z / b_vel.x;
+  double lift = -LIFT_GAIN_BODY * sin_of_angle_of_attack * (b_vel.x * b_vel.x + b_vel.z + b_vel.z);
+  Vector3<double> body_force{drag, 0, lift};
+  return {body_force, L_BODY.cross(body_force)};
+}
 
-    double drag = -DRAG_GAIN_BODY * b_vel.x * b_vel.x;
-    double sin_of_angle_of_attack = b_vel.z / b_vel.x;
-    double lift = -LIFT_GAIN_BODY * sin_of_angle_of_attack * (b_vel.x * b_vel.x + b_vel.z + b_vel.z);
-    Vector3<double> body_force{drag, 0, lift};
+Wrench<double> AppliedLoads::getWingLoads(const Vector3<double>& b_vel) const {
+  // TODO: implement
+  return {};
+}
 
-    double sin_of_rudder_angle_of_attack = b_vel.y / b_vel.x;
-    double rudder_lift = -LIFT_GAIN_RUDDER * sin_of_rudder_angle_of_attack * (b_vel.x * b_vel.x + b_vel.y * b_vel.y);
-    Vector3<double> rudder_force{0, rudder_lift, 0};
-
-    Vector3<double> torque = L_BODY.cross(body_force) + L_RUDDER.cross(rudder_force);
-    return {weight + body_force + rudder_force, torque};
+Wrench<double> AppliedLoads::getGravitationalLoads(const Quaternion<double>& quat) const {
+  return {quat.rotate(WEIGHT), Vector3<double>{}};
 }
 
 Wrench<double> AppliedLoads::getAppliedLoads(const bmb_msgs::AircraftState& state) const {
-    const double& velocity = state.twist.linear.x;
+    const Vector3<double> b_vel{state.twist.linear};
+    const double& velocity = b_vel.x;
     return getPropellerLoads() +
            getRightAileronLoads(velocity) +
            getLeftAileronLoads(velocity) +
            getElevatorLoads(velocity) +
-           getEnvironmentalLoads(state);
+           getRudderLoads(b_vel) +
+           getBodyLoads(b_vel) +
+           getWingLoads(b_vel);
 }
 
 Matrix<double, 6, bmb_msgs::AircraftState::SIZE> AppliedLoads::getAppliedLoadsJacobian(const bmb_msgs::AircraftState& state) const {
