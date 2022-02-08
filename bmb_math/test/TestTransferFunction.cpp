@@ -17,9 +17,9 @@ constexpr bool AreSame(T a, T b)
 TEST(TestTransferFunction, testTransferFunction) {
     TransferFunction<double, 1, 3> P{4, 1, 2, 3};
     TransferFunction<double, 2, 4> C{3, 4, 5, 1, 4, 1};
-    TransferFunction<double, 2, 7> CP = C*P;
+    TransferFunction<double, 2, 6> CP = C*P;
     CP.print();
-    TransferFunction<double, 2, 7> truth{12, 16, 10, 12, 10, 25, 5, 12, 3};
+    TransferFunction<double, 2, 6> truth{12, 16, 5, 11, 21, 12, 14, 3};
     for (size_t i = 0; i < 4; i++)
         ASSERT_EQ(CP.numerator_data(i), truth.numerator_data(i));
     for (size_t i = 0; i < 4; i++)
