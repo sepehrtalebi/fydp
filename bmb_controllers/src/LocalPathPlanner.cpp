@@ -32,7 +32,7 @@ bmb_msgs::StateCommand LocalPathPlanner::update(const bmb_msgs::AircraftState& s
         path = DubinsPath<double>::create(current_state, goal, MIN_RADIUS_CURVATURE);
         this->update_dubins = false;
     }
-    auto [should_replan, angular_vel] = pursuer.pursue(path, current_state);
+    auto [should_replan, angular_vel] = pursuer.pursue(current_state);
     if (should_replan) {
         path = DubinsPath<double>::create(current_state, goal, MIN_RADIUS_CURVATURE);
         result = pursuer.pursue(path, current_state);
