@@ -32,8 +32,8 @@ public:
       if constexpr (n == m) std::cout << "Warning: do not use the output in an algebraic loop!";
     };
 
-    TransferFunction(const Polynomial<T, n> &numerator, const Polynomial<T, m> &denominator, bool discrete = false):
-            RationalFunction<T, n, m>(numerator, denominator), past_inputs(), past_outputs(), discretized(discrete) {
+    TransferFunction(const Polynomial<T, n> &numerator, const Polynomial<T, m> &denominator, const bool& discrete = false):
+            RationalFunction<T, n, m>(numerator, denominator), discretized(discrete) {
       if constexpr (n == m) std::cout << "Warning: do not use the output in an algebraic loop!";
     }
 
