@@ -1,4 +1,4 @@
-![total lines](https://img.shields.io/tokei/lines/github/amaarquadri/ekf)
+![total lines](https://img.shields.io/tokei/lines/github/amaarquadri/fydp)
 
 #Autonomous Rail Inspection System's Fourth Year Design Project
 An all-inclusive beach resort. Unscented and Extended Kalman Filters,
