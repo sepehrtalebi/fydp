@@ -6,9 +6,9 @@
 #include <bmb_msgs/ControlInputs.h>
 #include <bmb_msgs/StateCommand.h>
 
-class LowLevelControlLoop {
+class LowLevelControlLoopNode {
  public:
-  LowLevelControlLoop(ros::NodeHandle& nh, const double& update_frequency);
+  LowLevelControlLoopNode(ros::NodeHandle& nh, const double& update_frequency);
 
   void spin();
  private:

@@ -1,4 +1,4 @@
-#include "bmb_controllers/LowLevelControlLoop.h"
+#include "bmb_controllers/LowLevelControlLoopNode.h"
 #include <bmb_controllers/PIDFFController.h>
 #include <bmb_math/Quaternion.h>
 #include <bmb_msgs/AircraftState.h>
@@ -7,7 +7,7 @@
 #include <bmb_world_model/Constants.h>
 #include <bmb_utilities/ControllerGains.h>
 
-LowLevelControlLoop::LowLevelControlLoop(
+LowLevelControlLoopNode::LowLevelControlLoopNode(
     ros::NodeHandle& nh, const double& update_frequency) : update_frequency(update_frequency) {
   const double update_period = 1 / update_frequency;
   speed_pid = PIDFFController<double>{THROTTLE_GAIN, update_period};
@@ -16,15 +16,15 @@ LowLevelControlLoop::LowLevelControlLoop(
 
   // initialize subscribers
   aircraft_state_sub_ = nh.subscribe(
-      "aircraft_state", 1, &LowLevelControlLoop::aircraftStateCallback, this);
+      "aircraft_state", 1, &LowLevelControlLoopNode::aircraftStateCallback, this);
   state_command_sub_ = nh.subscribe(
-      "state_command", 1, &LowLevelControlLoop::stateCommandCallback, this);
+      "state_command", 1, &LowLevelControlLoopNode::stateCommandCallback, this);
 
   // initialize publishers
   control_inputs_pub_ = nh.advertise<bmb_msgs::ControlInputs>("control_inputs", 1);
 }
 
-bmb_msgs::ControlInputs LowLevelControlLoop::getControlInputs() {
+bmb_msgs::ControlInputs LowLevelControlLoopNode::getControlInputs() {
   const Quaternion<double> orientation{latest_aircraft_state.pose.orientation};
   const double pitch = orientation.getPitch();
   const double roll = orientation.getRoll();
@@ -38,15 +38,15 @@ bmb_msgs::ControlInputs LowLevelControlLoop::getControlInputs() {
   return control_inputs;
 }
 
-void LowLevelControlLoop::aircraftStateCallback(const bmb_msgs::AircraftState& msg) {
+void LowLevelControlLoopNode::aircraftStateCallback(const bmb_msgs::AircraftState& msg) {
   latest_aircraft_state = msg;
 }
 
-void LowLevelControlLoop::stateCommandCallback(const bmb_msgs::StateCommand& msg) {
+void LowLevelControlLoopNode::stateCommandCallback(const bmb_msgs::StateCommand& msg) {
   latest_state_command = msg;
 }
 
-void LowLevelControlLoop::spin() {
+void LowLevelControlLoopNode::spin() {
   ros::Rate rate{update_frequency};
   while (ros::ok()) {
     ros::spinOnce();
@@ -58,6 +58,6 @@ void LowLevelControlLoop::spin() {
 int main(int argc, char** argv) {
   ros::init(argc, argv, "bmb_low_level_control_loop");
   ros::NodeHandle nh;
-  LowLevelControlLoop control_loop{nh, 100};
-  control_loop.spin();
+  LowLevelControlLoopNode node{nh, 100};
+  node.spin();
 }

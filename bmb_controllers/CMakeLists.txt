@@ -149,7 +149,7 @@ add_executable(local_path_planner_node src/LocalPathPlannerNode.cpp)
 target_link_libraries(local_path_planner_node ${PROJECT_NAME} ${catkin_LIBRARIES})
 add_dependencies(local_path_planner_node ${catkin_EXPORTED_TARGETS})
 
-add_executable(low_level_control_loop_node src/LowLevelControlLoop.cpp)
+add_executable(low_level_control_loop_node src/LowLevelControlLoopNode.cpp)
 target_link_libraries(low_level_control_loop_node ${PROJECT_NAME} ${catkin_LIBRARIES})
 add_dependencies(low_level_control_loop_node ${catkin_EXPORTED_TARGETS})
 
