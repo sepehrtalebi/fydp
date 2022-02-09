@@ -1,0 +1,2 @@
+float64 x_pixel_velocity
+float64 y_pixel_velocity
