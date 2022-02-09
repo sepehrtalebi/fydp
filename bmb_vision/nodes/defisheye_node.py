@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 
 import rospy
-from bmb_vision.rail_detection_helper import RailDetectionHelper
+from bmb_vision.defisheye import Defisheye
 
 
 def main():
-    rospy.init_node("rail_detection_node")
-    rail_detection_helper = RailDetectionHelper()
-    rail_detection_helper.spin()
+    rospy.init_node("defisheye_node")
+    defisheye = Defisheye()
+    defisheye.spin()
 
 
 if __name__ == '__main__':
