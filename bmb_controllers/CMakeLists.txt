@@ -145,7 +145,7 @@ add_executable(global_path_planner_node src/GlobalPathPlannerNode.cpp)
 target_link_libraries(global_path_planner_node ${PROJECT_NAME} ${catkin_LIBRARIES})
 add_dependencies(global_path_planner_node ${catkin_EXPORTED_TARGETS})
 
-add_executable(local_path_planner_node src/LocalPathPlannerControlLoop.cpp)
+add_executable(local_path_planner_node src/LocalPathPlannerNode.cpp)
 target_link_libraries(local_path_planner_node ${PROJECT_NAME} ${catkin_LIBRARIES})
 add_dependencies(local_path_planner_node ${catkin_EXPORTED_TARGETS})
 
