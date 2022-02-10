@@ -22,7 +22,7 @@ public:
             RationalFunction<T, n, m>(numerator, denominator) {}
 
     static TransferFunction<T, std::max(n, m), std::max(n, m)> getDiscreteFromContinuousCoefficients(
-        const Polynomial<T, n>& num, const Polynomail<T, m>& den, const T& dt) {
+        const Polynomial<T, n>& num, const Polynomial<T, m>& den, const T& dt) {
       return TransferFunction<T, n, m>{num, den}.discretize(dt);
     }
 
