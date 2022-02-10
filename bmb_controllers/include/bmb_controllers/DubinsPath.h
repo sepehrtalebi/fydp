@@ -204,6 +204,14 @@ class DubinsPath {
   using iterator = Path::iterator;
   using const_iterator = Path::const_iterator;
 
+  /**
+   * This constructor will create this DubinsPath with unspecified data inside
+   * of it. It is the caller's responsibility to handle this.
+   */
+  DubinsPath() = default;
+
+  explicit DubinsPath(const Path& path) : path(path) {}
+
   DubinsPath(const DubinsPath<T>& other) { (*this) = other; }
 
   DubinsPath& operator=(const DubinsPath<T>& other) {
@@ -292,10 +300,6 @@ class DubinsPath {
   static const Matrix<T, 2, 2> ROT_90_CCW;
 
   Path path;
-
-  DubinsPath() = default;
-
-  explicit DubinsPath(const Path& path) : path(path) {}
 
   /**
    *
