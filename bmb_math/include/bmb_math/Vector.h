@@ -152,6 +152,10 @@ public:
         return sum;
     }
 
+    /**
+     * If scalar overlaps with any of the elements of this Vector,
+     * then the result is undefined behaviour.
+     */
     void operator+=(const double &scalar) {
         for (size_t i = 0; i < n; i++) data[i] += scalar;
     }
@@ -186,6 +190,10 @@ public:
         return sum;
     }
 
+    /**
+     * If scalar overlaps with any of the elements of this Vector,
+     * then the result is undefined behaviour.
+     */
     void operator-=(const double &scalar) {
         for (size_t i = 0; i < n; i++) data[i] -= scalar;
     }
@@ -197,6 +205,10 @@ public:
         return product;
     }
 
+    /**
+     * If scalar overlaps with any of the elements of this Vector,
+     * then the result is undefined behaviour.
+     */
     void operator*=(const T &scalar) {
         for (size_t i = 0; i < n; i++) data[i] *= scalar;
     }
@@ -219,6 +231,10 @@ public:
         return product;
     }
 
+    /**
+     * If scalar overlaps with any of the elements of this Vector,
+     * then the result is undefined behaviour.
+     */
     void operator/=(const T &scalar) {
         for (size_t i = 0; i < n; i++) data[i] /= scalar;
     }
