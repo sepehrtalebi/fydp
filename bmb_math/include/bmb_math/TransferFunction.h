@@ -20,7 +20,7 @@ public:
     TransferFunction() = default;
 
     TransferFunction(std::initializer_list<T> elements)
-        : RationalFunction(elements) {}
+        : RationalFunction<T, n, m>(elements) {}
 
     TransferFunction(const Polynomial<T, n> &numerator, const Polynomial<T, m> &denominator) :
             RationalFunction<T, n, m>(numerator, denominator) {}
