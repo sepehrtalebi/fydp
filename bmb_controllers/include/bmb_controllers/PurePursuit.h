@@ -8,6 +8,12 @@
 template <typename T>
 class PurePursuit {
  public:
+  /**
+   * This constructor will create this PurePursuit with unspecified data inside
+   * of it. It is the caller's responsibility to handle this.
+   */
+  PurePursuit() = default;
+
   PurePursuit(const T& lookahead_time, const T& min_radius,
               const DubinsPath<T>& path)
       : lookahead_time(lookahead_time), min_radius(min_radius), path(path) {}
