@@ -38,6 +38,7 @@ void LocalPathPlannerNode::referenceCommandCallback(
 }
 
 bmb_msgs::StateCommand LocalPathPlannerNode::getStateCommand() {
+  using State = DubinsPath<double>::State;
   State current_state{latest_aircraft_state};
   State goal{latest_reference_command};
 
