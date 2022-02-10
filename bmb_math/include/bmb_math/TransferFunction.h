@@ -87,7 +87,7 @@ public:
     }
 
     template<size_t output_size>
-    Vector<T, output_size> step() const {
+    Vector<T, output_size> step() {
         Vector<T, output_size> step_response;
         for (size_t i = 0; i < output_size; i++)
           step_response[i] = next_output(static_cast<T>(1));
