@@ -24,6 +24,9 @@ class DubinsPath {
 
     State() = default;
 
+    State(const Vector<T, 2>& pos, const Vector<T, 2>& vel)
+        : pos(pos), vel(vel) {}
+
     State(const bmb_msgs::AircraftState& msg) {
       pos[0] = msg.pose.position.x;
       pos[1] = msg.pose.position.y;
