@@ -42,10 +42,10 @@ bmb_msgs::StateCommand LocalPathPlannerNode::getStateCommand() {
   State current_state{latest_aircraft_state};
   State goal{latest_reference_command};
 
-  if (update_dubins) {
+  if (update_dubins_path) {
     path =
         DubinsPath<double>::create(current_state, goal, MIN_RADIUS_CURVATURE);
-    update_dubins = false;
+    update_dubins_path = false;
   }
   auto [should_replan, angular_vel] = pursuer.pursue(current_state);
   if (should_replan) {
@@ -59,7 +59,7 @@ bmb_msgs::StateCommand LocalPathPlannerNode::getStateCommand() {
 
   const double& x_vel = latest_aircraft_state.twist.linear.x;
   const double vertical_force = altitude_pid.update(
-      latest_aircraft_state.pose.position.z, ref_cmd.altitude);
+      latest_aircraft_state.pose.position.z, latest_reference_command.altitude);
   const double horizontal_force =
       MASS * x_vel * angular_vel;  // Centripetal force
   const double net_force = std::hypot(horizontal_force, vertical_force);
