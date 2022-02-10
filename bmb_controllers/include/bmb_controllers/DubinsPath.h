@@ -200,6 +200,10 @@ class DubinsPath {
     static constexpr size_t NUM_SAMPLES = 100;
   };
 
+  using Path = std::array<Curve, 3>;
+  using iterator = Path::iterator;
+  using const_iterator = Path::const_iterator;
+
   DubinsPath(const DubinsPath<T>& other) { (*this) = other; }
 
   DubinsPath& operator=(const DubinsPath<T>& other) {
@@ -270,20 +274,6 @@ class DubinsPath {
     for (size_t i = 0; i < 3; i++) path[i].toCSV(out);
   }
 
- private:
-  using Vector2 = Vector<T, 2>;
-  using Path = std::array<Curve, 3>;
-  static const Matrix<T, 2, 2> ROT_90_CW;
-  static const Matrix<T, 2, 2> ROT_90_CCW;
-  using iterator = typename Path::iterator;
-  using const_iterator = typename Path::const_iterator;
-
-  Path path;
-
-  DubinsPath() = default;
-
-  explicit DubinsPath(const Path& path) : path(path) {}
-
   iterator begin() { return path.begin(); }
 
   iterator end() { return path.end(); }
@@ -291,6 +281,21 @@ class DubinsPath {
   const_iterator begin() const { return path.begin(); }
 
   const_iterator end() const { return path.end; }
+
+  const_iterator cbegin() const { return path.begin(); }
+
+  const_iterator cend() const { return path.end; }
+
+ private:
+  using Vector2 = Vector<T, 2>;
+  static const Matrix<T, 2, 2> ROT_90_CW;
+  static const Matrix<T, 2, 2> ROT_90_CCW;
+
+  Path path;
+
+  DubinsPath() = default;
+
+  explicit DubinsPath(const Path& path) : path(path) {}
 
   /**
    *
