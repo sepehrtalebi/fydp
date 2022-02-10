@@ -1,25 +1,25 @@
 #pragma once
 
 #include <bmb_differentiation/runtime/Constant.h>
-
-#include <unordered_map>
 #include <memory>
 #include <string>
+#include <unordered_map>
 
 class Zero : public Constant {
-public:
-    static const ConstPtr INSTANCE;
+ public:
+  static const ConstPtr INSTANCE;
 
-    Zero(const Zero &) = delete;
+  Zero(const Zero&) = delete;
 
-    void operator=(const Zero &) = delete;
+  void operator=(const Zero&) = delete;
 
-    [[nodiscard]] ExprPtr subs(const std::unordered_map<std::string, ExprPtr> &subs) const override;
+  [[nodiscard]] ExprPtr subs(
+      const std::unordered_map<std::string, ExprPtr>& subs) const override;
 
-    [[nodiscard]] ExprPtr simplify() const override;
+  [[nodiscard]] ExprPtr simplify() const override;
 
-    [[nodiscard]] std::string toStr() const override;
+  [[nodiscard]] std::string toStr() const override;
 
-private:
-    Zero() noexcept : Constant(0) {}
+ private:
+  Zero() noexcept : Constant(0) {}
 };

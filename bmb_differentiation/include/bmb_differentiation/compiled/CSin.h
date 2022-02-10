@@ -23,13 +23,13 @@ using sine_t = typename sine<T>::type;
 /**
  * Returns true if T is an instance of sine and false otherwise.
  */
-template<typename T>
+template <typename T>
 struct is_sine : std::false_type {};
 
-template<typename T>
+template <typename T>
 struct is_sine<sine<T>> : std::true_type {};
 
-template<typename T>
+template <typename T>
 inline constexpr bool is_sine_v = is_sine<T>::value;
 
 }  // namespace compiled

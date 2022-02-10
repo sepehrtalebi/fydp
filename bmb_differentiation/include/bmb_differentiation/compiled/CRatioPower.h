@@ -29,11 +29,13 @@ inline constexpr bool is_ratio_one_v = is_ratio_one<R>::value;
 
 /**
  * Returns true if T1 ^ T2 can be represented as a std::ratio using ratio_power.
- * If either of T1 or T2 are not instances of std::ratio, then false is returned.
+ * If either of T1 or T2 are not instances of std::ratio, then false is
+ * returned.
  */
 template <typename T1, typename T2>
 struct can_ratio_power {
-  // return false in the default case where T1 and T2 are not instances of std::ratio
+  // return false in the default case where T1 and T2 are not instances of
+  // std::ratio
   static constexpr bool value = false;
 };
 
@@ -68,6 +70,7 @@ template <typename R1, typename R2>
 struct ratio_power {
   static_assert(can_ratio_power_v<R1, R2>,
                 "Result cannot be computed as an std::ratio!");
+
  private:
   static constexpr auto impl() {
     // 0 ^ 0 -> 1

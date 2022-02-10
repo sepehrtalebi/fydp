@@ -23,13 +23,13 @@ using cosine_t = typename cosine<T>::type;
 /**
  * Returns true if T is an instance of cosine and false otherwise.
  */
-template<typename T>
+template <typename T>
 struct is_cosine : std::false_type {};
 
-template<typename T>
+template <typename T>
 struct is_cosine<cosine<T>> : std::true_type {};
 
-template<typename T>
+template <typename T>
 inline constexpr bool is_cosine_v = is_cosine<T>::value;
 
 }  // namespace compiled

@@ -2,9 +2,9 @@
 
 #include <bmb_differentiation/compiled/CCos.h>
 #include <bmb_differentiation/compiled/CDerivative.h>
-#include <bmb_differentiation/compiled/CHigherDerivative.h>
 #include <bmb_differentiation/compiled/CDifference.h>
 #include <bmb_differentiation/compiled/CExp.h>
+#include <bmb_differentiation/compiled/CHigherDerivative.h>
 #include <bmb_differentiation/compiled/CLog.h>
 #include <bmb_differentiation/compiled/CPower.h>
 #include <bmb_differentiation/compiled/CProduct.h>
@@ -12,7 +12,6 @@
 #include <bmb_differentiation/compiled/CSimplify.h>
 #include <bmb_differentiation/compiled/CSin.h>
 #include <bmb_differentiation/compiled/CSum.h>
-
 #include <type_traits>
 
 namespace compiled {
@@ -24,8 +23,8 @@ template <typename T>
 using deep_simplify_t = typename deep_simplify<T>::type;
 
 template <typename T>
-struct deep_simplify<T, std::enable_if_t<!is_fully_simplified_v<T>>> :
-    deep_simplify<simplify_t<T>> {};
+struct deep_simplify<T, std::enable_if_t<!is_fully_simplified_v<T>>>
+    : deep_simplify<simplify_t<T>> {};
 
 // operator overloading
 
@@ -34,12 +33,12 @@ inline constexpr deep_simplify_t<sum_t<L, R>> operator+(L, R) {
   return {};
 }
 
-template<typename R>
+template <typename R>
 inline constexpr double operator+(Constant<R>, const double& d) {
   return Constant<R>::value + d;
 }
 
-template<typename R>
+template <typename R>
 inline constexpr double operator+(const double& d, Constant<R>) {
   return d + Constant<R>::value;
 }
@@ -49,12 +48,12 @@ inline constexpr deep_simplify_t<difference_t<L, R>> operator-(L, R) {
   return {};
 }
 
-template<typename R>
+template <typename R>
 inline constexpr double operator-(Constant<R>, const double& d) {
   return Constant<R>::value - d;
 }
 
-template<typename R>
+template <typename R>
 inline constexpr double operator-(const double& d, Constant<R>) {
   return d - Constant<R>::value;
 }
@@ -64,12 +63,12 @@ inline constexpr deep_simplify_t<product_t<L, R>> operator*(L, R) {
   return {};
 }
 
-template<typename R>
+template <typename R>
 inline constexpr double operator*(Constant<R>, const double& d) {
   return Constant<R>::value * d;
 }
 
-template<typename R>
+template <typename R>
 inline constexpr double operator*(const double& d, Constant<R>) {
   return d * Constant<R>::value;
 }
@@ -79,22 +78,22 @@ inline constexpr deep_simplify_t<quotient_t<N, D>> operator/(N, D) {
   return {};
 }
 
-template<typename R>
+template <typename R>
 inline constexpr double operator/(Constant<R>, const double& d) {
   return Constant<R>::value / d;
 }
 
-template<typename R>
+template <typename R>
 inline constexpr double operator/(const double& d, Constant<R>) {
   return d / Constant<R>::value;
 }
 
-template<typename T>
+template <typename T>
 inline constexpr deep_simplify_t<T> operator+(T) {
   return {};
 }
 
-template<typename T>
+template <typename T>
 inline constexpr deep_simplify_t<product_t<MinusOne, T>> operator-(T) {
   return {};
 }
@@ -124,12 +123,12 @@ inline constexpr deep_simplify_t<power_t<B, E>> pow(B, E) {
   return {};
 }
 
-template<typename R>
+template <typename R>
 inline constexpr double pow(Constant<R>, const double& d) {
   return std::pow(Constant<R>::value, d);
 }
 
-template<typename R>
+template <typename R>
 inline constexpr double pow(const double& d, Constant<R>) {
   return std::pow(d, Constant<R>::value);
 }

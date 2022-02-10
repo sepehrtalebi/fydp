@@ -4,8 +4,8 @@
 #include <bmb_utilities/ConstexprUtils.h>
 #include <bmb_utilities/MathUtils.h>
 #include <algorithm>
-#include <iostream>
 #include <initializer_list>
+#include <iostream>
 #include <vector>
 
 template <typename T, size_t n, size_t m>

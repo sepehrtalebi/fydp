@@ -23,13 +23,13 @@ using quotient_t = typename quotient<N, D>::type;
 /**
  * Returns true if T is an instance of quotient and false otherwise.
  */
-template<typename T>
+template <typename T>
 struct is_quotient : std::false_type {};
 
-template<typename L, typename R>
+template <typename L, typename R>
 struct is_quotient<quotient<L, R>> : std::true_type {};
 
-template<typename T>
+template <typename T>
 inline constexpr bool is_quotient_v = is_quotient<T>::value;
 
 }  // namespace compiled

@@ -1,10 +1,9 @@
-#include <bmb_differentiation/compiled/TypeArray.h>
-#include <bmb_differentiation/compiled/CDeepSimplify.h>
 #include <bmb_differentiation/compiled/CConstant.h>
-
+#include <bmb_differentiation/compiled/CDeepSimplify.h>
+#include <bmb_differentiation/compiled/TypeArray.h>
 #include <gtest/gtest.h>
 
-template<typename T1, typename T2>
+template <typename T1, typename T2>
 auto f(T1 state, T2 dt) {
   using namespace compiled;
 

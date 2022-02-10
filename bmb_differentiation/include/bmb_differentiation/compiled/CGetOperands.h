@@ -3,7 +3,6 @@
 #include <bmb_differentiation/compiled/CDifference.h>
 #include <bmb_differentiation/compiled/CProduct.h>
 #include <bmb_differentiation/compiled/CSum.h>
-
 #include <type_traits>
 
 namespace compiled {

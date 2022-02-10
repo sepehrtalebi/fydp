@@ -30,25 +30,27 @@ inline constexpr unsigned int getNodeCount(T) {
  * Computes the type with the smallest node_count of all input types.
  * In the case of a tie, the first such candidate is selected
  */
-template<typename ...Ts>
+template <typename... Ts>
 struct get_smallest_node_count;
 
-template<typename ...Ts>
+template <typename... Ts>
 using get_smallest_node_count_t = typename get_smallest_node_count<Ts...>::type;
 
-template<typename T>
+template <typename T>
 struct get_smallest_node_count<T> {
-    using type = T;
+  using type = T;
 };
 
-template<typename T, typename ...Ts>
+template <typename T, typename... Ts>
 struct get_smallest_node_count<T, Ts...> {
-private:
-    using Ts_smallest_type = get_smallest_node_count_t<Ts...>;
-    static constexpr unsigned int Ts_node_count = node_count_v<Ts_smallest_type>;
-    static constexpr unsigned int T_node_count = node_count_v<T>;
-public:
-    using type = std::conditional_t<T_node_count <= Ts_node_count, T, Ts_smallest_type>;
+ private:
+  using Ts_smallest_type = get_smallest_node_count_t<Ts...>;
+  static constexpr unsigned int Ts_node_count = node_count_v<Ts_smallest_type>;
+  static constexpr unsigned int T_node_count = node_count_v<T>;
+
+ public:
+  using type =
+      std::conditional_t<T_node_count <= Ts_node_count, T, Ts_smallest_type>;
 };
 
 // node_count implementations for different types
@@ -68,15 +70,16 @@ struct node_count<sum<L, R>> {
   static constexpr unsigned int value = node_count_v<L> + node_count_v<R> + 1;
 };
 
-template<typename T, typename ...Ts>
+template <typename T, typename... Ts>
 struct node_count<multi_sum<T, Ts...>> {
-  static constexpr unsigned int value = node_count_v<T> + node_count_v<multi_sum_t<Ts...>> + 1;
+  static constexpr unsigned int value =
+      node_count_v<T> + node_count_v<multi_sum_t<Ts...>> + 1;
 };
 
-template<typename T>
+template <typename T>
 struct node_count<multi_sum<T>> : node_count<T> {};
 
-template<>
+template <>
 struct node_count<multi_sum<>> {
   static constexpr unsigned int value = 1;
 };

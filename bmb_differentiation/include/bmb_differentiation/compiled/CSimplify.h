@@ -14,7 +14,6 @@
 #include <bmb_differentiation/compiled/CSin.h>
 #include <bmb_differentiation/compiled/CSum.h>
 #include <bmb_differentiation/compiled/CVariable.h>
-
 #include <type_traits>
 
 namespace compiled {
@@ -270,7 +269,8 @@ constexpr auto simplify(T /** value **/) {
     // C1 ^ C2 -> C3, if it is simplifiable
     if constexpr (is_constant_v<base> && is_constant_v<exponent> &&
                   can_ratio_power_v<get_ratio_t<base>, get_ratio_t<exponent>>)
-      return Constant<ratio_power_t<get_ratio_t<base>, get_ratio_t<exponent>>>{};
+      return Constant<
+          ratio_power_t<get_ratio_t<base>, get_ratio_t<exponent>>>{};
     // B ^ 0 -> 1
     else if constexpr (std::is_same_v<exponent, Zero>)
       return One{};
@@ -285,7 +285,8 @@ constexpr auto simplify(T /** value **/) {
       return One{};
     // (B ^ E1) ^ E2 -> B ^ (E1 * E2)
     else if constexpr (is_power_v<base>) {
-      using combined_exponent = product_t<REC(get_exponent_t<base>), REC(exponent)>;
+      using combined_exponent =
+          product_t<REC(get_exponent_t<base>), REC(exponent)>;
       return simplify(power_t<REC(get_base_t<base>), REC(combined_exponent)>{});
     }
     // default case

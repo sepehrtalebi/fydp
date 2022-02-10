@@ -20,8 +20,8 @@ class Polynomial {
   Polynomial() = default;
 
   Polynomial(std::initializer_list<T> elements) {
-    // Function caller must ensure the number of arguments matches the template argument
-    // Excess arguments will be ignored
+    // Function caller must ensure the number of arguments matches the template
+    // argument. Excess arguments will be ignored
     size_t i = 0;
     for (auto it = elements.begin(); i < n && it != elements.end(); it++)
       data[i++] = *it;
@@ -36,7 +36,8 @@ class Polynomial {
   }
 
   template <size_t m>
-  Polynomial(const Polynomial<T, m>& other) {  // NOLINT(google-explicit-constructor)
+  Polynomial(
+      const Polynomial<T, m>& other) {  // NOLINT(google-explicit-constructor)
     *this = other;
   }
 
@@ -118,9 +119,7 @@ class Polynomial {
     for (size_t i = 0; i < m; i++) this->data[i] += other[i];
   }
 
-  void operator+=(const T& scalar) {
-    data[0] += scalar;
-  }
+  void operator+=(const T& scalar) { data[0] += scalar; }
 
   template <size_t m>
   Polynomial<T, std::max(n, m)> operator-(const Polynomial<T, m>& other) const {
@@ -147,9 +146,7 @@ class Polynomial {
     for (size_t i = 0; i < m; i++) this->data[i] -= other[i];
   }
 
-  void operator-=(const T& scalar) {
-    data[0] -= scalar;
-  }
+  void operator-=(const T& scalar) { data[0] -= scalar; }
 
   template <size_t m>
   Polynomial<T, m + n - 1> operator*(const Polynomial<T, m>& other) const {
@@ -179,45 +176,29 @@ class Polynomial {
     for (size_t i = 0; i < n; i++) data[i] /= scalar;
   }
 
-  const T& operator[](const size_t& idx) const {
-    return data[idx];
-  }
+  const T& operator[](const size_t& idx) const { return data[idx]; }
 
-  T& operator[](const size_t& idx) {
-    return data[idx];
-  }
+  T& operator[](const size_t& idx) { return data[idx]; }
 
-  iterator begin() {
-    return data.begin();
-  }
+  iterator begin() { return data.begin(); }
 
-  iterator end() {
-    return data.end();
-  }
+  iterator end() { return data.end(); }
 
-  const_iterator begin() const {
-    return data.begin();
-  }
+  const_iterator begin() const { return data.begin(); }
 
-  const_iterator end() const {
-    return data.end();
-  }
+  const_iterator end() const { return data.end(); }
 
-  const_iterator cbegin() const {
-    return data.begin();
-  }
+  const_iterator cbegin() const { return data.begin(); }
 
-  const_iterator cend() const {
-    return data.end();
-  }
+  const_iterator cend() const { return data.end(); }
 };
 
-template<typename T, size_t n>
+template <typename T, size_t n>
 Polynomial<T, n> operator+(const T& scalar, const Polynomial<T, n>& poly) {
   return poly + scalar;
 }
 
-template<typename T, size_t n>
+template <typename T, size_t n>
 Polynomial<T, n> operator-(const T& scalar, const Polynomial<T, n>& poly) {
   return (-poly) + scalar;
 }

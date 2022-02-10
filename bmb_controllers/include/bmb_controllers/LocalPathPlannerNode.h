@@ -1,9 +1,9 @@
 #pragma once
 
-#include <ros/ros.h>
 #include <bmb_msgs/AircraftState.h>
 #include <bmb_msgs/ReferenceCommand.h>
 #include <bmb_msgs/StateCommand.h>
+#include <ros/ros.h>
 
 class LocalPathPlannerNode {
  public:

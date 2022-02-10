@@ -1,8 +1,8 @@
 #include "bmb_controllers/LocalPathPlannerNode.h"
-#include <ros/ros.h>
 #include <bmb_msgs/AircraftState.h>
 #include <bmb_msgs/ReferenceCommand.h>
 #include <bmb_msgs/StateCommand.h>
+#include <ros/ros.h>
 
 LocalPathPlannerNode::LocalPathPlannerNode(ros::NodeHandle& nh,
                                            const double& update_frequency)
@@ -10,20 +10,19 @@ LocalPathPlannerNode::LocalPathPlannerNode(ros::NodeHandle& nh,
   // initialize subscribers
   aircraft_state_sub_ = nh.subscribe(
       "aircraft_state", 1, &LocalPathPlannerNode::aircraftStateCallback, this);
-  reference_command_sub_ = nh.subscribe(
-      "reference_command", 1, &LocalPathPlannerNode::referenceCommandCallback, this);
+  reference_command_sub_ =
+      nh.subscribe("reference_command", 1,
+                   &LocalPathPlannerNode::referenceCommandCallback, this);
 
   // initialize publishers
   state_command_pub_ = nh.advertise<bmb_msgs::StateCommand>("state_command", 1);
 }
 
-void LocalPathPlannerNode::aircraftStateCallback(const bmb_msgs::AircraftState& msg) {
+void LocalPathPlannerNode::aircraftStateCallback(
+    const bmb_msgs::AircraftState& msg) {}
 
-}
-
-void LocalPathPlannerNode::referenceCommandCallback(const bmb_msgs::ReferenceCommand& msg) {
-
-}
+void LocalPathPlannerNode::referenceCommandCallback(
+    const bmb_msgs::ReferenceCommand& msg) {}
 
 void LocalPathPlannerNode::spin() {
   ros::Rate rate{update_frequency};
