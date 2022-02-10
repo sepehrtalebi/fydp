@@ -41,6 +41,11 @@ TEST(TestVector, testVector) {
 
     Vector<int, 5> test_sq_int = test.applyFunc<int>([](const double &d) { return (int) (d * d); });
     for (size_t i = 0; i < 5; i++) ASSERT_EQ(test_sq_int[i], (int) (test[i] * test[i]));
+
+    Vector<int, 2> c{2, 8};
+    c /= c[0];
+    ASSERT_EQ(c[0], 1);
+    ASSERT_EQ(c[0], 4);
 }
 
 int main(int argc, char** argv) {
