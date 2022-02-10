@@ -6,6 +6,7 @@
 #include <array>
 #include <cassert>
 #include <iostream>
+#include <initializer_list>
 
 template <typename T, size_t n, size_t m>
 class TransferFunction: public RationalFunction<T, n, m> {
@@ -17,6 +18,9 @@ class TransferFunction: public RationalFunction<T, n, m> {
     Vector<T, m - 1> past_outputs;
 public:
     TransferFunction() = default;
+
+    TransferFunction(std::initializer_list<T> elements)
+        : RationalFunction(elements) {}
 
     TransferFunction(const Polynomial<T, n> &numerator, const Polynomial<T, m> &denominator) :
             RationalFunction<T, n, m>(numerator, denominator) {}
