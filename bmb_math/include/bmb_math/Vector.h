@@ -116,12 +116,12 @@ public:
     }
 
     Vector<T, n - 1> popFront() const {
-      assert(n > 0, "No elements to pop!");
+      assert(n > 0);
       return slice<1>();
     }
 
     Vector<T, n - 1> popBack() const {
-      assert(n > 0, "No elements to pop!");
+      assert(n > 0);
       return slice<0, n - 1>();
     }
 
