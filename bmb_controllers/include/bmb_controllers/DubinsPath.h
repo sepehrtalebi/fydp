@@ -25,8 +25,8 @@ class DubinsPath {
     State() = default;
 
     State(const bmb_msgs::AircraftState& msg) {
-      pos[0] = msg.pose.linear.x;
-      pos[1] = msg.pose.linear.y;
+      pos[0] = msg.pose.position.x;
+      pos[1] = msg.pose.position.y;
       vel[0] = msg.twist.linear.x;
       vel[1] = msg.twist.linear.y;
     }
