@@ -1,15 +1,14 @@
 #include <bmb_math/Quaternion.h>
-
 #include <gtest/gtest.h>
 
 TEST(TestQuaternion, testQuaternion) {
-    Quaternion<double> first = Quaternion<double>::identity();
-    Quaternion<double> second{};
-    second = first;
-    second.q1 = 1;
-    ASSERT_EQ(first.q1, 0);
-    ASSERT_EQ(second.q0, 1);
-    ASSERT_EQ(second.q1, 1);
+  Quaternion<double> first = Quaternion<double>::identity();
+  Quaternion<double> second{};
+  second = first;
+  second.q1 = 1;
+  ASSERT_EQ(first.q1, 0);
+  ASSERT_EQ(second.q0, 1);
+  ASSERT_EQ(second.q1, 1);
 }
 
 int main(int argc, char** argv) {

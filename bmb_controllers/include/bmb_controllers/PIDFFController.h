@@ -11,7 +11,6 @@ class PIDFFController {
   TransferFunction<T, 2, 2> D;
 
  public:
-
   PIDFFController() = default;
 
   PIDFFController(const ControllerGains& gains, const double& dt)
@@ -24,7 +23,8 @@ class PIDFFController {
         TransferFunction<T, 2, 2>{
             Polynomial<T, 2>{-2 * gains.N, 2 * gains.N},
             Polynomial<T, 2>{
-                gains.N * dt - 2, gains.N * dt + 2}};  // discrete version of Ns/(s + N)
+                gains.N * dt - 2,
+                gains.N * dt + 2}};  // discrete version of Ns/(s + N)
   }
 
   PIDFFController<double>& operator=(const PIDFFController<double>& other) {
@@ -36,6 +36,7 @@ class PIDFFController {
 
   T update(const T& actual, const T& expected) {
     const double error = actual - expected;
-    return gains.kp * error + I.next_output(error) + D.next_output(error) + gains.kff * actual;
+    return gains.kp * error + I.next_output(error) + D.next_output(error) +
+           gains.kff * actual;
   }
 };

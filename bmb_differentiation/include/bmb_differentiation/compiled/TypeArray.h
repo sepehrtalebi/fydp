@@ -2,19 +2,18 @@
 
 #include <bmb_differentiation/compiled/CConstant.h>
 #include <bmb_differentiation/compiled/CVariable.h>
-
 #include <cstddef>
+#include <stdexcept>
 #include <tuple>
 #include <type_traits>
 #include <utility>
-#include <stdexcept>
 
 namespace compiled {
 
 /**
  * Represents an index into a TypeArray
  */
-template<size_t i>
+template <size_t i>
 struct TypeArrayIndex {
   using type = TypeArrayIndex<i>;
   static constexpr size_t value = i;
@@ -23,10 +22,10 @@ struct TypeArrayIndex {
 /**
  * Compile time array of types.
  */
-template<typename ...Ts>
+template <typename... Ts>
 struct TypeArray;
 
-template<typename T, typename ...Ts>
+template <typename T, typename... Ts>
 struct TypeArray<T, Ts...> {
   using type = TypeArray<T, Ts...>;
 
@@ -35,8 +34,10 @@ struct TypeArray<T, Ts...> {
    */
   template <size_t i>
   constexpr auto operator[](TypeArrayIndex<i>) {
-    if constexpr (i == 0) return T{};
-    else return TypeArray<Ts...>{}[TypeArrayIndex<i - 1>{}];
+    if constexpr (i == 0)
+      return T{};
+    else
+      return TypeArray<Ts...>{}[TypeArrayIndex<i - 1>{}];
   }
 
   /**
@@ -56,19 +57,22 @@ struct TypeArray<T, Ts...> {
   }
 
   /**
-   * Returns a copy of this array with the given type added at the specified index.
+   * Returns a copy of this array with the given type added at the specified
+   * index.
    */
   template <size_t i, typename V>
   constexpr auto set(TypeArrayIndex<i>, V) {
-    if constexpr (i == 0) return TypeArray<V, Ts...>{};
+    if constexpr (i == 0)
+      return TypeArray<V, Ts...>{};
     else {
-      using rec = decltype(TypeArray<Ts...>{}.set(TypeArrayIndex<i - 1>{}, std::declval<V>()));
+      using rec = decltype(
+          TypeArray<Ts...>{}.set(TypeArrayIndex<i - 1>{}, std::declval<V>()));
       return decltype(rec{}.push_head(std::declval<T>())){};
     }
   }
 };
 
-template<>
+template <>
 struct TypeArray<> {
   using type = TypeArray<>;
 
@@ -96,39 +100,39 @@ struct TypeArray<> {
 /**
  * Constructs a TypeArray consisting of n Zeros
  */
-template<size_t n>
+template <size_t n>
 struct get_zeros_type_array {
   using type = decltype(get_zeros_type_array<n - 1>{}.push_head(Zero{}));
 };
 
-template<>
+template <>
 struct get_zeros_type_array<0> : TypeArray<> {};
 
-template<size_t n>
+template <size_t n>
 using get_zeros_type_array_t = typename get_zeros_type_array<n>::type;
 
 /**
  * Constructs a TypeArray of size n consisting of
  * Variable<0>, Variable<1>, ... Variable<n - 1>.
  */
-template<size_t n>
+template <size_t n>
 struct get_variables_type_array;
 
-template<size_t n>
+template <size_t n>
 using get_variables_type_array_t = typename get_variables_type_array<n>::type;
 
-template<size_t n>
+template <size_t n>
 struct get_variables_type_array {
   using type = decltype(
       get_variables_type_array_t<n - 1>{}.push_tail(Variable<n - 1>{}));
 };
 
-template<>
+template <>
 struct get_variables_type_array<0> : TypeArray<> {};
 
-template<char... cs>
-constexpr TypeArrayIndex<parse_size_t_v<cs...>> operator "" _i() {
+template <char... cs>
+constexpr TypeArrayIndex<parse_size_t_v<cs...>> operator"" _i() {
   return {};
 }
 
-}
+}  // namespace compiled

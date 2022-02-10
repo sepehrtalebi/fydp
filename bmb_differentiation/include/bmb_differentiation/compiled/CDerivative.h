@@ -5,14 +5,13 @@
 #include <bmb_differentiation/compiled/CDifference.h>
 #include <bmb_differentiation/compiled/CExp.h>
 #include <bmb_differentiation/compiled/CLog.h>
+#include <bmb_differentiation/compiled/CMultiSum.h>
 #include <bmb_differentiation/compiled/CPower.h>
 #include <bmb_differentiation/compiled/CProduct.h>
 #include <bmb_differentiation/compiled/CQuotient.h>
 #include <bmb_differentiation/compiled/CSin.h>
 #include <bmb_differentiation/compiled/CSum.h>
-#include <bmb_differentiation/compiled/CMultiSum.h>
 #include <bmb_differentiation/compiled/CVariable.h>
-
 #include <cstddef>
 
 namespace compiled {
@@ -49,15 +48,16 @@ struct derivative<id, sum<L, R>> {
   using type = sum_t<derivative_t<id, L>, derivative_t<id, R>>;
 };
 
-template<size_t id, typename T, typename ...Ts>
+template <size_t id, typename T, typename... Ts>
 struct derivative<id, multi_sum<T, Ts...>> {
-  using type = multi_sum_t<derivative_t<id, T>, derivative_t<id, multi_sum_t<Ts...>>>;
+  using type =
+      multi_sum_t<derivative_t<id, T>, derivative_t<id, multi_sum_t<Ts...>>>;
 };
 
-template<size_t id, typename T>
+template <size_t id, typename T>
 struct derivative<id, multi_sum<T>> : derivative<id, T> {};
 
-template<size_t id>
+template <size_t id>
 struct derivative<id, multi_sum<>> : Zero {};
 
 // difference

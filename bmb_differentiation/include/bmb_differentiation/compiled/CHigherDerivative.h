@@ -1,7 +1,6 @@
 #pragma once
 
 #include <bmb_differentiation/compiled/CDerivative.h>
-
 #include <cstddef>
 
 namespace compiled {

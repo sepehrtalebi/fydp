@@ -1,16 +1,17 @@
 #pragma once
 
-#include <ros/ros.h>
 #include <bmb_controllers/PIDFFController.h>
 #include <bmb_msgs/AircraftState.h>
 #include <bmb_msgs/ControlInputs.h>
 #include <bmb_msgs/StateCommand.h>
+#include <ros/ros.h>
 
 class LowLevelControlLoopNode {
  public:
   LowLevelControlLoopNode(ros::NodeHandle& nh, const double& update_frequency);
 
   void spin();
+
  private:
   bmb_msgs::ControlInputs getControlInputs();
 

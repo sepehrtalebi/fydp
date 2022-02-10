@@ -1,7 +1,8 @@
 #pragma once
 
 struct ControllerGains {
-  // proportional, integral, derivative, feed forward, derivative low pass filter coefficient
+  // proportional, integral, derivative, feed forward, derivative low pass
+  // filter coefficient
   double kp, ki, kd, kff, N;
 
   ControllerGains(const double& kp = 0, const double& ki = 0,

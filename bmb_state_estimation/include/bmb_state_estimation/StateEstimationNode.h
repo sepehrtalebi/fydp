@@ -1,8 +1,8 @@
 #pragma once
 
+#include <bmb_msgs/ControlInputs.h>
 #include <bmb_msgs/OpticalFlowReading.h>
 #include <bmb_msgs/RailDetection.h>
-#include <bmb_msgs/ControlInputs.h>
 #include <bmb_state_estimation/UKF.h>
 #include <ros/ros.h>
 #include <sensor_msgs/FluidPressure.h>

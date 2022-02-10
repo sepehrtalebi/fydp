@@ -11,15 +11,13 @@ namespace bmb_utilities {
  * where i is the loop variable which is constexpr.
  */
 template <int start, int stop, int step = 1, class F>
-constexpr void constexprFor(F&& f)
-{
+constexpr void constexprFor(F&& f) {
   static_assert(step != 0);
 
-  if constexpr (step > 0 && start < stop || step < 0 && start > stop)
-  {
-    f(std::integral_constant<size_t , start>());
+  if constexpr (step > 0 && start < stop || step < 0 && start > stop) {
+    f(std::integral_constant<size_t, start>());
     constexprFor<start + step, stop, step>(f);
   }
 }
 
-} // namespace bmb_utilities
+}  // namespace bmb_utilities

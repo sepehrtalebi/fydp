@@ -7,4 +7,4 @@ namespace bmb_world_model {
 
 Accel<double> toAccel(const Wrench<double>& wrench);
 
-} // namespace bmb_world_model
+}  // namespace bmb_world_model
