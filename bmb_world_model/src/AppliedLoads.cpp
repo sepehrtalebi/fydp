@@ -84,8 +84,7 @@ Wrench<double> AppliedLoads::getElevatorLoads(const double& velocity) const {
   return {force, L_ELEVATOR.cross(force)};
 }
 
-Wrench<double> AppliedLoads::getRudderLoads(
-    const Vector3<double>& b_vel) const {
+Wrench<double> AppliedLoads::getRudderLoads(const Vector3<double>& b_vel) {
   double sin_of_rudder_angle_of_attack = b_vel.y / b_vel.x;
   double rudder_lift = -LIFT_GAIN_RUDDER * sin_of_rudder_angle_of_attack *
                        (b_vel.x * b_vel.x + b_vel.y * b_vel.y);
@@ -93,7 +92,7 @@ Wrench<double> AppliedLoads::getRudderLoads(
   return {rudder_force, L_RUDDER.cross(rudder_force)};
 }
 
-Wrench<double> AppliedLoads::getBodyLoads(const Vector3<double>& b_vel) const {
+Wrench<double> AppliedLoads::getBodyLoads(const Vector3<double>& b_vel) {
   double drag = -DRAG_GAIN_BODY * b_vel.x * b_vel.x;
   double sin_of_angle_of_attack = b_vel.z / b_vel.x;
   double lift = -LIFT_GAIN_BODY * sin_of_angle_of_attack *
@@ -102,13 +101,13 @@ Wrench<double> AppliedLoads::getBodyLoads(const Vector3<double>& b_vel) const {
   return {body_force, L_BODY.cross(body_force)};
 }
 
-Wrench<double> AppliedLoads::getWingLoads(const Vector3<double>& b_vel) const {
+Wrench<double> AppliedLoads::getWingLoads(const Vector3<double>& b_vel) {
   // TODO: implement
   return {};
 }
 
 Wrench<double> AppliedLoads::getGravitationalLoads(
-    const Quaternion<double>& quat) const {
+    const Quaternion<double>& quat) {
   return {quat.rotate(WEIGHT), Vector3<double>{}};
 }
 
