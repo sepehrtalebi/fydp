@@ -1,5 +1,8 @@
 #pragma once
 
+#include <bmb_controllers/DubinsPath.h>
+#include <bmb_controllers/PIDFFController.h>
+#include <bmb_controllers/PurePursuit.h>
 #include <bmb_msgs/AircraftState.h>
 #include <bmb_msgs/ReferenceCommand.h>
 #include <bmb_msgs/StateCommand.h>
@@ -16,7 +19,18 @@ class LocalPathPlannerNode {
 
   void referenceCommandCallback(const bmb_msgs::ReferenceCommand& msg);
 
+  bmb_msgs::StateCommand getStateCommand(const bmb_msgs::AircraftState& state);
+
+  DubinsPath<double> path;
+  bool update_dubins_path{false};
+  PurePursuit<double> pursuer;
+  PIDFFController<double> altitude_pid;
+
   double update_frequency;
+  bmb_msgs::AircraftState latest_aircraft_state;
+  bmb_msgs::ReferenceCommand latest_reference_command;
+
+  // subscribers and publishers
   ros::Subscriber aircraft_state_sub_;
   ros::Subscriber reference_command_sub_;
   ros::Publisher state_command_pub_;
