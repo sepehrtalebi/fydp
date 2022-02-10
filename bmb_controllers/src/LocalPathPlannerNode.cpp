@@ -45,12 +45,14 @@ bmb_msgs::StateCommand LocalPathPlannerNode::getStateCommand() {
   if (update_dubins_path) {
     path =
         DubinsPath<double>::create(current_state, goal, MIN_RADIUS_CURVATURE);
+    pursuer.updatePath(path);
     update_dubins_path = false;
   }
   auto [should_replan, angular_vel] = pursuer.pursue(current_state);
   if (should_replan) {
     path =
         DubinsPath<double>::create(current_state, goal, MIN_RADIUS_CURVATURE);
+    pursuer.updatePath(path);
     std::tie(should_replan, angular_vel) = pursuer.pursue(current_state);
 #if DEBUG
     assert(!should_replan);
