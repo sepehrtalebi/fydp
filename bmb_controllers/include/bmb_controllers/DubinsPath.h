@@ -3,6 +3,8 @@
 #include <bmb_math/Matrix.h>
 #include <bmb_math/Utility.h>
 #include <bmb_math/Vector.h>
+#include <bmb_msgs/AircraftState.h>
+#include <bmb_msgs/ReferenceCommand.h>
 #include <algorithm>
 #include <array>
 #include <cmath>
@@ -19,6 +21,29 @@ class DubinsPath {
   struct State {
     Vector<T, 2> pos;
     Vector<T, 2> vel;
+
+    State() = default;
+
+    State(const bmb_msgs::AircraftState& msg) {
+      pos[0] = msg.pose.linear.x;
+      pos[1] = msg.pose.linear.y;
+      vel[0] = msg.twist.linear.x;
+      vel[1] = msg.twist.linear.y;
+    }
+
+    State(const bmb_msgs::ReferenceCommand& msg) {
+      pos[0] = msg.x_pos;
+      pos[1] = msg.y_pos;
+      vel[0] = msg.x_vel;
+      vel[1] = msg.y_vel;
+    }
+
+    State& operator=(const State& other) {
+      pos = other.pos;
+      vel = other.vel;
+    }
+
+    State(const State& other) { (*this) = other; }
   };
 
   struct Curve {
