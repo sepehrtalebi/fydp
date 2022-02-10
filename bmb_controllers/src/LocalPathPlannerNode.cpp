@@ -72,6 +72,9 @@ void LocalPathPlannerNode::spin() {
   ros::Rate rate{update_frequency};
   while (ros::ok()) {
     ros::spinOnce();
+    // TODO: what happens during first few iterations when
+    //  latest_reference_command and latest_aircraft_state have not yet been set
+    //  for the first time
     state_command_pub_.publish(getStateCommand(latest_aircraft_state));
     rate.sleep();
   }
