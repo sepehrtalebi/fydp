@@ -9,6 +9,9 @@
 
 template <typename T, size_t n, size_t m>
 class RationalFunction {
+  static_assert(n != 0 && m != 0,
+                "Numerator and denominator must have at least 1 element!");
+
  protected:
   Polynomial<T, n> numerator;
   Polynomial<T, m> denominator;
@@ -69,6 +72,15 @@ class RationalFunction {
 
   const T& denominator_data(const size_t& den_index) const {
     return denominator[den_index];
+  }
+
+  void normalize() {
+    // divide num and den by highest order denominator coefficient
+    const double& factor = denominator[m - 1];
+    if (factor != 0) {
+      numerator /= denominator[m - 1];
+      denominator /= denominator[m - 1];
+    }
   }
 
   template <size_t p>
