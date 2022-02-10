@@ -44,6 +44,7 @@ class DubinsPath {
     State& operator=(const State& other) {
       pos = other.pos;
       vel = other.vel;
+      return (*this);
     }
 
     State(const State& other) { (*this) = other; }
