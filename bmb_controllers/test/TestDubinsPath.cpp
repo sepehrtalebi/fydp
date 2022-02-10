@@ -1,4 +1,5 @@
 #include <bmb_controllers/DubinsPath.h>
+#include <bmb_math/Vector.h>
 #include <gtest/gtest.h>
 #include <ros/package.h>
 #include <fstream>
