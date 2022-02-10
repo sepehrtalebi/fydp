@@ -19,7 +19,7 @@ class LocalPathPlannerNode {
 
   void referenceCommandCallback(const bmb_msgs::ReferenceCommand& msg);
 
-  bmb_msgs::StateCommand getStateCommand(const bmb_msgs::AircraftState& state);
+  bmb_msgs::StateCommand getStateCommand();
 
   DubinsPath<double> path;
   bool update_dubins_path{false};
