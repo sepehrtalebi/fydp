@@ -45,7 +45,7 @@ TEST(TestVector, testVector) {
     Vector<int, 2> c{2, 8};
     c /= c[0];
     ASSERT_EQ(c[0], 1);
-    ASSERT_EQ(c[0], 4);
+    ASSERT_EQ(c[1], 4);
 }
 
 int main(int argc, char** argv) {
