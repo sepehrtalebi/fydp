@@ -201,8 +201,8 @@ class DubinsPath {
   };
 
   using Path = std::array<Curve, 3>;
-  using iterator = Path::iterator;
-  using const_iterator = Path::const_iterator;
+  using iterator = typename Path::iterator;
+  using const_iterator = typename Path::const_iterator;
 
   /**
    * This constructor will create this DubinsPath with unspecified data inside
