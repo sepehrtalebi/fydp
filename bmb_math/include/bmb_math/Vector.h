@@ -4,6 +4,7 @@
 
 #include <array>
 #include <initializer_list>
+#include <cassert>
 #include <cmath>
 #include <functional>
 #include <string>
@@ -98,6 +99,38 @@ public:
         Vector<R, n> result;
         for (size_t i = 0; i < n; i++) result[i] = func(data[i]);
         return result;
+    }
+
+    Vector<T, n + 1> pushFront(const T& value) const {
+      Vector<T, n + 1> result;
+      result[0] = value;
+      for (size_t i = 0; i < n; i++) result[i + 1] = data[i];
+      return result;
+    }
+
+    Vector<T, n + 1> pushBack(const T& value) const {
+      Vector<T, n + 1> result;
+      for (size_t i = 0; i < n; i++) result[i] = data[i];
+      result[n] = value;
+      return result;
+    }
+
+    Vector<T, n - 1> popFront() const {
+      assert(n > 0, "No elements to pop!");
+      return slice<1>();
+    }
+
+    Vector<T, n - 1> popBack() const {
+      assert(n > 0, "No elements to pop!");
+      return slice<0, n - 1>();
+    }
+
+    Vector<T, n> pushFrontPopBack(const T& value) const {
+        return pushFront(value).popBack();
+    }
+
+    Vector<T, n> pushBackPopFront(const T& value) const {
+      return pushBack(value).popFront();
     }
 
     Vector<T, n> operator+(const Vector<T, n> &other) const {
