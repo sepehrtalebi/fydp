@@ -1,14 +1,16 @@
 #include <bmb_controllers/DubinsPath.h>
+#include <bmb_math/Vector.h>
 #include <gtest/gtest.h>
 #include <ros/package.h>
 #include <fstream>
 
 TEST(TestDubinsPath, testDubinsPath) {
+  using State = DubinsPath<double>::State;
   const std::string directory =
       ros::package::getPath("bmb_controllers") + "/test/output/";
   using Vector2 = Vector<double, 2>;
-  DubinsPath<double>::State start = {Vector2{0, 0}, Vector2{0, 1}};
-  DubinsPath<double>::State goal = {Vector2{10, 0}, Vector2{0, -1}};
+  State start{Vector2{0, 0}, Vector2{0, 1}};
+  State goal{Vector2{10, 0}, Vector2{0, -1}};
   static constexpr double radius = 1;
   DubinsPath<double> path = DubinsPath<double>::create(start, goal, radius);
   ASSERT_TRUE(path[0].is_turning && path[0].isRightTurn() &&
@@ -22,7 +24,7 @@ TEST(TestDubinsPath, testDubinsPath) {
   path.toCSV(out1);
   out1.close();
 
-  goal = {Vector2{5, 3}, Vector2{-1, 2}};
+  goal = State{Vector2{5, 3}, Vector2{-1, 2}};
   path = DubinsPath<double>::create(start, goal, radius);
   std::ofstream out2(directory + "dubins_path2.csv");
   ASSERT_TRUE(out2);

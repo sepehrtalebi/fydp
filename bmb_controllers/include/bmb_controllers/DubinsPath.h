@@ -3,6 +3,8 @@
 #include <bmb_math/Matrix.h>
 #include <bmb_math/Utility.h>
 #include <bmb_math/Vector.h>
+#include <bmb_msgs/AircraftState.h>
+#include <bmb_msgs/ReferenceCommand.h>
 #include <algorithm>
 #include <array>
 #include <cmath>
@@ -19,6 +21,33 @@ class DubinsPath {
   struct State {
     Vector<T, 2> pos;
     Vector<T, 2> vel;
+
+    State() = default;
+
+    State(const Vector<T, 2>& pos, const Vector<T, 2>& vel)
+        : pos(pos), vel(vel) {}
+
+    State(const bmb_msgs::AircraftState& msg) {
+      pos[0] = msg.pose.position.x;
+      pos[1] = msg.pose.position.y;
+      vel[0] = msg.twist.linear.x;
+      vel[1] = msg.twist.linear.y;
+    }
+
+    State(const bmb_msgs::ReferenceCommand& msg) {
+      pos[0] = msg.x_pos;
+      pos[1] = msg.y_pos;
+      vel[0] = msg.x_vel;
+      vel[1] = msg.y_vel;
+    }
+
+    State& operator=(const State& other) {
+      pos = other.pos;
+      vel = other.vel;
+      return (*this);
+    }
+
+    State(const State& other) { (*this) = other; }
   };
 
   struct Curve {
@@ -175,6 +204,18 @@ class DubinsPath {
     static constexpr size_t NUM_SAMPLES = 100;
   };
 
+  using Path = std::array<Curve, 3>;
+  using iterator = typename Path::iterator;
+  using const_iterator = typename Path::const_iterator;
+
+  /**
+   * This constructor will create this DubinsPath with unspecified data inside
+   * of it. It is the caller's responsibility to handle this.
+   */
+  DubinsPath() = default;
+
+  explicit DubinsPath(const Path& path) : path(path) {}
+
   DubinsPath(const DubinsPath<T>& other) { (*this) = other; }
 
   DubinsPath& operator=(const DubinsPath<T>& other) {
@@ -245,20 +286,6 @@ class DubinsPath {
     for (size_t i = 0; i < 3; i++) path[i].toCSV(out);
   }
 
- private:
-  using Vector2 = Vector<T, 2>;
-  using Path = std::array<Curve, 3>;
-  static const Matrix<T, 2, 2> ROT_90_CW;
-  static const Matrix<T, 2, 2> ROT_90_CCW;
-  using iterator = typename Path::iterator;
-  using const_iterator = typename Path::const_iterator;
-
-  Path path;
-
-  DubinsPath() = default;
-
-  explicit DubinsPath(const Path& path) : path(path) {}
-
   iterator begin() { return path.begin(); }
 
   iterator end() { return path.end(); }
@@ -266,6 +293,17 @@ class DubinsPath {
   const_iterator begin() const { return path.begin(); }
 
   const_iterator end() const { return path.end; }
+
+  const_iterator cbegin() const { return path.begin(); }
+
+  const_iterator cend() const { return path.end; }
+
+ private:
+  using Vector2 = Vector<T, 2>;
+  static const Matrix<T, 2, 2> ROT_90_CW;
+  static const Matrix<T, 2, 2> ROT_90_CCW;
+
+  Path path;
 
   /**
    *

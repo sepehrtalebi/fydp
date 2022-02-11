@@ -38,13 +38,15 @@ class AppliedLoads {
 
   [[nodiscard]] Wrench<double> getElevatorLoads(const double& velocity) const;
 
-  [[nodiscard]] Wrench<double> getRudderLoads(
-      const Vector3<double>& b_vel) const;
+  [[nodiscard]] static Wrench<double> getRudderLoads(
+      const Vector3<double>& b_vel);
 
-  [[nodiscard]] Wrench<double> getBodyLoads(const Vector3<double>& b_vel) const;
+  [[nodiscard]] static Wrench<double> getBodyLoads(
+      const Vector3<double>& b_vel);
 
-  [[nodiscard]] Wrench<double> getWingLoads(const Vector3<double>& b_vel) const;
+  [[nodiscard]] static Wrench<double> getWingLoads(
+      const Vector3<double>& b_vel);
 
-  [[nodiscard]] Wrench<double> getGravitationalLoads(
-      const Quaternion<double>& quat) const;
+  [[nodiscard]] static Wrench<double> getGravitationalLoads(
+      const Quaternion<double>& quat);
 };

@@ -3,6 +3,12 @@
 #include <cstddef>
 #include <type_traits>
 
+/**
+ * If set to true, then certain debug only check may be turned on in the code.
+ * If set to false, then these checks will be removed for efficiency.
+ */
+#define DEBUG 1
+
 namespace bmb_utilities {
 
 /**

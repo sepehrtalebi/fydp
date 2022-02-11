@@ -8,6 +8,12 @@
 template <typename T>
 class PurePursuit {
  public:
+  /**
+   * This constructor will create this PurePursuit with unspecified data inside
+   * of it. It is the caller's responsibility to handle this.
+   */
+  PurePursuit() = default;
+
   PurePursuit(const T& lookahead_time, const T& min_radius,
               const DubinsPath<T>& path)
       : lookahead_time(lookahead_time), min_radius(min_radius), path(path) {}
@@ -21,6 +27,8 @@ class PurePursuit {
    * the commanded angular velocity
    */
   std::pair<bool, T> pursue(const typename DubinsPath<T>::State& state) const {
+    // TODO: can this be a stateless free global function?
+
     // Pursuit algorithm roughly based off of this article:
     // https://dingyan89.medium.com/three-methods-of-vehicle-lateral-control-pure-pursuit-stanley-and-mpc-db8cc1d32081
     Vector2 ideal_target = state.pos + state.vel * lookahead_time;
