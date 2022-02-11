@@ -212,17 +212,17 @@ install(TARGETS global_path_planner_node local_path_planner_node low_level_contr
 
 ## Add gtest based cpp test target and link libraries
 catkin_add_gtest(TestDubinsPath test/TestDubinsPath.cpp)
-# if(TARGET TestDubinsPath)
-#   target_link_libraries(TestDubinsPath ${PROJECT_NAME})
-# endif()
+if(TARGET TestDubinsPath)
+  target_link_libraries(TestDubinsPath ${catkin_LIBRARIES})
+endif()
 catkin_add_gtest(TestPID test/TestPID.cpp)
-# if(TARGET TestPID)
-#   target_link_libraries(TestPID ${PROJECT_NAME})
-# endif()
+if(TARGET TestPID)
+  target_link_libraries(TestPID ${catkin_LIBRARIES})
+endif()
 catkin_add_gtest(TestPurePursuit test/TestPurePursuit.cpp)
-# if(TARGET TestPurePursuit)
-#   target_link_libraries(TestPurePursuit ${PROJECT_NAME})
-# endif()
+if(TARGET TestPurePursuit)
+  target_link_libraries(TestPurePursuit ${catkin_LIBRARIES})
+endif()
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
