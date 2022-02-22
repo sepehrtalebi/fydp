@@ -146,6 +146,10 @@ add_executable(state_estimation_node src/StateEstimationNode.cpp)
 target_link_libraries(state_estimation_node ${PROJECT_NAME} ${catkin_LIBRARIES})
 add_dependencies(state_estimation_node ${catkin_EXPORTED_TARGETS})
 
+add_executable(omniscient_state_estimation_node src/OmniscientStateEstimationNode.cpp)
+target_link_libraries(omniscient_state_estimation_node ${PROJECT_NAME} ${catkin_LIBRARIES})
+add_dependencies(omniscient_state_estimation_node ${catkin_EXPORTED_TARGETS})
+
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use
