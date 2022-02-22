@@ -10,7 +10,7 @@ class OmniscientStateEstimationNode {
   void spin();
 
  private:
-  void modelStatesCallback(const gazebo_msgs::ModelsStates& msg);
+  void modelStatesCallback(const gazebo_msgs::ModelStates& msg);
 
   // Subscriber Objects (need to keep in scope)
   ros::Subscriber model_states_sub_;

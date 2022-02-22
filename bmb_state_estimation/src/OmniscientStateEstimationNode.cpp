@@ -15,11 +15,11 @@ OmniscientStateEstimationNode::OmniscientStateEstimationNode(ros::NodeHandle& nh
       nh.advertise<bmb_msgs::AircraftState>("/aircraft_state", 1);
 }
 
-OmniscientStateEstimationNode::spin() {
+void OmniscientStateEstimationNode::spin() {
   ros::spin();
 }
 
-OmniscientStateEstimationNode::modelStatesCallback(const gazebo_msgs::ModelsStates& msg) {
+void OmniscientStateEstimationNode::modelStatesCallback(const gazebo_msgs::ModelStates& msg) {
   for (size_t i = 0; i < msg.name.size(); i++) {
     if (msg.name[i] == "aris") {
       bmb_msgs::AircraftState state;
