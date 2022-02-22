@@ -116,7 +116,7 @@ static void imu(const Quaternion<double>& quat,
 static void gps(const Vector3<double>& position,
                 bmb_msgs::SensorMeasurements& sensor_measurements) {
   // Based on: https://www.movable-type.co.uk/scripts/latlong.html
-  double rect_dist = sqrt(position.x * position.x + position.y * position.y);
+  const double rect_dist = std::hypot(position.x, position.y);
   sensor_measurements.gps_reading.latitude =
       asin(sin(STARTING_COORDINATES[0]) * cos(rect_dist / EARTH_RADIUS) +
            cos(STARTING_COORDINATES[0]) * sin(rect_dist / EARTH_RADIUS) *
