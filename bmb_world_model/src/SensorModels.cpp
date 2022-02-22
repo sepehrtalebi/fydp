@@ -83,9 +83,9 @@ static void opticalFlow(const Vector3<double>& velocity, const double& altitude,
 
 static void altitudeSensor(const double& altitude,
                            bmb_msgs::SensorMeasurements& sensor_measurements) {
-  // temperature is a function of height and also location and also time of year
-  // so this might change
-  double temperature = 288.15;  // K
+  // temperature is a function of height, location and time of year so this
+  // might change
+  static constexpr double temperature = 288.15;  // K
   sensor_measurements.pressure_reading.fluid_pressure =
       ATMOSPHERIC_PRESSURE * exp(-GRAVITATIONAL_ACCELERATION * AIR_MOLAR_MASS *
                                  altitude / (GAS_CONSTANT * temperature));
