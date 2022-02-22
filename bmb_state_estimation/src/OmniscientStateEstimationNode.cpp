@@ -29,3 +29,10 @@ void OmniscientStateEstimationNode::modelStatesCallback(const gazebo_msgs::Model
     }
   }
 }
+
+int main(int argc, char** argv) {
+  ros::init(argc, argv, "omnsicient_state_estimation_node");
+  ros::NodeHandle nh;
+  OmniscientStateEstimationNode node{nh};
+  node.spin();
+}
