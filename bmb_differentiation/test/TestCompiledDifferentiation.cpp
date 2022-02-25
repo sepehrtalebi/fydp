@@ -64,7 +64,7 @@ TEST(TestCompiledDifferentiation, testCompiledDifferentiation) {
   ASSERT_EQUAL(123e-4_c, 0.0123_c);
   ASSERT_EQUAL(123e0_c, 123_c);
   ASSERT_EQUAL(123e01_c, 1230_c);
-  
+
   static_assert(getNodeCount(3_c + 0_c) == 1);
   static_assert(getNodeCount(3_c + 2_c) == 1);
   static_assert(getNodeCount(x + y) == 3);

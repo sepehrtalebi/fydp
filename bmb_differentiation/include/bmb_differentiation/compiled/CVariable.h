@@ -35,7 +35,7 @@ inline constexpr bool is_variable_v = is_variable<T>::value;
  * Parses the given char sequence into a size_t.
  * The char sequence can be any valid natural number.
  */
-template<char... cs>
+template <char... cs>
 struct parse_size_t {
  private:
   using R = parse_ratio_t<cs...>;
@@ -48,7 +48,7 @@ struct parse_size_t {
   static constexpr size_t value = static_cast<size_t>(R::num);
 };
 
-template<char... cs>
+template <char... cs>
 inline constexpr size_t parse_size_t_v = parse_size_t<cs...>::value;
 
 template <char... cs>

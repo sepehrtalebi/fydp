@@ -90,24 +90,25 @@ struct parse_ratio<'.', cs...> {
       std::ratio_multiply<std::ratio<10>, typename parse_ratio<cs...>::power>>;
 };
 
-template<char... cs>
+template <char... cs>
 struct parse_ratio<'\'', cs...> : parse_ratio<cs...> {};
 
-template<char... cs>
+template <char... cs>
 struct parse_ratio<'-', cs...> {
   // no need to define power in this case, since it should never be used
   // this is because the preceding character will always be an 'e' or 'E'
   using type = std::ratio_multiply<std::ratio<-1>, parse_ratio_t<cs...>>;
 };
 
-template<char... cs>
+template <char... cs>
 struct parse_ratio<'e', cs...> {
-  using power = ratio_power_t<std::ratio<10>,
-      std::ratio_subtract<parse_ratio_t<cs...>, std::ratio<1>>>;
+  using power =
+      ratio_power_t<std::ratio<10>,
+                    std::ratio_subtract<parse_ratio_t<cs...>, std::ratio<1>>>;
   using type = std::ratio<0>;
 };
 
-template<char...cs>
+template <char... cs>
 struct parse_ratio<'E', cs...> : parse_ratio<'e', cs...> {};
 
 template <char c, char... cs>
