@@ -9,8 +9,12 @@ add_compile_options(-std=c++17)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   roscpp
+  gazebo_ros
   bmb_msgs
 )
+
+# Depend on system install of Gazebo
+find_package(gazebo REQUIRED)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -103,7 +107,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES bmb_gazebo
-  CATKIN_DEPENDS roscpp bmb_msgs
+  CATKIN_DEPENDS roscpp gazebo_ros bmb_msgs
 #  DEPENDS system_lib
 )
 
@@ -111,17 +115,23 @@ catkin_package(
 ## Build ##
 ###########
 
+link_directories(${GAZEBO_LIBRARY_DIRS})
+
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-# include
+ include
   ${catkin_INCLUDE_DIRS}
+  ${GAZEBO_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
 #   src/${PROJECT_NAME}/bmb_gazebo.cpp
 # )
+
+add_library(${PROJECT_NAME} src/ARISGazeboPlugin.cpp)
+target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES} ${GAZEBO_LIBRARIES})
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
