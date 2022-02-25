@@ -56,7 +56,7 @@ void SimSensorsNode::modelStatesCallback(const gazebo_msgs::ModelStates& msg) {
       imu_pub_.publish(measurements.imu_reading);
       gps_pub_.publish(measurements.gps_reading);
       rail_detection_pub_.publish(measurements.rail_detection);
-      optical_flow_pub_.publish(measurements.optical_flow);
+      optical_flow_pub_.publish(measurements.optical_flow_reading);
     }
   }
 }
