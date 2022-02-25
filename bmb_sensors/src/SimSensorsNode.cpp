@@ -40,7 +40,7 @@ void SimSensorsNode::controlInputsCallback(const bmb_msgs::ControlInputs& msg) {
   applied_loads.update(msg);
 }
 
-void SimSensorsNode::modelStatesCallback(const gazebo_msgs::ModelsStates& msg) {
+void SimSensorsNode::modelStatesCallback(const gazebo_msgs::ModelStates& msg) {
   for (size_t i = 0; i < msg.name.size(); i++) {
     if (msg.name[i] == "aris") {
       bmb_msgs::AircraftState state;
@@ -64,6 +64,6 @@ void SimSensorsNode::modelStatesCallback(const gazebo_msgs::ModelsStates& msg) {
 int main(int argc, char** argv) {
   ros::init(argc, argv, "sim_sensors_node");
   ros::NodeHandle nh;
-  SimSensorNode node{nh};
+  SimSensorsNode node{nh};
   node.spin();
 }

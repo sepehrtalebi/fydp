@@ -14,7 +14,7 @@ class SimSensorsNode {
  private:
   void controlInputsCallback(const bmb_msgs::ControlInputs& msg);
 
-  void modelStatesCallback(const gazebo_msgs::ModelsStates& msg);
+  void modelStatesCallback(const gazebo_msgs::ModelStates& msg);
 
   AppliedLoads applied_loads{};
   ros::Subscriber model_states_sub_;
