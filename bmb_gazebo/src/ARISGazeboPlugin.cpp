@@ -15,7 +15,11 @@
 using namespace gazebo;
 
 ARISGazeboPlugin::~ARISGazeboPlugin() {
+#if GAZEBO_MAJOR_VERSION >= 8
+  this->update_connection.reset();
+#else
   event::Events::DisconnectWorldUpdateBegin(this->update_connection);
+#endif
 }
 
 void ARISGazeboPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf) {
