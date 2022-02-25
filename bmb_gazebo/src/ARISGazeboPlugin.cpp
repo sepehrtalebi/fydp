@@ -1,12 +1,11 @@
 #include "bmb_gazebo/ARISGazeboPlugin.h"
 #include <bmb_msgs/ControlInputs.h>
-#include <gazebo/common/Assert.hh>
 #include <gazebo/common/Plugin.hh>
-#include <gazebo/msgs/msgs.hh>
-#include <gazebo/physics/physics.hh>
-#include <gazebo/transport/transport.hh>
+#include <gazebo/common/UpdateInfo.hh>
+#include <gazebo/physics/PhysicsTypes.hh>
 #include <ros/ros.h>
 #include <sdf/sdf.hh>
+#include <array>
 #include <cstddef>
 #include <functional>
 #include <mutex>
