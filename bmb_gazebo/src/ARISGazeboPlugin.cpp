@@ -2,7 +2,9 @@
 #include <bmb_msgs/ControlInputs.h>
 #include <gazebo/common/Plugin.hh>
 #include <gazebo/common/UpdateInfo.hh>
+#include <gazebo/common/common.hh>
 #include <gazebo/physics/PhysicsTypes.hh>
+#include <gazebo/physics/physics.hh>
 #include <ros/ros.h>
 #include <sdf/sdf.hh>
 #include <array>
