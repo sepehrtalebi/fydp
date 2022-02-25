@@ -43,7 +43,7 @@ void ARISGazeboPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf) {
     }
 
     const std::string joint_name = _sdf->Get<std::string>(param);
-    this->joints[i] = this->model->GetJoint(joint_name);
+    this->joints[i] = _model->GetJoint(joint_name);
     if (!this->joints[i]) {
       ROS_FATAL_STREAM("Failed to find joint [" << joint_name
                                                 << "] aborting plugin load.");
