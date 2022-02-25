@@ -37,7 +37,7 @@ void ARISGazeboPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf) {
   }
 
   // Read the required joint name parameters.
-  static constexpr std::array<std::string, 4> required_params = {
+  static constexpr std::string required_params[4] = {
       "propeller", "right_aileron", "left_aileron", "elevator"};
   for (size_t i = 0; i < required_params.size(); i++) {
     const std::string& param = required_params[i];
