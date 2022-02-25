@@ -66,7 +66,7 @@ void ARISGazeboPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf) {
 void ARISGazeboPlugin::controlInputsCallback(
     const bmb_msgs::ControlInputs& msg) {
   std::lock_guard<std::mutex> lock(this->mutex);
-  this->latest_controls_input = msg;
+  this->latest_control_inputs = msg;
 }
 
 void ARISGazeboPlugin::update(const common::UpdateInfo& /** _info **/) {
@@ -77,9 +77,15 @@ void ARISGazeboPlugin::update(const common::UpdateInfo& /** _info **/) {
   }
 
   this->joints[kPropeller]->SetForce(0, msg.propeller_voltage);
+#if GAZEBO_MAJOR_VERSION >= 8
+  this->joints[kRightAileron]->SetPosition(0, msg.right_aileron_angle);
+  this->joints[kLeftAileron]->SetPosition(0, -msg.right_aileron_angle);
+  this->joints[kElevator]->SetPosition(0, msg.elevator_angle);
+#else
   this->joints[kRightAileron]->SetAngle(0, msg.right_aileron_angle);
   this->joints[kLeftAileron]->SetAngle(0, -msg.right_aileron_angle);
   this->joints[kElevator]->SetAngle(0, msg.elevator_angle);
+#endif
 }
 
 // Register plugin with Gazebo
