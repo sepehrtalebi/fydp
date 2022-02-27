@@ -103,7 +103,7 @@ catkin_python_setup()
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES bmb_vision
-#  CATKIN_DEPENDS
+  CATKIN_DEPENDS bmb_msgs sensor_msgs
 #  DEPENDS system_lib
 )
 
