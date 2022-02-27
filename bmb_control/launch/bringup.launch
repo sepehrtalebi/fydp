@@ -1,7 +1,16 @@
 <launch>
+    <arg name="sim" default="True"/>
+    <arg name="level" default="3"/>
+
     <include file="$(find bmb_actuators)/launch/actuators.launch"/>
     <include file="$(find bmb_sensors)/launch/sensors.launch"/>
-    <include file="$(find bmb_controllers)/launch/controllers.launch"/>
+    <include file="$(find bmb_controllers)/launch/controllers.launch">
+        <arg name="level" value="$(arg level)"/>
+    </include>
     <include file="$(find bmb_state_estimation)/launch/state_estimation.launch"/>
     <include file="$(find bmb_vision)/launch/vision.launch"/>
+    <include file="$(find bmb_gazebo)/launch/ARIS_world.launch" if="$(arg sim)"/>
+    <include file="$(find bmb_control)/launch/keyboard_control.launch">
+        <arg name="level" value="$(arg level)"/>
+    </include>
 </launch>
