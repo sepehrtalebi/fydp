@@ -1,5 +1,6 @@
 #pragma once
 
+#include <bmb_controllers/PosVelState.h>
 #include <bmb_math/Matrix.h>
 #include <bmb_math/Utility.h>
 #include <bmb_math/Vector.h>
@@ -18,38 +19,6 @@
 template <typename T>
 class DubinsPath {
  public:
-  struct State {
-    Vector<T, 2> pos;
-    Vector<T, 2> vel;
-
-    State() = default;
-
-    State(const Vector<T, 2>& pos, const Vector<T, 2>& vel)
-        : pos(pos), vel(vel) {}
-
-    State(const bmb_msgs::AircraftState& msg) {
-      pos[0] = msg.pose.position.x;
-      pos[1] = msg.pose.position.y;
-      vel[0] = msg.twist.linear.x;
-      vel[1] = msg.twist.linear.y;
-    }
-
-    State(const bmb_msgs::ReferenceCommand& msg) {
-      pos[0] = msg.x_pos;
-      pos[1] = msg.y_pos;
-      vel[0] = msg.x_vel;
-      vel[1] = msg.y_vel;
-    }
-
-    State& operator=(const State& other) {
-      pos = other.pos;
-      vel = other.vel;
-      return (*this);
-    }
-
-    State(const State& other) { (*this) = other; }
-  };
-
   struct Curve {
     bool is_turning;
     union {
@@ -178,7 +147,7 @@ class DubinsPath {
     }
 
     /**
-     * @return The resulting State
+     * @return The resulting PosVelState<T>
      */
     template <typename OStream>
     void toCSV(OStream& out) const {
@@ -223,8 +192,8 @@ class DubinsPath {
     return *this;
   }
 
-  static DubinsPath create(const State& start, const State& goal,
-                           const T& radius) {
+  static DubinsPath create(const PosVelState<T>& start,
+                           const PosVelState<T>& goal, const T& radius) {
     // Based on:
     // https://gieseanw.wordpress.com/2012/10/21/a-comprehensive-step-by-step-tutorial-to-computing-dubins-paths/
 
@@ -314,7 +283,8 @@ class DubinsPath {
    * path will be returned.
    * @return
    */
-  static DubinsPath getCSCOuterTangent(const State& start, const State& goal,
+  static DubinsPath getCSCOuterTangent(const PosVelState<T>& start,
+                                       const PosVelState<T>& goal,
                                        const T& radius, const bool& right) {
     Vector2 p1 = getCenter(start, radius, right);
     Vector2 p2 = getCenter(goal, radius, right);
@@ -346,10 +316,9 @@ class DubinsPath {
    * path will be returned.
    * @return
    */
-  static std::pair<bool, DubinsPath> getCSCInnerTangent(const State& start,
-                                                        const State& goal,
-                                                        const T& radius,
-                                                        const bool& right) {
+  static std::pair<bool, DubinsPath> getCSCInnerTangent(
+      const PosVelState<T>& start, const PosVelState<T>& goal, const T& radius,
+      const bool& right) {
     Vector2 p1 = getCenter(start, radius, right);
     Vector2 p2 = getCenter(goal, radius, !right);
     Vector2 v1 = p2 - p1;
@@ -390,8 +359,9 @@ class DubinsPath {
    * path will be returned.
    * @return
    */
-  static std::pair<bool, DubinsPath> getCCC(const State& start,
-                                            const State& goal, const T& radius,
+  static std::pair<bool, DubinsPath> getCCC(const PosVelState<T>& start,
+                                            const PosVelState<T>& goal,
+                                            const T& radius,
                                             const bool& right) {
     Vector2 p1 = getCenter(start, radius, right);
     Vector2 p2 = getCenter(goal, radius, right);
@@ -423,7 +393,7 @@ class DubinsPath {
     return {true, DubinsPath{{c1, c2, c3}}};
   }
 
-  static Vector2 getCenter(const State& state, const T& radius,
+  static Vector2 getCenter(const PosVelState<T>& state, const T& radius,
                            const bool& right) {
     Vector2 normal = (right ? ROT_90_CW : ROT_90_CCW) * state.vel;
     normal *= radius / normal.magnitude();
