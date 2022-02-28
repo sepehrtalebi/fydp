@@ -177,7 +177,7 @@ class DubinsPath {
     }
     const T cos = 2 * radius / d;
     const T sin = std::sqrt(1 - cos * cos);
-    const Matrix<T, 2, 2> rot{cos, -sin, sin, cos};
+    Matrix<T, 2, 2> rot{cos, -sin, sin, cos};
     if (!right)
       rot.transposeInPlace();  // transposing rotation matrix is the same as
                                // taking the inverse
