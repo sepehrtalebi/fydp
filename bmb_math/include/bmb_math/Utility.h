@@ -32,4 +32,27 @@ Matrix<T, 2, 2> getRotationMatrix(const Vector<T, 2>& vec) {
   return {cos, -sin, sin, cos};
 }
 
+/**
+ * Normalizes the given angle in radians to [0, 2 * pi)
+ */
+template <typename T>
+T normalizeAngle(T angle) {
+  while (angle > 2 * M_PI) {
+    angle -= 2 * M_PI;
+  }
+  while (angle < 0) {
+    angle += 2 * M_PI;
+  }
+  return angle;
+}
+
+/**
+ * Computes the angle of the provided Vector<T, 2> from the positive x axis, in
+ * radians.
+ */
+template <typename T>
+T atan2(const Vector<T, 2>& vec) {
+  return std::atan2(vec.y, vec.x);
+}
+
 }  // namespace bmb_math
