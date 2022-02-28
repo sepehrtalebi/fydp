@@ -34,7 +34,7 @@ class DubinsPath {
   DubinsPath(const DubinsPath<T>& other) { (*this) = other; }
 
   DubinsPath& operator=(const DubinsPath<T>& other) {
-    for (size_t i = 0; i < 3; i++) path[i] = other[i];
+    for (size_t i = 0; i < path.size(); i++) path[i] = other[i];
     return *this;
   }
 
@@ -98,7 +98,7 @@ class DubinsPath {
 
   template <typename OStream>
   void toCSV(OStream& out) const {
-    for (size_t i = 0; i < 3; i++) path[i].toCSV(out);
+    for (size_t i = 0; i < path.size(); i++) path[i].toCSV(out);
   }
 
   iterator begin() { return path.begin(); }
@@ -107,11 +107,11 @@ class DubinsPath {
 
   const_iterator begin() const { return path.begin(); }
 
-  const_iterator end() const { return path.end; }
+  const_iterator end() const { return path.end(); }
 
-  const_iterator cbegin() const { return path.begin(); }
+  const_iterator cbegin() const { return path.cbegin(); }
 
-  const_iterator cend() const { return path.end; }
+  const_iterator cend() const { return path.cend(); }
 
  private:
   using Vector2 = Vector<T, 2>;
