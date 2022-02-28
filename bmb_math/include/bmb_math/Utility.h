@@ -7,6 +7,12 @@
 
 namespace bmb_math {
 
+// matrices cannot be declared constexpr
+template <typename T>
+const Matrix<T, 2, 2> ROT_90_CW{0, 1, -1, 0};
+template <typename T>
+const Matrix<T, 2, 2> ROT_90_CCW{0, -1, 1, 0};
+
 template <typename T>
 Matrix<T, 2, 2> getRotationMatrix(const T& theta) {
   T sin = std::sin(theta);

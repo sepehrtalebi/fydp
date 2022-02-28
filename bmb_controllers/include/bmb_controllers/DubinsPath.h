@@ -1,7 +1,7 @@
 #pragma once
 
-#include <bmb_controllers/PosVelState.h>
 #include <bmb_controllers/DubinsCurve.h>
+#include <bmb_controllers/PosVelState.h>
 #include <bmb_math/Matrix.h>
 #include <bmb_math/Vector.h>
 #include <bmb_msgs/AircraftState.h>
@@ -68,7 +68,9 @@ class DubinsPath {
     return best_path;
   }
 
-  const DubinsCurve<T>& operator[](const size_t& index) const { return path[index]; }
+  const DubinsCurve<T>& operator[](const size_t& index) const {
+    return path[index];
+  }
 
   DubinsCurve<T>& operator[](const size_t& index) { return path[index]; }
 
@@ -115,8 +117,6 @@ class DubinsPath {
 
  private:
   using Vector2 = Vector<T, 2>;
-  static const Matrix<T, 2, 2> ROT_90_CW;
-  static const Matrix<T, 2, 2> ROT_90_CCW;
 
   Path path;
 
@@ -138,8 +138,10 @@ class DubinsPath {
 
     const T d = v1.magnitude();
     const Vector2 normal =
-        (radius / d) * ((right ? ROT_90_CCW : ROT_90_CW) *
-                        v1);  // extra brackets to reduce multiplications
+        (radius / d) *
+        ((right ? bmb_math::ROT_90_CCW<T>
+                : bmb_math::ROT_90_CW<T>)*v1);  // extra brackets to reduce
+                                                // multiplications
     const Vector2 p1_tangent = p1 + normal;
     const Vector2 p2_tangent = p2 + normal;
 
@@ -221,7 +223,8 @@ class DubinsPath {
       return {false, DubinsPath{}};
     }
     const T h = std::sqrt(4 * radius * radius - d * d / 4);
-    const Vector2 normal = (h / d) * ((right ? ROT_90_CCW : ROT_90_CW) * v1);
+    const Vector2 normal = (h / d) * ((right ? bmb_math::ROT_90_CCW<T>
+                                             : bmb_math::ROT_90_CW<T>)*v1);
     const Vector2 p3 = p1 + v1 / 2 + normal;
 
     const Vector2 p_first_stop = (p1 + p3) / 2;
@@ -241,7 +244,8 @@ class DubinsPath {
 
   static Vector2 getCenter(const PosVelState<T>& state, const T& radius,
                            const bool& right) {
-    Vector2 normal = (right ? ROT_90_CW : ROT_90_CCW) * state.vel;
+    Vector2 normal =
+        (right ? bmb_math::ROT_90_CW<T> : bmb_math::ROT_90_CCW<T>)*state.vel;
     normal *= radius / normal.magnitude();
     return state.pos + normal;
   }
@@ -268,9 +272,3 @@ class DubinsPath {
     }
   }
 };
-
-// need to define constant matrices here since they cannot be declared constexpr
-template <typename T>
-const Matrix<T, 2, 2> DubinsPath<T>::ROT_90_CW{0, 1, -1, 0};
-template <typename T>
-const Matrix<T, 2, 2> DubinsPath<T>::ROT_90_CCW{0, -1, 1, 0};
