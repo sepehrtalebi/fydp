@@ -46,23 +46,23 @@ class DubinsPath {
     // start with the shorter between the RSR and LSL path, since they are
     // always possible
     DubinsPath best_path =
-        std::min(getCSCOuterTangent(start, goal, radius, true),    // RSR
-                 getCSCOuterTangent(start, goal, radius, false));  // LSL
+        std::min(getCSCOuterTangent<true>(start, goal, radius),    // RSR
+                 getCSCOuterTangent<false>(start, goal, radius));  // LSL
 
     // try RSL path
-    auto [is_valid, path] = getCSCInnerTangent(start, goal, radius, true);
+    auto [is_valid, path] = getCSCInnerTangent<true>(start, goal, radius);
     if (is_valid) best_path = std::min(best_path, path);
 
     // try LSR path
-    std::tie(is_valid, path) = getCSCInnerTangent(start, goal, radius, false);
+    std::tie(is_valid, path) = getCSCInnerTangent<false>(start, goal, radius);
     if (is_valid) best_path = std::min(best_path, path);
 
     // try RLR path
-    std::tie(is_valid, path) = getCCC(start, goal, radius, true);
+    std::tie(is_valid, path) = getCCC<true>(start, goal, radius);
     if (is_valid) best_path = std::min(best_path, path);
 
     // try LRL path
-    std::tie(is_valid, path) = getCCC(start, goal, radius, false);
+    std::tie(is_valid, path) = getCCC<false>(start, goal, radius);
     if (is_valid) best_path = std::min(best_path, path);
 
     return best_path;
@@ -125,32 +125,36 @@ class DubinsPath {
    * @param start
    * @param goal
    * @param radius
-   * @param right If true, then the RSR path will be returned, otherwise the LSL
-   * path will be returned.
+   * @tparam right If true, then the RSR path will be returned, otherwise the
+   * LSL path will be returned.
    * @return
    */
+  template <bool right>
   static DubinsPath getCSCOuterTangent(const PosVelState<T>& start,
                                        const PosVelState<T>& goal,
-                                       const T& radius, const bool& right) {
-    const Vector2 p1 = getCenter(start, radius, right);
-    const Vector2 p2 = getCenter(goal, radius, right);
+                                       const T& radius) {
+    const Vector2 p1 = getCenter<right>(start, radius);
+    const Vector2 p2 = getCenter<right>(goal, radius);
     const Vector2 v1 = p2 - p1;
 
     const T d = v1.magnitude();
-    const Vector2 normal =
-        (radius / d) *
-        ((right ? bmb_math::ROT_90_CCW<T>
-                : bmb_math::ROT_90_CW<T>)*v1);  // extra brackets to reduce
-                                                // multiplications
+    if constexpr (right)
+      const Vector2 normal =
+          (radius / d) * (bmb_math::ROT_90_CCW<T> *
+                          v1);  // extra brackets to reduce multiplications
+    else
+      const Vector2 normal =
+          (radius / d) * (bmb_math::ROT_90_CW<T> *
+                          v1);  // extra brackets to reduce multiplications
     const Vector2 p1_tangent = p1 + normal;
     const Vector2 p2_tangent = p2 + normal;
 
     auto [start_angle, delta_angle] =
-        getArcAngle(start.pos - p1, normal, right);
+        getArcAngle<right>(start.pos - p1, normal);
     const DubinsCurve<T> c1{p1, radius, start_angle, delta_angle};
     const DubinsCurve<T> c2{p1_tangent, p2_tangent};
     std::tie(start_angle, delta_angle) =
-        getArcAngle(normal, goal.pos - p2, right);
+        getArcAngle<right>(normal, goal.pos - p2);
     const DubinsCurve<T> c3{p2, radius, start_angle, delta_angle};
     return DubinsPath{{c1, c2, c3}};
   }
@@ -160,15 +164,16 @@ class DubinsPath {
    * @param start
    * @param goal
    * @param radius
-   * @param right If true, then the RSL path will be returned, otherwise the LSR
-   * path will be returned.
+   * @tparam right If true, then the RSL path will be returned, otherwise the
+   * LSR path will be returned.
    * @return
    */
+  template <bool right>
   static std::pair<bool, DubinsPath> getCSCInnerTangent(
-      const PosVelState<T>& start, const PosVelState<T>& goal, const T& radius,
-      const bool& right) {
-    const Vector2 p1 = getCenter(start, radius, right);
-    const Vector2 p2 = getCenter(goal, radius, !right);
+      const PosVelState<T>& start, const PosVelState<T>& goal,
+      const T& radius) {
+    const Vector2 p1 = getCenter<right>(start, radius);
+    const Vector2 p2 = getCenter<!right>(goal, radius);
     const Vector2 v1 = p2 - p1;
 
     const T d = v1.magnitude();
@@ -180,7 +185,7 @@ class DubinsPath {
     const T cos = 2 * radius / d;
     const T sin = std::sqrt(1 - cos * cos);
     Matrix<T, 2, 2> rot{cos, -sin, sin, cos};
-    if (!right)
+    if constexpr (!right)
       rot.transposeInPlace();  // transposing rotation matrix is the same as
                                // taking the inverse
     const Vector2 normal =
@@ -189,11 +194,11 @@ class DubinsPath {
     const Vector2 p2_tangent = p2 - normal;
 
     auto [start_angle, delta_angle] =
-        getArcAngle(start.pos - p1, normal, right);
+        getArcAngle<right>(start.pos - p1, normal);
     const DubinsCurve<T> c1{p1, radius, start_angle, delta_angle};
     const DubinsCurve<T> c2{p1_tangent, p2_tangent};
     std::tie(start_angle, delta_angle) =
-        getArcAngle(-normal, goal.pos - p2, !right);
+        getArcAngle<!right>(-normal, goal.pos - p2);
     const DubinsCurve<T> c3{p2, radius, start_angle, delta_angle};
     return {true, DubinsPath{{c1, c2, c3}}};
   }
@@ -203,16 +208,16 @@ class DubinsPath {
    * @param start
    * @param goal
    * @param radius
-   * @param right If true, then the RLR path will be returned, otherwise the LRL
-   * path will be returned.
+   * @tparam right If true, then the RLR path will be returned, otherwise the
+   * LRL path will be returned.
    * @return
    */
+  template <bool right>
   static std::pair<bool, DubinsPath> getCCC(const PosVelState<T>& start,
                                             const PosVelState<T>& goal,
-                                            const T& radius,
-                                            const bool& right) {
-    const Vector2 p1 = getCenter(start, radius, right);
-    const Vector2 p2 = getCenter(goal, radius, right);
+                                            const T& radius) {
+    const Vector2 p1 = getCenter<right>(start, radius);
+    const Vector2 p2 = getCenter<right>(goal, radius);
     const Vector2 v1 = p2 - p1;
 
     const T d = v1.magnitude();
@@ -223,29 +228,33 @@ class DubinsPath {
       return {false, DubinsPath{}};
     }
     const T h = std::sqrt(4 * radius * radius - d * d / 4);
-    const Vector2 normal = (h / d) * ((right ? bmb_math::ROT_90_CCW<T>
-                                             : bmb_math::ROT_90_CW<T>)*v1);
+    if constexpr (right)
+      const Vector2 normal = (h / d) * (bmb_math::ROT_90_CCW<T> * v1);
+    else
+      const Vector2 normal = (h / d) * (bmb_math::ROT_90_CW<T> * v1);
     const Vector2 p3 = p1 + v1 / 2 + normal;
 
     const Vector2 p_first_stop = (p1 + p3) / 2;
     const Vector2 p_second_stop = (p2 + p3) / 2;
 
     auto [start_angle, delta_angle] =
-        getArcAngle(start.pos - p1, p_first_stop - p1, right);
+        getArcAngle<right>(start.pos - p1, p_first_stop - p1);
     const DubinsCurve<T> c1{p1, radius, start_angle, delta_angle};
     std::tie(start_angle, delta_angle) =
-        getArcAngle(p_first_stop - p3, p_second_stop - p3, !right);
+        getArcAngle<!right>(p_first_stop - p3, p_second_stop - p3);
     const DubinsCurve<T> c2{p3, radius, start_angle, delta_angle};
     std::tie(start_angle, delta_angle) =
-        getArcAngle(p_second_stop - p2, goal.pos - p2, right);
+        getArcAngle<right>(p_second_stop - p2, goal.pos - p2);
     const DubinsCurve<T> c3{p2, radius, start_angle, delta_angle};
     return {true, DubinsPath{{c1, c2, c3}}};
   }
 
-  static Vector2 getCenter(const PosVelState<T>& state, const T& radius,
-                           const bool& right) {
-    Vector2 normal =
-        (right ? bmb_math::ROT_90_CW<T> : bmb_math::ROT_90_CCW<T>)*state.vel;
+  template <bool right>
+  static Vector2 getCenter(const PosVelState<T>& state, const T& radius) {
+    if constexpr (right)
+      Vector2 normal = bmb_math::ROT_90_CW<T> * state.vel;
+    else
+      Vector2 normal = bmb_math::ROT_90_CCW<T> * state.vel;
     normal *= radius / normal.magnitude();
     return state.pos + normal;
   }
@@ -259,11 +268,11 @@ class DubinsPath {
    * @return A std::pair consisting of the starting angle and the total angle
    * traversed
    */
-  static std::pair<T, T> getArcAngle(const Vector2& start, const Vector2& end,
-                                     const bool& right) {
+  template <bool right>
+  static std::pair<T, T> getArcAngle(const Vector2& start, const Vector2& end) {
     const T start_angle = std::atan2(start[1], start[0]);
     const T delta_angle = std::atan2(end[1], end[0]) - start_angle;
-    if (right) {
+    if constexpr (right) {
       return {start_angle,
               delta_angle < 0 ? delta_angle : delta_angle - 2 * M_PI};
     } else {
