@@ -155,5 +155,6 @@ struct Curve {
   }
 
  private:
+  using Vector2 = Vector<T, 2>;
   static constexpr size_t NUM_SAMPLES = 100;
 };
