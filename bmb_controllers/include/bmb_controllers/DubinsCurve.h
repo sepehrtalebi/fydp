@@ -7,7 +7,7 @@
 #include <string>
 
 template <typename T>
-struct Curve {
+struct DubinsCurve {
   bool is_turning;
   union {
     struct {  // only valid if is_turning
@@ -22,29 +22,29 @@ struct Curve {
     };
   };
 
-  Curve(const Vector<T, 2>& center, const T& radius, const T& start_angle,
-        const T& delta_angle)
+  DubinsCurve(const Vector<T, 2>& center, const T& radius, const T& start_angle,
+              const T& delta_angle)
       : is_turning(true),
         center(center),
         radius(radius),
         start_angle(start_angle),
         delta_angle(delta_angle) {}
 
-  Curve(const Vector<T, 2>& start_pos, const Vector<T, 2>& end_pos)
+  DubinsCurve(const Vector<T, 2>& start_pos, const Vector<T, 2>& end_pos)
       : is_turning(false), start_pos(start_pos), end_pos(end_pos) {}
 
-  Curve(const Curve<T>& other) { (*this) = other; }
+  DubinsCurve(const DubinsCurve<T>& other) { (*this) = other; }
 
   /**
-   * This constructor will create this Curve with unspecified data inside of
-   * it. It is the caller's responsibility to handle this.
+   * This constructor will create this DubinsCurve with unspecified data inside
+   * of it. It is the caller's responsibility to handle this.
    */
-  Curve(){
+  DubinsCurve(){
       // cannot use = default to define this constructor because then it will
       // be implicitly deleted
   };
 
-  Curve& operator=(const Curve<T>& other) {
+  DubinsCurve& operator=(const DubinsCurve<T>& other) {
     is_turning = other.is_turning;
     if (is_turning) {
       center = other.center;
@@ -69,7 +69,7 @@ struct Curve {
   [[nodiscard]] bool isRightTurn() const { return delta_angle < 0; }
 
   /**
-   * @return The point on this Curve closest to the specified point
+   * @return The point on this DubinsCurve closest to the specified point
    */
   [[nodiscard]] Vector<T, 2> closestPoint(const Vector<T, 2>& p) const {
     using bmb_math::getRotationMatrix;
