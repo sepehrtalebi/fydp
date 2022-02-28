@@ -37,10 +37,10 @@ class StateCommandPublishThread(threading.Thread):
         if rospy.is_shutdown():
             raise Exception("Got shutdown request before subscribers connected")
 
-    def update(self, roll, pitch, speed):
+    def update(self, pitch, roll, speed):
         self.condition.acquire()
-        self.roll = roll
         self.pitch = pitch
+        self.roll = roll
         self.speed = speed
         # Notify publish thread that we have a new message.
         self.condition.notify()
