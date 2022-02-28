@@ -179,8 +179,8 @@ class DubinsPath {
     const T sin = std::sqrt(1 - cos * cos);
     const Matrix<T, 2, 2> rot{cos, -sin, sin, cos};
     if (!right)
-      rot = rot.transpose();  // transposing rotation matrix is the same as
-                              // taking the inverse
+      rot.transposeInPlace();  // transposing rotation matrix is the same as
+                               // taking the inverse
     const Vector2 normal =
         (radius / d) * (rot * v1);  // extra brackets to reduce multiplications
     const Vector2 p1_tangent = p1 + normal;
