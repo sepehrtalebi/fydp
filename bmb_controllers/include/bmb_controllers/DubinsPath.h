@@ -138,14 +138,9 @@ class DubinsPath {
     const Vector2 v1 = p2 - p1;
 
     const T d = v1.magnitude();
-    if constexpr (right)
-      const Vector2 normal =
-          (radius / d) * (bmb_math::ROT_90_CCW<T> *
-                          v1);  // extra brackets to reduce multiplications
-    else
-      const Vector2 normal =
-          (radius / d) * (bmb_math::ROT_90_CW<T> *
-                          v1);  // extra brackets to reduce multiplications
+    const Vector2 normal =
+        (radius / d) * (getRot90Matrix<!right>() *
+                        v1);  // extra brackets to reduce multiplications
     const Vector2 p1_tangent = p1 + normal;
     const Vector2 p2_tangent = p2 + normal;
 
@@ -228,10 +223,7 @@ class DubinsPath {
       return {false, DubinsPath{}};
     }
     const T h = std::sqrt(4 * radius * radius - d * d / 4);
-    if constexpr (right)
-      const Vector2 normal = (h / d) * (bmb_math::ROT_90_CCW<T> * v1);
-    else
-      const Vector2 normal = (h / d) * (bmb_math::ROT_90_CW<T> * v1);
+    const Vector2 normal = (h / d) * (getRot90Matrix<!right>() * v1);
     const Vector2 p3 = p1 + v1 / 2 + normal;
 
     const Vector2 p_first_stop = (p1 + p3) / 2;
@@ -251,10 +243,7 @@ class DubinsPath {
 
   template <bool right>
   static Vector2 getCenter(const PosVelState<T>& state, const T& radius) {
-    if constexpr (right)
-      Vector2 normal = bmb_math::ROT_90_CW<T> * state.vel;
-    else
-      Vector2 normal = bmb_math::ROT_90_CCW<T> * state.vel;
+    Vector2 normal = getRot90Matrix<right>() * state.vel;
     normal *= radius / normal.magnitude();
     return state.pos + normal;
   }
@@ -279,5 +268,13 @@ class DubinsPath {
       return {start_angle,
               delta_angle > 0 ? delta_angle : delta_angle + 2 * M_PI};
     }
+  }
+
+  template <bool right>
+  static constexpr Matrix<T, 2, 2> getRot90Matrix() {
+    if constexpr (right)
+      return bmb_math::ROT_90_CW<T>;
+    else
+      return bmb_math::ROT_90_CCW<T>;
   }
 };
