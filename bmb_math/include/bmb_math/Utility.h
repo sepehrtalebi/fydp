@@ -55,4 +55,13 @@ T atan2(const Vector<T, 2>& vec) {
   return std::atan2(vec.y, vec.x);
 }
 
+/**
+ * Creates a Vector<T, 2> with the provided magnitude and angle from the
+ * positive x axis, in radians.
+ */
+template <typename T>
+Vector<T, 2> polarToVec(const T& magnitude, const T& angle) {
+  return Vector<T, 2>{magnitude * std::cos(angle), magnitude * std::sin(angle)};
+}
+
 }  // namespace bmb_math
