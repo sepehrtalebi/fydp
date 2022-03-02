@@ -1,7 +1,6 @@
 <?xml version='1.0'?>
 <sdf version='1.6'>
-  <model name='ARIS'>
-    <model name='Full_Assem_NM'>
+  <model name='ARIS_1'>
       <pose frame=''>-0 -0 0 0 -0 0</pose>
       <link name='body'>
         <gravity>0</gravity>
@@ -20,7 +19,7 @@
         <collision name='collision'>
           <geometry>
             <mesh>
-              <uri>model://Simple_ARIS/meshes/Body.STL</uri>
+              <uri>model://ARIS_1/meshes/Body.STL</uri>
             </mesh>
           </geometry>
           <pose frame=''>0 0 0 0 -0 0</pose>
@@ -28,7 +27,7 @@
         <visual name='visual'>
           <geometry>
             <mesh>
-              <uri>model://Simple_ARIS/meshes/Body.STL</uri>
+              <uri>model://ARIS_1/meshes/Body.STL</uri>
               <scale>0.01 0.01 0.01</scale>
             </mesh>
           </geometry>
@@ -51,14 +50,14 @@
         <collision name='collision'>
           <geometry>
             <mesh>
-              <uri>model://Simple_ARIS/meshes/Left_Aileron.STL</uri>
+              <uri>model://ARIS_1/meshes/Left_Aileron.STL</uri>
             </mesh>
           </geometry>
         </collision>
         <visual name='visual'>
           <geometry>
             <mesh>
-              <uri>model://Simple_ARIS/meshes/Left_Aileron.STL</uri>
+              <uri>model://ARIS_1/meshes/Left_Aileron.STL</uri>
               <scale>0.01 0.01 0.01</scale>
             </mesh>
           </geometry>
@@ -80,14 +79,14 @@
         <collision name='collision'>
           <geometry>
             <mesh>
-              <uri>model://Simple_ARIS/meshes/AileronAssembly.STL</uri>
+              <uri>model://ARIS_1/meshes/Right_Aileron.STL</uri>
             </mesh>
           </geometry>
         </collision>
         <visual name='visual'>
           <geometry>
             <mesh>
-              <uri>model://Simple_ARIS/meshes/AileronAssembly.STL</uri>
+              <uri>model://ARIS_1/meshes/Right_Aileron.STL</uri>
               <scale>0.01 0.01 0.01</scale>
             </mesh>
           </geometry>
@@ -110,14 +109,14 @@
         <collision name='collision'>
           <geometry>
             <mesh>
-              <uri>model://Simple_ARIS/meshes/ElevatorAssembly.STL</uri>
+              <uri>model://ARIS_1/meshes/ElevatorAssembly.STL</uri>
             </mesh>
           </geometry>
         </collision>
         <visual name='visual'>
           <geometry>
             <mesh>
-              <uri>model://Simple_ARIS/meshes/ElevatorAssembly.STL</uri>
+              <uri>model://ARIS_1/meshes/ElevatorAssembly.STL</uri>
               <scale>0.01 0.01 0.01</scale>
             </mesh>
           </geometry>
@@ -141,20 +140,118 @@
         <collision name='collision'>
           <geometry>
             <mesh>
-              <uri>model://Simple_ARIS/meshes/PropellerAssembly.STL</uri>
+              <uri>model://ARIS_1/meshes/PropellerAssembly.STL</uri>
             </mesh>
           </geometry>
         </collision>
         <visual name='visual'>
           <geometry>
             <mesh>
-              <uri>model://Simple_ARIS/meshes/PropellerAssembly.STL</uri>
+              <uri>model://ARIS_1/meshes/PropellerAssembly.STL</uri>
               <scale>0.01 0.01 0.01</scale>
             </mesh>
           </geometry>
         </visual>
       </link>
-    </model>
+
+    <!-- Joint to move the left aileron -->
+      <joint name='left_aileron_joint' type='revolute'>
+        <parent>body</parent>
+        <child>left_aileron</child>
+        <!--<pose>-1.45 3.7 1.5 0.05 0 -0.12</pose>-->
+        <axis>
+	  <xyz>0 1 0</xyz>
+	  <limit>
+	    <!-- -30/+30 deg. -->
+	    <lower>-0.53</lower>
+	    <upper>0.53</upper>
+	    <effort>-1</effort>
+	    <velocity>-1</velocity>
+	  </limit>
+	<dynamics>
+	  <damping>1.000</damping>
+	</dynamics>
+      </axis>
+      <physics>
+	<ode>
+	  <implicit_spring_damper>1</implicit_spring_damper>
+	</ode>
+      </physics>
+    </joint>
+
+    <!-- Joint to move the right aileron -->
+    <joint name='right_aileron_joint' type='revolute'>
+      <parent>body</parent>
+      <child>right_aileron</child>
+      <!--<pose>-1.45 -3.7 1.5 -0.05 0 0.12</pose>-->
+      <axis>
+        <xyz>0 1 0</xyz>
+        <limit>
+          <!-- -30/+30 deg. -->
+          <lower>-0.53</lower>
+          <upper>0.53</upper>
+          <effort>-1</effort>
+          <velocity>-1</velocity>
+        </limit>
+        <dynamics>
+          <damping>1.000</damping>
+        </dynamics>
+      </axis>
+      <physics>
+        <ode>
+          <implicit_spring_damper>1</implicit_spring_damper>
+        </ode>
+      </physics>
+    </joint>
+
+    <!-- Joint to move the elevators -->
+    <joint name='elevators_joint' type='revolute'>
+      <parent>body</parent>
+      <child>elevator</child>
+      <!--<pose>-5.55 0 0.57 0 0 0</pose>-->
+      <axis>
+        <xyz>0 1 0</xyz>
+        <limit>
+          <!-- -30/+30 deg. -->
+          <lower>-0.53</lower>
+          <upper>0.53</upper>
+          <effort>-1</effort>
+          <velocity>-1</velocity>
+        </limit>
+        <dynamics>
+          <damping>1.000</damping>
+        </dynamics>
+      </axis>
+      <physics>
+        <ode>
+          <implicit_spring_damper>1</implicit_spring_damper>
+        </ode>
+      </physics>
+    </joint>
+
+    <!-- Joint to make the propeller spin -->
+    <joint name='propeller_joint' type='revolute'>
+      <parent>body</parent>
+      <child>propeller</child>
+      <axis>
+        <xyz>1 0 0</xyz>
+        <limit>
+          <lower>-1e+12</lower>
+          <upper>1e+12</upper>
+          <effort>-1</effort>
+          <velocity>-1</velocity>
+        </limit>
+        <dynamics>
+          <damping>0.001</damping>
+        </dynamics>
+      </axis>
+      <physics>
+        <ode>
+          <implicit_spring_damper>1</implicit_spring_damper>
+        </ode>
+      </physics>
+    </joint>
+
     <static>0</static>
     <allow_auto_disable>1</allow_auto_disable>
   </model>
