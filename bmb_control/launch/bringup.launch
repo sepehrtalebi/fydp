@@ -9,7 +9,7 @@
     </include>
     <include file="$(find bmb_state_estimation)/launch/state_estimation.launch"/>
     <include file="$(find bmb_vision)/launch/vision.launch"/>
-    <include file="$(find bmb_gazebo)/launch/ARIS_world.launch" if="$(arg sim)"/>
+    <include file="$(find bmb_gazebo)/launch/aris_world.launch" if="$(arg sim)"/>
     <include file="$(find bmb_control)/launch/keyboard_control.launch">
         <arg name="level" value="$(arg level)"/>
     </include>
