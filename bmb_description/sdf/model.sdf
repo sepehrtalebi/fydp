@@ -19,7 +19,7 @@
         <collision name='collision'>
           <geometry>
             <mesh>
-              <uri>model://ARIS_1/meshes/Body.STL</uri>
+              <uri>model://bmb_description/meshes/Body.STL</uri>
             </mesh>
           </geometry>
           <pose frame=''>0 0 0 0 -0 0</pose>
@@ -27,7 +27,7 @@
         <visual name='visual'>
           <geometry>
             <mesh>
-              <uri>model://ARIS_1/meshes/Body.STL</uri>
+              <uri>model://bmb_description/meshes/Body.STL</uri>
               <scale>0.01 0.01 0.01</scale>
             </mesh>
           </geometry>
@@ -50,14 +50,14 @@
         <collision name='collision'>
           <geometry>
             <mesh>
-              <uri>model://ARIS_1/meshes/Left_Aileron.STL</uri>
+              <uri>model://bmb_description/meshes/Left_Aileron.STL</uri>
             </mesh>
           </geometry>
         </collision>
         <visual name='visual'>
           <geometry>
             <mesh>
-              <uri>model://ARIS_1/meshes/Left_Aileron.STL</uri>
+              <uri>model://bmb_description/meshes/Left_Aileron.STL</uri>
               <scale>0.01 0.01 0.01</scale>
             </mesh>
           </geometry>
@@ -79,14 +79,14 @@
         <collision name='collision'>
           <geometry>
             <mesh>
-              <uri>model://ARIS_1/meshes/Right_Aileron.STL</uri>
+              <uri>model://bmb_description/meshes/Right_Aileron.STL</uri>
             </mesh>
           </geometry>
         </collision>
         <visual name='visual'>
           <geometry>
             <mesh>
-              <uri>model://ARIS_1/meshes/Right_Aileron.STL</uri>
+              <uri>model://bmb_description/meshes/Right_Aileron.STL</uri>
               <scale>0.01 0.01 0.01</scale>
             </mesh>
           </geometry>
@@ -109,14 +109,14 @@
         <collision name='collision'>
           <geometry>
             <mesh>
-              <uri>model://ARIS_1/meshes/ElevatorAssembly.STL</uri>
+              <uri>model://bmb_description/meshes/ElevatorAssembly.STL</uri>
             </mesh>
           </geometry>
         </collision>
         <visual name='visual'>
           <geometry>
             <mesh>
-              <uri>model://ARIS_1/meshes/ElevatorAssembly.STL</uri>
+              <uri>model://bmb_description/meshes/ElevatorAssembly.STL</uri>
               <scale>0.01 0.01 0.01</scale>
             </mesh>
           </geometry>
@@ -140,14 +140,14 @@
         <collision name='collision'>
           <geometry>
             <mesh>
-              <uri>model://ARIS_1/meshes/PropellerAssembly.STL</uri>
+              <uri>model://bmb_description/meshes/PropellerAssembly.STL</uri>
             </mesh>
           </geometry>
         </collision>
         <visual name='visual'>
           <geometry>
             <mesh>
-              <uri>model://ARIS_1/meshes/PropellerAssembly.STL</uri>
+              <uri>model://bmb_description/meshes/PropellerAssembly.STL</uri>
               <scale>0.01 0.01 0.01</scale>
             </mesh>
           </geometry>
