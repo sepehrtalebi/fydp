@@ -1,258 +1,258 @@
 <?xml version='1.0'?>
 <sdf version='1.6'>
-  <model name='ARIS_1'>
-      <pose frame=''>-0 -0 0 0 -0 0</pose>
-      <link name='body'>
-        <gravity>0</gravity>
-        <inertial>
-          <mass>3.068</mass>
-          <inertia>
-            <ixx>12.327</ixx>
-            <ixy>-3.07</ixy>
-            <iyy>1.711</iyy>
-            <ixz>0.739</ixz>
-            <iyz>-2.789</iyz>
-            <izz>12.659</izz>
-          </inertia>
-          <pose frame=''>0 0 0 0 -0 0</pose>
-        </inertial>
-        <collision name='collision'>
-          <geometry>
-            <mesh>
-              <uri>model://bmb_description/meshes/Body.STL</uri>
-            </mesh>
-          </geometry>
-          <pose frame=''>0 0 0 0 -0 0</pose>
-        </collision>
-        <visual name='visual'>
-          <geometry>
-            <mesh>
-              <uri>model://bmb_description/meshes/Body.STL</uri>
-              <scale>0.01 0.01 0.01</scale>
-            </mesh>
-          </geometry>
-          <pose frame=''>0 0 0 0 -0 0</pose>
-        </visual>
-      </link>
-      <link name='left_aileron'>
-        <gravity>0</gravity>
-        <inertial>
-          <mass>0.039</mass>
-          <inertia>
-            <ixx>0.281</ixx>
-            <ixy>-0.042</ixy>
-            <iyy>0.019</iyy>
-            <ixz>0.009</ixz>
-            <iyz>-0.057</iyz>
-            <izz>0.276</izz>
-          </inertia>
-        </inertial>
-        <collision name='collision'>
-          <geometry>
-            <mesh>
-              <uri>model://bmb_description/meshes/Left_Aileron.STL</uri>
-            </mesh>
-          </geometry>
-        </collision>
-        <visual name='visual'>
-          <geometry>
-            <mesh>
-              <uri>model://bmb_description/meshes/Left_Aileron.STL</uri>
-              <scale>0.01 0.01 0.01</scale>
-            </mesh>
-          </geometry>
-        </visual>
-      </link>
-      <link name='right_aileron'>
-        <gravity>0</gravity>
-        <inertial>
-          <mass>0.039</mass>
-          <inertia>
-            <ixx>0.072</ixx>
-            <ixy>-0.02</ixy>
-            <iyy>0.019</iyy>
-            <ixz>0.009</ixz>
-            <iyz>-0.027</iyz>
-            <izz>0.067</izz>
-          </inertia>
-        </inertial>
-        <collision name='collision'>
-          <geometry>
-            <mesh>
-              <uri>model://bmb_description/meshes/Right_Aileron.STL</uri>
-            </mesh>
-          </geometry>
-        </collision>
-        <visual name='visual'>
-          <geometry>
-            <mesh>
-              <uri>model://bmb_description/meshes/Right_Aileron.STL</uri>
-              <scale>0.01 0.01 0.01</scale>
-            </mesh>
-          </geometry>
-        </visual>
-      </link>
-      <link name='elevator'>
-        <gravity>0</gravity>
-        <pose frame=''>0 0 0 0 -0 0</pose>
-        <inertial>
-          <mass>0.015</mass>
-          <inertia>
-            <ixx>0.058</ixx>
-            <ixy>-0.017</ixy>
-            <iyy>0.009</iyy>
-            <ixz>-0.004</ixz>
-            <iyz>-0.014</iyz>
-            <izz>0.06</izz>
-          </inertia>
-        </inertial>
-        <collision name='collision'>
-          <geometry>
-            <mesh>
-              <uri>model://bmb_description/meshes/ElevatorAssembly.STL</uri>
-            </mesh>
-          </geometry>
-        </collision>
-        <visual name='visual'>
-          <geometry>
-            <mesh>
-              <uri>model://bmb_description/meshes/ElevatorAssembly.STL</uri>
-              <scale>0.01 0.01 0.01</scale>
-            </mesh>
-          </geometry>
-        </visual>
-      </link>
-      <link name='propeller'>
-        <gravity>0</gravity>
-        <pose frame=''>0 0 0 0 -0 0</pose>
-        <inertial>
-          <mass>0.012</mass>
-          <inertia>
-            <ixx>0.047</ixx>
-            <ixy>-0.006</ixy>
-            <iyy>0.005</iyy>
-            <ixz>0.002</ixz>
-            <iyz>-0.013</iyz>
-            <izz>0.044</izz>
-          </inertia>
-          <pose frame=''>0 0 0 0 -0 0</pose>
-        </inertial>
-        <collision name='collision'>
-          <geometry>
-            <mesh>
-              <uri>model://bmb_description/meshes/PropellerAssembly.STL</uri>
-            </mesh>
-          </geometry>
-        </collision>
-        <visual name='visual'>
-          <geometry>
-            <mesh>
-              <uri>model://bmb_description/meshes/PropellerAssembly.STL</uri>
-              <scale>0.01 0.01 0.01</scale>
-            </mesh>
-          </geometry>
-        </visual>
-      </link>
+    <model name='aris'>
+        <pose frame=''>0 0 0 0 0 0</pose>
+        <link name='body'>
+            <gravity>0</gravity>
+            <inertial>
+                <mass>3.068</mass>
+                <inertia>
+                    <ixx>12.327</ixx>
+                    <ixy>-3.07</ixy>
+                    <iyy>1.711</iyy>
+                    <ixz>0.739</ixz>
+                    <iyz>-2.789</iyz>
+                    <izz>12.659</izz>
+                </inertia>
+                <pose frame=''>0 0 0 0 0 0</pose>
+            </inertial>
+            <collision name='collision'>
+                <geometry>
+                    <mesh>
+                        <uri>model://bmb_description/meshes/Body.STL</uri>
+                    </mesh>
+                </geometry>
+                <pose frame=''>0 0 0 0 0 0</pose>
+            </collision>
+            <visual name='visual'>
+                <geometry>
+                    <mesh>
+                        <uri>model://bmb_description/meshes/Body.STL</uri>
+                        <scale>0.01 0.01 0.01</scale>
+                    </mesh>
+                </geometry>
+                <pose frame=''>0 0 0 0 0 0</pose>
+            </visual>
+        </link>
+        <link name='left_aileron'>
+            <gravity>0</gravity>
+            <inertial>
+                <mass>0.039</mass>
+                <inertia>
+                    <ixx>0.281</ixx>
+                    <ixy>-0.042</ixy>
+                    <iyy>0.019</iyy>
+                    <ixz>0.009</ixz>
+                    <iyz>-0.057</iyz>
+                    <izz>0.276</izz>
+                </inertia>
+            </inertial>
+            <collision name='collision'>
+                <geometry>
+                    <mesh>
+                        <uri>model://bmb_description/meshes/Left_Aileron.STL</uri>
+                    </mesh>
+                </geometry>
+            </collision>
+            <visual name='visual'>
+                <geometry>
+                    <mesh>
+                        <uri>model://bmb_description/meshes/Left_Aileron.STL</uri>
+                        <scale>0.01 0.01 0.01</scale>
+                    </mesh>
+                </geometry>
+            </visual>
+        </link>
+        <link name='right_aileron'>
+            <gravity>0</gravity>
+            <inertial>
+                <mass>0.039</mass>
+                <inertia>
+                    <ixx>0.072</ixx>
+                    <ixy>-0.02</ixy>
+                    <iyy>0.019</iyy>
+                    <ixz>0.009</ixz>
+                    <iyz>-0.027</iyz>
+                    <izz>0.067</izz>
+                </inertia>
+            </inertial>
+            <collision name='collision'>
+                <geometry>
+                    <mesh>
+                        <uri>model://bmb_description/meshes/Right_Aileron.STL</uri>
+                    </mesh>
+                </geometry>
+            </collision>
+            <visual name='visual'>
+                <geometry>
+                    <mesh>
+                        <uri>model://bmb_description/meshes/Right_Aileron.STL</uri>
+                        <scale>0.01 0.01 0.01</scale>
+                    </mesh>
+                </geometry>
+            </visual>
+        </link>
+        <link name='elevator'>
+            <gravity>0</gravity>
+            <pose frame=''>0 0 0 0 0 0</pose>
+            <inertial>
+                <mass>0.015</mass>
+                <inertia>
+                    <ixx>0.058</ixx>
+                    <ixy>-0.017</ixy>
+                    <iyy>0.009</iyy>
+                    <ixz>-0.004</ixz>
+                    <iyz>-0.014</iyz>
+                    <izz>0.06</izz>
+                </inertia>
+            </inertial>
+            <collision name='collision'>
+                <geometry>
+                    <mesh>
+                        <uri>model://bmb_description/meshes/ElevatorAssembly.STL</uri>
+                    </mesh>
+                </geometry>
+            </collision>
+            <visual name='visual'>
+                <geometry>
+                    <mesh>
+                        <uri>model://bmb_description/meshes/ElevatorAssembly.STL</uri>
+                        <scale>0.01 0.01 0.01</scale>
+                    </mesh>
+                </geometry>
+            </visual>
+        </link>
+        <link name='propeller'>
+            <gravity>0</gravity>
+            <pose frame=''>0 0 0 0 0 0</pose>
+            <inertial>
+                <mass>0.012</mass>
+                <inertia>
+                    <ixx>0.047</ixx>
+                    <ixy>-0.006</ixy>
+                    <iyy>0.005</iyy>
+                    <ixz>0.002</ixz>
+                    <iyz>-0.013</iyz>
+                    <izz>0.044</izz>
+                </inertia>
+                <pose frame=''>0 0 0 0 0 0</pose>
+            </inertial>
+            <collision name='collision'>
+                <geometry>
+                    <mesh>
+                        <uri>model://bmb_description/meshes/PropellerAssembly.STL</uri>
+                    </mesh>
+                </geometry>
+            </collision>
+            <visual name='visual'>
+                <geometry>
+                    <mesh>
+                        <uri>model://bmb_description/meshes/PropellerAssembly.STL</uri>
+                        <scale>0.01 0.01 0.01</scale>
+                    </mesh>
+                </geometry>
+            </visual>
+        </link>
 
-    <!-- Joint to move the left aileron -->
-      <joint name='left_aileron_joint' type='revolute'>
-        <parent>body</parent>
-        <child>left_aileron</child>
-        <!--<pose>-1.45 3.7 1.5 0.05 0 -0.12</pose>-->
-        <axis>
-	  <xyz>0 1 0</xyz>
-	  <limit>
-	    <!-- -30/+30 deg. -->
-	    <lower>-0.53</lower>
-	    <upper>0.53</upper>
-	    <effort>-1</effort>
-	    <velocity>-1</velocity>
-	  </limit>
-	<dynamics>
-	  <damping>1.000</damping>
-	</dynamics>
-      </axis>
-      <physics>
-	<ode>
-	  <implicit_spring_damper>1</implicit_spring_damper>
-	</ode>
-      </physics>
-    </joint>
+        <!-- Joint to move the left aileron -->
+        <joint name='left_aileron_joint' type='revolute'>
+            <parent>body</parent>
+            <child>left_aileron</child>
+            <!--<pose>-1.45 3.7 1.5 0.05 0 -0.12</pose>-->
+            <axis>
+                <xyz>0 1 0</xyz>
+                <limit>
+                    <!-- -30/+30 deg. -->
+                    <lower>-0.53</lower>
+                    <upper>0.53</upper>
+                    <effort>-1</effort>
+                    <velocity>-1</velocity>
+                </limit>
+                <dynamics>
+                    <damping>1.000</damping>
+                </dynamics>
+            </axis>
+            <physics>
+                <ode>
+                    <implicit_spring_damper>1</implicit_spring_damper>
+                </ode>
+            </physics>
+        </joint>
 
-    <!-- Joint to move the right aileron -->
-    <joint name='right_aileron_joint' type='revolute'>
-      <parent>body</parent>
-      <child>right_aileron</child>
-      <!--<pose>-1.45 -3.7 1.5 -0.05 0 0.12</pose>-->
-      <axis>
-        <xyz>0 1 0</xyz>
-        <limit>
-          <!-- -30/+30 deg. -->
-          <lower>-0.53</lower>
-          <upper>0.53</upper>
-          <effort>-1</effort>
-          <velocity>-1</velocity>
-        </limit>
-        <dynamics>
-          <damping>1.000</damping>
-        </dynamics>
-      </axis>
-      <physics>
-        <ode>
-          <implicit_spring_damper>1</implicit_spring_damper>
-        </ode>
-      </physics>
-    </joint>
+        <!-- Joint to move the right aileron -->
+        <joint name='right_aileron_joint' type='revolute'>
+            <parent>body</parent>
+            <child>right_aileron</child>
+            <!--<pose>-1.45 -3.7 1.5 -0.05 0 0.12</pose>-->
+            <axis>
+                <xyz>0 1 0</xyz>
+                <limit>
+                    <!-- -30/+30 deg. -->
+                    <lower>-0.53</lower>
+                    <upper>0.53</upper>
+                    <effort>-1</effort>
+                    <velocity>-1</velocity>
+                </limit>
+                <dynamics>
+                    <damping>1.000</damping>
+                </dynamics>
+            </axis>
+            <physics>
+                <ode>
+                    <implicit_spring_damper>1</implicit_spring_damper>
+                </ode>
+            </physics>
+        </joint>
 
-    <!-- Joint to move the elevators -->
-    <joint name='elevators_joint' type='revolute'>
-      <parent>body</parent>
-      <child>elevator</child>
-      <!--<pose>-5.55 0 0.57 0 0 0</pose>-->
-      <axis>
-        <xyz>0 1 0</xyz>
-        <limit>
-          <!-- -30/+30 deg. -->
-          <lower>-0.53</lower>
-          <upper>0.53</upper>
-          <effort>-1</effort>
-          <velocity>-1</velocity>
-        </limit>
-        <dynamics>
-          <damping>1.000</damping>
-        </dynamics>
-      </axis>
-      <physics>
-        <ode>
-          <implicit_spring_damper>1</implicit_spring_damper>
-        </ode>
-      </physics>
-    </joint>
+        <!-- Joint to move the elevators -->
+        <joint name='elevators_joint' type='revolute'>
+            <parent>body</parent>
+            <child>elevator</child>
+            <!--<pose>-5.55 0 0.57 0 0 0</pose>-->
+            <axis>
+                <xyz>0 1 0</xyz>
+                <limit>
+                    <!-- -30/+30 deg. -->
+                    <lower>-0.53</lower>
+                    <upper>0.53</upper>
+                    <effort>-1</effort>
+                    <velocity>-1</velocity>
+                </limit>
+                <dynamics>
+                    <damping>1.000</damping>
+                </dynamics>
+            </axis>
+            <physics>
+                <ode>
+                    <implicit_spring_damper>1</implicit_spring_damper>
+                </ode>
+            </physics>
+        </joint>
 
-    <!-- Joint to make the propeller spin -->
-    <joint name='propeller_joint' type='revolute'>
-      <parent>body</parent>
-      <child>propeller</child>
-      <axis>
-        <xyz>1 0 0</xyz>
-        <limit>
-          <lower>-1e+12</lower>
-          <upper>1e+12</upper>
-          <effort>-1</effort>
-          <velocity>-1</velocity>
-        </limit>
-        <dynamics>
-          <damping>0.001</damping>
-        </dynamics>
-      </axis>
-      <physics>
-        <ode>
-          <implicit_spring_damper>1</implicit_spring_damper>
-        </ode>
-      </physics>
-    </joint>
+        <!-- Joint to make the propeller spin -->
+        <joint name='propeller_joint' type='revolute'>
+            <parent>body</parent>
+            <child>propeller</child>
+            <axis>
+                <xyz>1 0 0</xyz>
+                <limit>
+                    <lower>-1e+12</lower>
+                    <upper>1e+12</upper>
+                    <effort>-1</effort>
+                    <velocity>-1</velocity>
+                </limit>
+                <dynamics>
+                    <damping>0.001</damping>
+                </dynamics>
+            </axis>
+            <physics>
+                <ode>
+                    <implicit_spring_damper>1</implicit_spring_damper>
+                </ode>
+            </physics>
+        </joint>
 
-    <static>0</static>
-    <allow_auto_disable>1</allow_auto_disable>
-  </model>
+        <static>0</static>
+        <allow_auto_disable>1</allow_auto_disable>
+    </model>
 </sdf>
