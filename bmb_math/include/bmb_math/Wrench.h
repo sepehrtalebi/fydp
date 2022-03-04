@@ -11,8 +11,8 @@ struct Wrench {
 
   Wrench() = default;
 
-  Wrench(const double& fx = 0, const double& fy = 0, const double& fz = 0,
-         const double& tx, const double& ty, const double& tz)
+  Wrench(const T& fx = 0, const T& fy = 0, const T& fz = 0,
+         const T& tx, const T& ty, const T& tz)
       : force(Vector3<T>{fx, fy, fz}), torque(Vector3<T>{tx, ty, tz}) {}
 
   Wrench(const Vector3<T>& force, const Vector3<T>& torque)
@@ -38,7 +38,7 @@ struct Wrench {
     return {Vector3<T>{force * scalar}, Vector3<T>{torque * scalar}};
   }
 
-  Wrench<T> operator/(const double& scalar) {
+  Wrench<T> operator/(const T& scalar) {
     return {Vector3<T>{force / scalar}, Vector3<T>{torque / scalar}};
   }
 
@@ -57,7 +57,7 @@ struct Wrench {
     torque *= scalar;
   }
 
-  void operator/=(const double& scalar) {
+  void operator/=(const T& scalar) {
     force /= scalar;
     torque /= scalar;
   }
