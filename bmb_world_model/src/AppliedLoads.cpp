@@ -65,45 +65,9 @@ Wrench<double> getAppliedLoads(
 
 Matrix<double, 6, bmb_msgs::AircraftState::SIZE> getAppliedLoadsJacobian(
     const bmb_msgs::AircraftState& state) const {
-  // TODO: this is out of date and needs to be updated
   auto wrench_jac = Matrix<double, 6, bmb_msgs::AircraftState::SIZE>::zeros();
   // propeller loads does not contribute since it does not depend on state
-
-  static constexpr size_t VX = bmb_msgs::AircraftState::VX;
-  const double& velocity = state.twist.linear.x;
-
-  // right aileron loads
-  double vel_to_lift_jac =
-      LIFT_GAIN_AILERON *
-      saturation(current_control_inputs.right_aileron_angle, M_PI_4) * 2 *
-      velocity;
-  wrench_jac[2][VX] -= vel_to_lift_jac;
-  Vector3<double> vel_to_right_torque_jac =
-      L_RIGHT_AILERON.cross({0, 0, -vel_to_lift_jac});
-  for (size_t i = 0; i < 3; i++)
-    wrench_jac[3 + i][VX] += vel_to_right_torque_jac[i];
-
-  // left aileron loads
-  const double left_aileron_angle = -current_control_inputs.right_aileron_angle;
-  vel_to_lift_jac =
-      LIFT_GAIN_AILERON * saturation(left_aileron_angle, M_PI_4) * 2 * velocity;
-  wrench_jac[2][VX] -= vel_to_lift_jac;
-  Vector3<double> vel_to_left_torque_jac =
-      L_LEFT_AILERON.cross({0, 0, -vel_to_lift_jac});
-  for (size_t i = 0; i < 3; i++)
-    wrench_jac[3 + i][VX] += vel_to_left_torque_jac[i];
-
-  // elevator loads
-  vel_to_lift_jac = LIFT_GAIN_ELEVATOR *
-                    saturation(current_control_inputs.elevator_angle, M_PI_4) *
-                    2 * velocity;
-  wrench_jac[2][VX] += vel_to_lift_jac;
-  Vector3<double> vel_to_elevator_torque_jac =
-      L_ELEVATOR.cross({0, 0, vel_to_lift_jac});
-  for (size_t i = 0; i < 3; i++)
-    wrench_jac[3 + i][VX] += vel_to_elevator_torque_jac[i];
-
-  // TODO: environmental loads
+  // TODO: implement
 
   return wrench_jac;
 }
