@@ -63,7 +63,8 @@ Wrench<double> getAppliedLoads(const bmb_msgs::AircraftState& state,
 }
 
 Matrix<double, 6, bmb_msgs::AircraftState::SIZE> getAppliedLoadsJacobian(
-    const bmb_msgs::AircraftState& state) {
+    const bmb_msgs::AircraftState& state,
+    const bmb_msgs::ControlInputs& control_inputs) {
   auto wrench_jac = Matrix<double, 6, bmb_msgs::AircraftState::SIZE>::zeros();
   // propeller loads does not contribute since it does not depend on state
   // TODO: implement
