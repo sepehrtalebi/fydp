@@ -11,6 +11,10 @@ struct Wrench {
 
   Wrench() = default;
 
+  Wrench(const double& fx = 0, const double& fy = 0, const double& fz = 0,
+         const double& tx, const double& ty, const double& tz)
+      : force(Vector3<T>{fx, fy, fz}), torque(Vector3<T>{tx, ty, tz}) {}
+
   Wrench(const Vector3<T>& force, const Vector3<T>& torque)
       : force(force), torque(torque) {}
 

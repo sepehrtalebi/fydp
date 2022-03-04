@@ -10,6 +10,12 @@ struct Accel {
 
   Accel() = default;
 
+  Accel(const double& lin_x = 0, const double& lin_y = 0,
+        const double& lin_z = 0, const double& ang_x, const double& ang_y,
+        const double& ang_z)
+      : force(Vector3<T>{lin_x, lin_y, lin_z}),
+        torque(Vector3<T>{ang_x, ang_y, ang_z}) {}
+
   Accel(const Vector3<T>& linear, const Vector3<T>& angular)
       : linear(linear), angular(angular) {}
 
