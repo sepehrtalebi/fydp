@@ -3,7 +3,6 @@
 #include <ros/ros.h>
 #include <gazebo_msgs/ModelStates.h>
 #include <bmb_msgs/ControlInputs.h>
-#include <bmb_world_model/AppliedLoads.h>
 
 class SimSensorsNode {
  public:
@@ -16,7 +15,7 @@ class SimSensorsNode {
 
   void modelStatesCallback(const gazebo_msgs::ModelStates& msg);
 
-  AppliedLoads applied_loads{};
+  bmb_msgs::ControlInputs latest_control_inputs;
   ros::Subscriber model_states_sub_;
   ros::Publisher pressure_sensor_pub_;
   ros::Publisher imu_pub_;

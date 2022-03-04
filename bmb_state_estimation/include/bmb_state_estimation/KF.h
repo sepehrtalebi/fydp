@@ -9,7 +9,6 @@
 #include <bmb_msgs/ControlInputs.h>
 #include <bmb_msgs/SensorMeasurements.h>
 #include <bmb_state_estimation/SensorFilter.h>
-#include <bmb_world_model/AppliedLoads.h>
 #include <bmb_world_model/Constants.h>
 #include <cstddef>
 
@@ -48,10 +47,8 @@ class KF : public SensorFilter {
   Matrix<double, n, n> P = Matrix<double, n, n>::identity();
   const Matrix<double, n, n> Q = Matrix<double, n, n>::identity();
   const Matrix<double, p, p> R = Matrix<double, p, p>::identity();
-  AppliedLoads applied_loads{};
   Wrench<double>
-      current_loads;  // stores applied_loads.getAppliedLoads(getOutput()) for
-                      // the current time-step
+      current_loads;  // stores the applied loads for the current time-step
   Accel<double> current_accel;  // stores accelerations and angular
                                 // accelerations based on current_loads
 

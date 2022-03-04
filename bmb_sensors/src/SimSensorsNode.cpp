@@ -32,12 +32,10 @@ SimSensorsNode::SimSensorsNode(ros::NodeHandle& nh) {
       nh.advertise<bmb_msgs::OpticalFlowReading>("/optical_flow_reading", 1);
 }
 
-void SimSensorsNode::spin() {
-  ros::spin();
-}
+void SimSensorsNode::spin() { ros::spin(); }
 
 void SimSensorsNode::controlInputsCallback(const bmb_msgs::ControlInputs& msg) {
-  applied_loads.update(msg);
+  latest_control_inputs = msg;
 }
 
 void SimSensorsNode::modelStatesCallback(const gazebo_msgs::ModelStates& msg) {
@@ -47,9 +45,10 @@ void SimSensorsNode::modelStatesCallback(const gazebo_msgs::ModelStates& msg) {
       state.pose = msg.pose[i];
       state.twist = msg.twist[i];
 
-      Wrench<double> wrench = applied_loads.getAppliedLoads(state);
-      Accel<double> accel = bmb_world_model::toAccel(wrench);
-      bmb_msgs::SensorMeasurements measurements = getSensorMeasurements(
+      const Wrench<double> wrench =
+          getAppliedLoads(state, latest_control_inputs);
+      const Accel<double> accel = bmb_world_model::toAccel(wrench);
+      const bmb_msgs::SensorMeasurements measurements = getSensorMeasurements(
           state, Vector3<double>{}, Vector3<double>{}, accel);
 
       pressure_sensor_pub_.publish(measurements.pressure_reading);
