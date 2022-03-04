@@ -7,8 +7,8 @@
 
 Wrench<double> getAppliedLoads(
     const bmb_msgs::AircraftState& state,
-    const bmb_msgs::ControlInputs& control_inputs) const;
+    const bmb_msgs::ControlInputs& control_inputs);
 
 Matrix<double, 6, bmb_msgs::AircraftState::SIZE> getAppliedLoadsJacobian(
     const bmb_msgs::AircraftState& state,
-    const bmb_msgs::ControlInputs& control_inputs) const;
+    const bmb_msgs::ControlInputs& control_inputs);
