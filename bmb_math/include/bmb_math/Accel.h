@@ -10,8 +10,8 @@ struct Accel {
 
   Accel(const T& lin_x = 0, const T& lin_y = 0, const T& lin_z = 0,
         const T& ang_x = 0, const T& ang_y = 0, const T& ang_z = 0)
-      : force(Vector3<T>{lin_x, lin_y, lin_z}),
-        torque(Vector3<T>{ang_x, ang_y, ang_z}) {}
+      : linear(Vector3<T>{lin_x, lin_y, lin_z}),
+        angular(Vector3<T>{ang_x, ang_y, ang_z}) {}
 
   Accel(const Vector3<T>& linear, const Vector3<T>& angular)
       : linear(linear), angular(angular) {}
