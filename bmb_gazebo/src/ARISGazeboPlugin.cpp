@@ -82,7 +82,7 @@ void ARISGazeboPlugin::update(const common::UpdateInfo& /** _info **/) {
     msg = this->latest_control_inputs;
   }
 
-  this->joints[kPropeller]->SetForce(0, msg.propeller_voltage);
+  this->joints[kPropeller]->SetForce(0, msg.propeller_force);
 #if GAZEBO_MAJOR_VERSION >= 8
   this->joints[kRightAileron]->SetPosition(0, msg.right_aileron_angle);
   this->joints[kLeftAileron]->SetPosition(0, -msg.right_aileron_angle);
