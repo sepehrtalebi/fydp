@@ -4,9 +4,9 @@
 #include <bmb_msgs/AircraftState.h>
 #include <bmb_msgs/ControlInputs.h>
 #include <bmb_msgs/SensorMeasurements.h>
+#include <bmb_world_model/AppliedLoads.h>
 #include <bmb_world_model/Constants.h>
 #include <bmb_world_model/SensorModels.h>
-#include <bmb_world_model/AppliedLoads.h>
 #include <bmb_world_model/WrenchUtilities.h>
 
 KF::KF() {
@@ -25,7 +25,7 @@ void KF::update(const bmb_msgs::SensorMeasurements& sensor_measurements,
   current_accel = bmb_world_model::toAccel(current_loads);
 
   // delegate to subclasses
-  updateKF(sensor_measurements, dt);
+  updateKF(sensor_measurements, control_inputs, dt);
 }
 
 bmb_msgs::AircraftState KF::getOutput() const {

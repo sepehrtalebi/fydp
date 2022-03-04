@@ -5,6 +5,7 @@
 #include <bmb_math/MessageUtilities.h>
 #include <bmb_math/Quaternion.h>
 #include <bmb_math/Vector.h>
+#include <bmb_msgs/ControlInputs.h>
 #include <bmb_msgs/SensorMeasurements.h>
 #include <bmb_world_model/AppliedLoads.h>
 #include <bmb_world_model/Constants.h>
@@ -45,6 +46,7 @@ const Matrix<double, 6, 6> EKF::WRENCH_TO_ACCEL_JAC =
     getWrenchToAccelJac();  // NOLINT(cert-err58-cpp)
 
 void EKF::updateKF(const bmb_msgs::SensorMeasurements& sensor_measurements,
+                   const bmb_msgs::ControlInputs& control_inputs,
                    const double& dt) {
   // Jacobian naming convention:
   // a_to_b_jac represents the derivative of b with respect to a, and is a
@@ -57,8 +59,9 @@ void EKF::updateKF(const bmb_msgs::SensorMeasurements& sensor_measurements,
   const Vector3 accelerometer_bias = x.slice<accel_bx, accel_bz + 1>();
   const Vector3 gyro_bias = x.slice<gyro_bx, gyro_bz + 1>();
   Matrix<double, 6, bmb_msgs::AircraftState::SIZE> wrench_jac =
-      applied_loads.getAppliedLoadsJacobian(
-          state);  // derivative of wrench with respect to state
+      getAppliedLoadsJacobian(
+          state,
+          control_inputs);  // derivative of wrench with respect to state
   Matrix<double, 6, bmb_msgs::AircraftState::SIZE> accel_jac =
       WRENCH_TO_ACCEL_JAC * wrench_jac;
 

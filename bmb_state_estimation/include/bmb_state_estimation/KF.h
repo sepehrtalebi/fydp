@@ -60,6 +60,7 @@ class KF : public SensorFilter {
               const double& dt) final;
 
   virtual void updateKF(const bmb_msgs::SensorMeasurements& sensor_measurements,
+                        const bmb_msgs::ControlInputs& control_inputs,
                         const double& dt) = 0;
 
   [[nodiscard]] bmb_msgs::AircraftState getOutput() const final;
