@@ -33,9 +33,9 @@ static const Matrix<ExprPtr, 3, 4> QUAT_TO_WEIGHT_JAC_EXPR =
     getQuatToWeightJacExpr();  // NOLINT(cert-err58-cpp)
 
 static Wrench<double> getPropellerLoads(const double& propeller_force) {
-  Vector3<double> thrust{control_inputs.propeller_force, 0, 0};
+  Vector3<double> thrust{propeller_force, 0, 0};
   Vector3<double> torque{
-      THRUST_TORQUE_RATIO_PROPELLER * control_inputs.propeller_force, 0, 0};
+      THRUST_TORQUE_RATIO_PROPELLER * propeller_force, 0, 0};
   return {thrust, L_FRONT_PROPELLER.cross(thrust) + torque};
 }
 
