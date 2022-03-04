@@ -1,0 +1,90 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="aris">
+    <xacro:property name="inf" value="1000000000" />
+
+    <link name="body">
+        <visual>
+            <geometry>
+                <mesh filename="package://bmb_description/meshes/body.stl"/>
+            </geometry>
+        </visual>
+        <inertial>
+            <mass>3.068</mass>
+            <inertia ixx="12.327" ixy="-3.07" ixz="0.739"
+                     iyy="1.711" iyz="-2.789" izz="12.659"/>
+        </inertial>
+        <collision>
+            <geometry>
+                <box size="1 2 0.5"/>
+            </geometry>
+        </collision>
+    </link>
+
+    <!-- Propeller -->
+    <link name="propeller">
+        <visual>
+            <geometry>
+                <mesh filename="package://bmb_description/meshes/propeller.stl"/>
+            </geometry>
+        </visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+    </link>
+    <joint name="body_to_propeller" type="continuous">
+        <parent link="body"/>
+        <child link="propeller"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <axis xyz="1 0 0"/>
+    </joint>
+
+    <!-- Left Aileron -->
+    <!-- TODO: use xacro macro for left and right aileron -->
+    <link name="left_aileron">
+        <visual>
+            <geometry>
+                <mesh filename="package://bmb_description/meshes/left_aileron.stl"/>
+            </geometry>
+        </visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+    </link>
+    <joint name="body_to_left_aileron" type="revolute">
+        <parent link="body"/>
+        <child link="body_to_left_aileron"/>
+        <origin xyz="-1.45 3.7 1.5" rpy="0.05 0 -0.12"/>
+        <axis xyz="0 1 0"/>
+        <limit lower="${radians(-30)}" upper="${radians(30)}" velocity="${inf}" effort="${inf}"/>
+    </joint>
+
+    <!-- Right Aileron -->
+    <link name="right_aileron">
+        <visual>
+            <geometry>
+                <mesh filename="package://bmb_description/meshes/right_aileron.stl"/>
+            </geometry>
+        </visual>
+        <origin xyz="-1.45 -3.7 1.5 " rpy="-0.05 0 0.12"/>
+    </link>
+    <joint name="body_to_right_aileron" type="revolute">
+        <parent link="body"/>
+        <child link="body_to_right_aileron"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <axis xyz="0 1 0"/>
+        <limit lower="${radians(-30)}" upper="${radians(30)}" velocity="${inf}" effort="${inf}"/>
+    </joint>
+
+    <!-- Elevator -->
+    <link name="elevator">
+        <visual>
+            <geometry>
+                <mesh filename="package://bmb_description/meshes/elevator.stl"/>
+            </geometry>
+        </visual>
+        <origin xyz="-5.55 0 0.57" rpy="0 0 0"/>
+    </link>
+    <joint name="body_to_elevator" type="revolute">
+        <parent link="body"/>
+        <child link="body_to_elevator"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <axis xyz="0 1 0"/>
+        <limit lower="${radians(-30)}" upper="${radians(30)}" velocity="${inf}" effort="${inf}"/>
+    </joint>
+</robot>
