@@ -17,8 +17,6 @@ KF::KF() {
 void KF::update(const bmb_msgs::SensorMeasurements& sensor_measurements,
                 const bmb_msgs::ControlInputs& control_inputs,
                 const double& dt) {
-  applied_loads.update(control_inputs);
-
   // calculate current loads once and store in an instance variable so that it
   // can be used throughout
   current_loads = getAppliedLoads(getOutput(), control_inputs);
