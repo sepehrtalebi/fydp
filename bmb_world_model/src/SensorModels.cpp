@@ -2,7 +2,6 @@
 #include <bmb_math/Quaternion.h>
 #include <bmb_math/Vector3.h>
 #include <bmb_msgs/SensorMeasurements.h>
-#include <bmb_world_model/AppliedLoads.h>
 #include <bmb_world_model/Constants.h>
 #include <cmath>
 #include <utility>
