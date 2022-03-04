@@ -2,6 +2,7 @@
 
 #include <bmb_math/Matrix.h>
 #include <bmb_math/Vector3.h>
+#include <bmb_math/Wrench.h>
 #include <bmb_msgs/SensorMeasurements.h>
 #include <bmb_utilities/ControllerGains.h>
 
@@ -17,7 +18,7 @@ static constexpr double GAS_CONSTANT = 8.3144598;       // J/(K mol)
 
 // rail track constants
 static constexpr double RAIL_WIDTH = 1.4351;  // m
-static const Vector3<double> NORTH{1, 0, 0};        // NOLINT(cert-err58-cpp)
+static const Vector3<double> NORTH{1, 0, 0};  // NOLINT(cert-err58-cpp)
 
 // camera constants
 static constexpr double CAMERA_GAIN = 1;
@@ -47,7 +48,7 @@ static const double EARTH_RADIUS = 6.3781e6;  // m
 // aircraft inertial constants
 static constexpr double MASS = 3.615;  // aircraft mass, kg
 static const Vector3<double> WEIGHT{
-    0, 0, MASS * GRAVITATIONAL_ACCELERATION};  // NOLINT(cert-err58-cpp)
+    0, 0, MASS* GRAVITATIONAL_ACCELERATION};  // NOLINT(cert-err58-cpp)
 static const Matrix<double, 3, 3> INERTIA_TENSOR{
     1, 0, 0, 0, 1, 0, 0, 0, 1};  // NOLINT(cert-err58-cpp)
 static const Matrix<double, 3, 3> INERTIA_TENSOR_INV =

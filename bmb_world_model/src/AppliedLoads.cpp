@@ -3,6 +3,7 @@
 #include <bmb_differentiation/runtime/Variable.h>
 #include <bmb_math/Quaternion.h>
 #include <bmb_math/Vector3.h>
+#include <bmb_math/Wrench.h>
 #include <bmb_msgs/AircraftState.h>
 #include <bmb_msgs/ControlInputs.h>
 #include <bmb_utilities/MathUtils.h>
@@ -34,8 +35,7 @@ static const Matrix<ExprPtr, 3, 4> QUAT_TO_WEIGHT_JAC_EXPR =
 
 static Wrench<double> getPropellerLoads(const double& propeller_force) {
   Vector3<double> thrust{propeller_force, 0, 0};
-  Vector3<double> torque{
-      THRUST_TORQUE_RATIO_PROPELLER * propeller_force, 0, 0};
+  Vector3<double> torque{THRUST_TORQUE_RATIO_PROPELLER * propeller_force, 0, 0};
   return {thrust, L_FRONT_PROPELLER.cross(thrust) + torque};
 }
 
@@ -43,9 +43,8 @@ static Wrench<double> getGravitationalLoads(const Quaternion<double>& quat) {
   return {quat.rotate(WEIGHT), Vector3<double>{}};
 }
 
-Wrench<double> getAppliedLoads(
-    const bmb_msgs::AircraftState& state,
-    const bmb_msgs::ControlInputs& control_inputs) {
+Wrench<double> getAppliedLoads(const bmb_msgs::AircraftState& state,
+                               const bmb_msgs::ControlInputs& control_inputs) {
   const auto& b_vel = state.twist.linear;
   const Quaternion<double> quat{state.pose.orientation};
 
