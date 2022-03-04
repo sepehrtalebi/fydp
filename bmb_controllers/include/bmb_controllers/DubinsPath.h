@@ -18,6 +18,9 @@
 
 template <typename T>
 class DubinsPath {
+  // TODO: look into implementing these:
+  //  https://arxiv.org/pdf/1804.07238.pdf
+  //  https://ece.uwaterloo.ca/~sl2smith/papers/2016CDC_Efficient_Dubins.pdf
  public:
   using Path = std::array<DubinsCurve<T>, 3>;
   using iterator = typename Path::iterator;
