@@ -8,8 +8,6 @@ struct Accel {
   Vector3<T> linear{};
   Vector3<T> angular{};
 
-  Accel() = default;
-
   Accel(const T& lin_x = 0, const T& lin_y = 0, const T& lin_z = 0,
         const T& ang_x = 0, const T& ang_y = 0, const T& ang_z = 0)
       : force(Vector3<T>{lin_x, lin_y, lin_z}),

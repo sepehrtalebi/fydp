@@ -12,8 +12,6 @@ class Vector3 : public Vector<T, 3> {
   T& z = this->data[2];
 
  public:
-  Vector3() = default;
-
   Vector3(T x = 0, T y = 0, T z = 0) {
     this->x = x;
     this->y = y;
