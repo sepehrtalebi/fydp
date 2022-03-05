@@ -1,7 +1,5 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="aris">
-    <xacro:property name="inf" value="1000000000" />
-
     <link name="body">
         <visual>
             <geometry>
@@ -51,7 +49,7 @@
         <child link="body_to_left_aileron"/>
         <origin xyz="-1.45 3.7 1.5" rpy="0.05 0 -0.12"/>
         <axis xyz="0 1 0"/>
-        <limit lower="${radians(-30)}" upper="${radians(30)}" velocity="${inf}" effort="${inf}"/>
+        <limit lower="${radians(-30)}" upper="${radians(30)}" velocity="inf" effort="inf"/>
     </joint>
 
     <!-- Right Aileron -->
@@ -68,7 +66,7 @@
         <child link="body_to_right_aileron"/>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <axis xyz="0 1 0"/>
-        <limit lower="${radians(-30)}" upper="${radians(30)}" velocity="${inf}" effort="${inf}"/>
+        <limit lower="${radians(-30)}" upper="${radians(30)}" velocity="inf" effort="inf"/>
     </joint>
 
     <!-- Elevator -->
@@ -85,7 +83,7 @@
         <child link="body_to_elevator"/>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <axis xyz="0 1 0"/>
-        <limit lower="${radians(-30)}" upper="${radians(30)}" velocity="${inf}" effort="${inf}"/>
+        <limit lower="${radians(-30)}" upper="${radians(30)}" velocity="inf" effort="inf"/>
     </joint>
 
     <gazebo>
