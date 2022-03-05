@@ -1,5 +1,7 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="aris">
+    <xacro:property name="infty" value="${1e9}"/>
+
     <link name="body">
         <visual>
             <geometry>
@@ -7,7 +9,7 @@
             </geometry>
         </visual>
         <inertial>
-            <mass>3.068</mass>
+            <mass value="3.068"/>
             <inertia ixx="12.327" ixy="-3.07" ixz="0.739"
                      iyy="1.711" iyz="-2.789" izz="12.659"/>
         </inertial>
@@ -46,10 +48,10 @@
     </link>
     <joint name="body_to_left_aileron" type="revolute">
         <parent link="body"/>
-        <child link="body_to_left_aileron"/>
+        <child link="left_aileron"/>
         <origin xyz="-1.45 3.7 1.5" rpy="0.05 0 -0.12"/>
         <axis xyz="0 1 0"/>
-        <limit lower="${radians(-30)}" upper="${radians(30)}" velocity="inf" effort="inf"/>
+        <limit lower="${radians(-30)}" upper="${radians(30)}" velocity="${infty}" effort="${infty}"/>
     </joint>
 
     <!-- Right Aileron -->
@@ -63,10 +65,10 @@
     </link>
     <joint name="body_to_right_aileron" type="revolute">
         <parent link="body"/>
-        <child link="body_to_right_aileron"/>
+        <child link="right_aileron"/>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <axis xyz="0 1 0"/>
-        <limit lower="${radians(-30)}" upper="${radians(30)}" velocity="inf" effort="inf"/>
+        <limit lower="${radians(-30)}" upper="${radians(30)}" velocity="${infty}" effort="${infty}"/>
     </joint>
 
     <!-- Elevator -->
@@ -80,10 +82,10 @@
     </link>
     <joint name="body_to_elevator" type="revolute">
         <parent link="body"/>
-        <child link="body_to_elevator"/>
+        <child link="elevator"/>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <axis xyz="0 1 0"/>
-        <limit lower="${radians(-30)}" upper="${radians(30)}" velocity="inf" effort="inf"/>
+        <limit lower="${radians(-30)}" upper="${radians(30)}" velocity="${infty}" effort="${infty}"/>
     </joint>
 
     <gazebo>
