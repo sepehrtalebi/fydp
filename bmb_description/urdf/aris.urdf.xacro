@@ -90,6 +90,7 @@
 
     <gazebo>
         <plugin name="aris_control" filename="libaris_control_plugin.so">
+            <base_link>body</base_link>
             <propeller>body_to_propeller</propeller>
             <left_aileron>body_to_left_aileron</left_aileron>
             <right_aileron>body_to_right_aileron</right_aileron>

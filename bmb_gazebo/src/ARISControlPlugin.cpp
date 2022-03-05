@@ -57,6 +57,19 @@ void ARISControlPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf) {
     }
   }
 
+  if (!_sdf->HasElement("base_link")) {
+    ROS_FATAL_STREAM("Unable to find the <base_link> parameter.");
+    return;
+  }
+
+  const std::string base_link_name = _sdf->Get<std::string>("base_link");
+  base_link = _model->GetJoint(base_link_name);
+  if (!base_link) {
+    ROS_FATAL_STREAM("Failed to find joint [" << base_link_name
+                                              << "] aborting plugin load.");
+    return;
+  }
+
   // Listen to the update event. This event is broadcast every simulation
   // iteration.
   this->update_connection = event::Events::ConnectWorldUpdateBegin(

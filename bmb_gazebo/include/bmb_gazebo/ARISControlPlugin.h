@@ -31,6 +31,7 @@ class ARISControlPlugin : public ModelPlugin {
   static constexpr size_t kElevator = 3;
 
   std::array<physics::JointPtr, 4> joints;
+  physics::LinkPtr base_link;
   event::ConnectionPtr update_connection;
   // we need to run a ROS node from this Gazebo plugin in order to read from ROS
   // topics
