@@ -87,4 +87,13 @@
         <axis xyz="0 1 0"/>
         <limit lower="${radians(-30)}" upper="${radians(30)}" velocity="${inf}" effort="${inf}"/>
     </joint>
+
+    <gazebo>
+        <plugin name="aris_control" filename="libaris_gazebo_plugin.so">
+            <propeller>aris::propeller</propeller>
+            <left_aileron>aris::left_aileron</left_aileron>
+            <right_aileron>aris::right_aileron</right_aileron>
+            <elevator>aris::elevator</elevator>
+        </plugin>
+    </gazebo>
 </robot>
