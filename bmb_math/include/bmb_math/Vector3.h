@@ -3,6 +3,7 @@
 #include <bmb_math/Vector.h>
 #include <geometry_msgs/Point.h>
 #include <geometry_msgs/Vector3.h>
+#include <ignition/math/Vector3.hh>
 
 template <typename T>
 class Vector3 : public Vector<T, 3> {
@@ -49,6 +50,16 @@ class Vector3 : public Vector<T, 3> {
     msg.x = x;
     msg.y = y;
     msg.z = z;
+  }
+
+  Vector3(const ignition::math::Vector3<T>& vec)
+      : Vector3(vec.X(), vec.Y(), vec.Z()) {
+  }  // NOLINT(google-explicit-constructor)
+
+  void copy_to(ignition::math::Vector3<T>& vec) const {
+    vec.X(x);
+    vec.Y(y);
+    vec.Z(z);
   }
 
   Vector3<T> cross(const Vector3<T>& other) const {

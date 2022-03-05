@@ -3,6 +3,7 @@
 #include <bmb_math/Matrix.h>
 #include <bmb_math/Vector3.h>
 #include <geometry_msgs/Quaternion.h>
+#include <ignition/math/Quaternion.hh>
 
 template <typename T>
 class Quaternion : public Vector<T, 4> {
@@ -36,6 +37,18 @@ class Quaternion : public Vector<T, 4> {
     msg.x = q1;
     msg.y = q2;
     msg.z = q3;
+  }
+
+  // allow implicit conversions
+  Quaternion(const ignition::math::Quaternion<T>& quat)
+      : Quaternion(quat.W(), quat.X(), quat.Y(), quat.Z()) {
+  }  // NOLINT(google-explicit-constructor)
+
+  void copy_to(ignition::math::Quaternion<T>& quat) {
+    quat.W(q0);
+    quat.X(q1);
+    quat.Y(q2);
+    quat.Z(q3);
   }
 
   Quaternion& operator=(const Quaternion<T>& other) {
