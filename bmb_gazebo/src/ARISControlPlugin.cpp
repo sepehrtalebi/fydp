@@ -1,4 +1,4 @@
-#include "bmb_gazebo/ARISGazeboPlugin.h"
+#include "bmb_gazebo/ARISControlPlugin.h"
 #include <bmb_msgs/ControlInputs.h>
 #include <gazebo/common/Plugin.hh>
 #include <gazebo/common/UpdateInfo.hh>
@@ -15,7 +15,7 @@
 
 using namespace gazebo;
 
-ARISGazeboPlugin::~ARISGazeboPlugin() {
+ARISControlPlugin::~ARISControlPlugin() {
 #if GAZEBO_MAJOR_VERSION >= 8
   this->update_connection.reset();
 #else
@@ -23,13 +23,13 @@ ARISGazeboPlugin::~ARISGazeboPlugin() {
 #endif
 }
 
-void ARISGazeboPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf) {
+void ARISControlPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf) {
   if (!_model) {
-    ROS_FATAL("ARISGazeboPlugin _model pointer is NULL");
+    ROS_FATAL("ARISControlPlugin _model pointer is NULL");
     return;
   }
   if (!_sdf) {
-    ROS_FATAL("ARISGazeboPlugin _sdf pointer is NULL");
+    ROS_FATAL("ARISControlPlugin _sdf pointer is NULL");
     return;
   }
   if (!ros::isInitialized()) {
@@ -60,22 +60,22 @@ void ARISGazeboPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf) {
   // Listen to the update event. This event is broadcast every simulation
   // iteration.
   this->update_connection = event::Events::ConnectWorldUpdateBegin(
-      std::bind(&ARISGazeboPlugin::update, this, std::placeholders::_1));
+      std::bind(&ARISControlPlugin::update, this, std::placeholders::_1));
 
   // Initialize ROS subscriber
   this->control_inputs_sub = this->nh.subscribe(
-      "/control_inputs", 1, &ARISGazeboPlugin::controlInputsCallback, this);
+      "/control_inputs", 1, &ARISControlPlugin::controlInputsCallback, this);
 
   ROS_INFO("ARIS ready to fly. The force will be with you");
 }
 
-void ARISGazeboPlugin::controlInputsCallback(
+void ARISControlPlugin::controlInputsCallback(
     const bmb_msgs::ControlInputs& msg) {
   std::lock_guard<std::mutex> lock(this->mutex);
   this->latest_control_inputs = msg;
 }
 
-void ARISGazeboPlugin::update(const common::UpdateInfo& /** _info **/) {
+void ARISControlPlugin::update(const common::UpdateInfo& /** _info **/) {
   bmb_msgs::ControlInputs msg;
   {
     std::lock_guard<std::mutex> lock(this->mutex);
@@ -95,4 +95,4 @@ void ARISGazeboPlugin::update(const common::UpdateInfo& /** _info **/) {
 }
 
 // Register plugin with Gazebo
-GZ_REGISTER_MODEL_PLUGIN(ARISGazeboPlugin);
+GZ_REGISTER_MODEL_PLUGIN(ARISControlPlugin);

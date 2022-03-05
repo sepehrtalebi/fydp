@@ -12,11 +12,11 @@
 
 namespace gazebo {
 
-class ARISGazeboPlugin : public ModelPlugin {
+class ARISControlPlugin : public ModelPlugin {
  public:
-  ARISGazeboPlugin() = default;
+  ARISControlPlugin() = default;
 
-  ~ARISGazeboPlugin();
+  ~ARISControlPlugin();
 
   void Load(physics::ModelPtr _model, sdf::ElementPtr _sdf) override;
 

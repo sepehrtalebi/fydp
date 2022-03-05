@@ -89,11 +89,11 @@
     </joint>
 
     <gazebo>
-        <plugin name="aris_control" filename="libaris_gazebo_plugin.so">
-            <propeller>aris::body_to_propeller</propeller>
-            <left_aileron>aris::body_to_left_aileron</left_aileron>
-            <right_aileron>aris::body_to_right_aileron</right_aileron>
-            <elevator>aris::body_to_elevator</elevator>
+        <plugin name="aris_control" filename="libaris_control_plugin.so">
+            <propeller>body_to_propeller</propeller>
+            <left_aileron>body_to_left_aileron</left_aileron>
+            <right_aileron>body_to_right_aileron</right_aileron>
+            <elevator>body_to_elevator</elevator>
         </plugin>
     </gazebo>
 </robot>

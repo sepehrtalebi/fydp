@@ -130,8 +130,8 @@ include_directories(
 #   src/${PROJECT_NAME}/bmb_gazebo.cpp
 # )
 
-add_library(aris_gazebo_plugin src/ARISGazeboPlugin.cpp)
-target_link_libraries(aris_gazebo_plugin ${catkin_LIBRARIES} ${GAZEBO_LIBRARIES})
+add_library(aris_control_plugin src/ARISControlPlugin.cpp)
+target_link_libraries(aris_control_plugin ${catkin_LIBRARIES} ${GAZEBO_LIBRARIES})
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
