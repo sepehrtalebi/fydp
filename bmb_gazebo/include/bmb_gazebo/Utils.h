@@ -2,6 +2,8 @@
 
 #include <bmb_math/Quaternion.h>
 #include <bmb_math/Vector3.h>
+#include <geometry_msgs/Quaternion.h>
+#include <geometry_msgs/Vector3.h>
 #include <ignition/math/Quaternion.hh>
 #include <ignition/math/Vector3.hh>
 
@@ -19,13 +21,20 @@ ignition::math::Vector3<T> asIgnitionVector3(const Vector3<T>& vec) const {
   return result;
 }
 
+void copyTo(const ignition::math::Vector3<double> vec,
+            geometry_msgs::Vector3& msg) {
+  msg.x = vec.X();
+  msg.y = vec.Y();
+  msg.z = vec.Z();
+}
+
 // allow implicit conversions
 template <typename T>
 Quaternion<T> asBMBQuaternion(const ignition::math::Quaternion<T>& quat) {
   return {quat.W(), quat.X(), quat.Y(), quat.Z()};
 }
 
-template<typename T>
+template <typename T>
 ignition::math::Quaternion<T> copy_to(const Quaternion<T>& quat) {
   ignition::math::Quaternion result;
   result.W(quat.q0);
@@ -33,4 +42,12 @@ ignition::math::Quaternion<T> copy_to(const Quaternion<T>& quat) {
   result.Y(quat.q2);
   result.Z(quat.q3);
   return result;
+}
+
+void copyTo(const ignition::math::Quaternion<double>& quat,
+            geometry_msgs::Quaternion& msg) {
+  msg.w = quat.W();
+  msg.x = quat.X();
+  msg.y = quat.Y();
+  msg.z = quat.Z();
 }
