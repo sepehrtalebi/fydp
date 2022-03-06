@@ -98,7 +98,8 @@ bmb_msgs::AircraftState ARISControlPlugin::getAircraftState() const {
   ignitionToGeometryVector3(pose.Pos(), state.pose.position);
   ignitionToGeometryQuaternion(pose.Rot(), state.pose.orientation);
   ignitionToGeometryVector3(base_link->RelativeLinearVel(), state.twist.linear);
-  ignitionToGeometryVector3(k->RelativeAngularVel(), state.twist.angular);
+  ignitionToGeometryVector3(base_link->RelativeAngularVel(),
+                            state.twist.angular);
   return state;
 }
 
