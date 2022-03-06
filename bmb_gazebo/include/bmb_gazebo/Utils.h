@@ -13,7 +13,7 @@ Vector3<T> asBMBVector3(const ignition::math::Vector3<T>& vec) {
 }
 
 template <typename T>
-ignition::math::Vector3<T> asIgnitionVector3(const Vector3<T>& vec) const {
+ignition::math::Vector3<T> asIgnitionVector3(const Vector3<T>& vec) {
   ignition::math::Vector3<T> result;
   result.X(vec.x);
   result.Y(vec.y);
