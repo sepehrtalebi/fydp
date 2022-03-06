@@ -18,6 +18,10 @@
                 <box size="1 2 0.5"/>
             </geometry>
         </collision>
+        <gazebo>
+            <!-- Turn off gravity since the aris_control plugin will apply it -->
+            <gravity>0</gravity>
+        </gazebo>
     </link>
 
     <!-- Propeller -->

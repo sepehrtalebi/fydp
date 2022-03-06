@@ -1,5 +1,8 @@
 #include "bmb_gazebo/ARISControlPlugin.h"
+#include <bmb_gazebo/Utils.h>
+#include <bmb_msgs/AircraftState.h>
 #include <bmb_msgs/ControlInputs.h>
+#include <bmb_world_model/AppliedLoads.h>
 #include <gazebo/common/Plugin.hh>
 #include <gazebo/common/UpdateInfo.hh>
 #include <gazebo/common/common.hh>
@@ -8,6 +11,7 @@
 #include <ros/ros.h>
 #include <sdf/sdf.hh>
 #include <array>
+#include <cmath>
 #include <cstddef>
 #include <functional>
 #include <mutex>
@@ -88,22 +92,46 @@ void ARISControlPlugin::controlInputsCallback(
   this->latest_control_inputs = msg;
 }
 
+bmb_msgs::AircraftState ARISControlPlugin::getAircraftState() const {
+  bmb_msgs::AircraftState state;
+  const ignition::math::Pose3d pose = base_link->WorldCoGPose();
+  copyTo(pose.Pos(), state.pose.position);
+  copyTo(pose.Rot(), state.pose.orientation);
+  copyTo(base_link->RelativeLinearVel(), state.twist.linear);
+  copyTo(k->RelativeAngularVel(), state.twist.angular);
+  return state;
+}
+
 void ARISControlPlugin::update(const common::UpdateInfo& /** _info **/) {
-  bmb_msgs::ControlInputs msg;
+  // 9000RPM is max speed and 2.21kg is max force
+  static constexpr double PROPELLER_FORCE_TO_VEL_RATIO =
+      (9000 * 60 / (2 * M_PI)) / (2.21 * 9.81);
+
+  // read control_inputs in a thread-safe way
+  bmb_msgs::ControlInputs control_inputs;
   {
     std::lock_guard<std::mutex> lock(this->mutex);
-    msg = this->latest_control_inputs;
+    control_inputs = this->latest_control_inputs;
   }
 
-  this->joints[kPropeller]->SetForce(0, msg.propeller_force);
+  // apply loads
+  Wrench<double> wrench = getAppliedLoads(getAircraftState(), control_inputs);
+  base_link->AddRelativeForce(asIgnitionVector3(wrench.linear));
+  base_link->AddRelativeTorque(asIgnitionVector3(wrench.angular));
+
+  // geometric effects of the propeller and control surfaces
+  this->joints[kPropeller]->SetVelocity(
+      0, PROPELLER_FORCE_TO_VEL_RATIO * control_inputs.propeller_force);
 #if GAZEBO_MAJOR_VERSION >= 8
-  this->joints[kRightAileron]->SetPosition(0, msg.right_aileron_angle);
-  this->joints[kLeftAileron]->SetPosition(0, -msg.right_aileron_angle);
-  this->joints[kElevator]->SetPosition(0, msg.elevator_angle);
+  this->joints[kRightAileron]->SetPosition(0,
+                                           control_inputs.right_aileron_angle);
+  this->joints[kLeftAileron]->SetPosition(0,
+                                          -control_inputs.right_aileron_angle);
+  this->joints[kElevator]->SetPosition(0, control_inputs.elevator_angle);
 #else
-  this->joints[kRightAileron]->SetAngle(0, msg.right_aileron_angle);
-  this->joints[kLeftAileron]->SetAngle(0, -msg.right_aileron_angle);
-  this->joints[kElevator]->SetAngle(0, msg.elevator_angle);
+  this->joints[kRightAileron]->SetAngle(0, control_inputs.right_aileron_angle);
+  this->joints[kLeftAileron]->SetAngle(0, -control_inputs.right_aileron_angle);
+  this->joints[kElevator]->SetAngle(0, control_inputs.elevator_angle);
 #endif
 }
 

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <bmb_msgs/AircraftState.h>
 #include <bmb_msgs/ControlInputs.h>
 #include <gazebo/common/Plugin.hh>
 #include <gazebo/common/UpdateInfo.hh>
@@ -22,6 +23,8 @@ class ARISControlPlugin : public ModelPlugin {
 
  private:
   void controlInputsCallback(const bmb_msgs::ControlInputs& msg);
+
+  bmb_msgs::AircraftState getAircraftState() const;
 
   void update(const common::UpdateInfo& _info);
 
