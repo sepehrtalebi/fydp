@@ -94,7 +94,7 @@ void ARISControlPlugin::controlInputsCallback(
 
 bmb_msgs::AircraftState ARISControlPlugin::getAircraftState() const {
   bmb_msgs::AircraftState state;
-  const ignition::math::Pose3d pose = base_link->WorldCoGPose();
+  const ignition::math::Pose3<double> pose = base_link->WorldCoGPose();
   copyTo(pose.Pos(), state.pose.position);
   copyTo(pose.Rot(), state.pose.orientation);
   copyTo(base_link->RelativeLinearVel(), state.twist.linear);

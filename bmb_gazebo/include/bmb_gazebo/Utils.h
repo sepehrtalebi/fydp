@@ -36,7 +36,7 @@ Quaternion<T> asBMBQuaternion(const ignition::math::Quaternion<T>& quat) {
 
 template <typename T>
 ignition::math::Quaternion<T> copy_to(const Quaternion<T>& quat) {
-  ignition::math::Quaternion result;
+  ignition::math::Quaternion<T> result;
   result.W(quat.q0);
   result.X(quat.q1);
   result.Y(quat.q2);
