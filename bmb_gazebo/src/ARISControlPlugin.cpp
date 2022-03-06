@@ -95,11 +95,10 @@ void ARISControlPlugin::controlInputsCallback(
 bmb_msgs::AircraftState ARISControlPlugin::getAircraftState() const {
   bmb_msgs::AircraftState state;
   const auto pose = base_link->WorldCoGPose();
-  state.pose.position = ignitionToGeometryPoint(pose.Pos());
-  state.pose.orientation = ignitionToGeometryQuaternion(pose.Rot());
-  state.twist.linear =
-      ignitionToGeometryVector3(base_link->RelativeLinearVel());
-  state.twist.angular = ignitionToGeometryVector3(k->RelativeAngularVel());
+  ignitionToGeometryVector3(pose.Pos(), state.pose.position);
+  ignitionToGeometryQuaternion(pose.Rot(), state.pose.orientation);
+  ignitionToGeometryVector3(base_link->RelativeLinearVel(), state.twist.linear);
+  ignitionToGeometryVector3(k->RelativeAngularVel(), state.twist.angular);
   return state;
 }
 
