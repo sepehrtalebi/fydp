@@ -94,11 +94,12 @@ void ARISControlPlugin::controlInputsCallback(
 
 bmb_msgs::AircraftState ARISControlPlugin::getAircraftState() const {
   bmb_msgs::AircraftState state;
-  const ignition::math::Pose3<double> pose = base_link->WorldCoGPose();
-  copyTo(pose.Pos(), state.pose.position);
-  copyTo(pose.Rot(), state.pose.orientation);
-  copyTo(base_link->RelativeLinearVel(), state.twist.linear);
-  copyTo(k->RelativeAngularVel(), state.twist.angular);
+  const auto pose = base_link->WorldCoGPose();
+  state.pose.position = ignitionToGeometryVector3(pose.Pos());
+  state.pose.orientation = ignitionToGeometryQuaternion(pose.Rot());
+  state.twist.linear =
+      ignitionToGeometryVector3(base_link->RelativeLinearVel());
+  state.twist.angular = ignitionToGeometryVector3(k->RelativeAngularVel());
   return state;
 }
 
@@ -116,8 +117,8 @@ void ARISControlPlugin::update(const common::UpdateInfo& /** _info **/) {
 
   // apply loads
   Wrench<double> wrench = getAppliedLoads(getAircraftState(), control_inputs);
-  base_link->AddRelativeForce(asIgnitionVector3(wrench.linear));
-  base_link->AddRelativeTorque(asIgnitionVector3(wrench.angular));
+  base_link->AddRelativeForce(bmbToIgnitionVector3(wrench.linear));
+  base_link->AddRelativeTorque(bmbToIgnitionVector3(wrench.angular));
 
   // geometric effects of the propeller and control surfaces
   this->joints[kPropeller]->SetVelocity(
