@@ -4,6 +4,7 @@
 #include <bmb_math/Vector3.h>
 #include <geometry_msgs/Quaternion.h>
 #include <geometry_msgs/Vector3.h>
+#include <geometry_msgs/Point.h>
 #include <ignition/math/Quaternion.hh>
 #include <ignition/math/Vector3.hh>
 
@@ -18,6 +19,15 @@ ignition::math::Vector3<T> bmbToIgnitionVector3(const Vector3<T>& vec) {
 
 template <typename T>
 geometry_msgs::Vector3 ignitionToGeometryVector3(const T& vec) {
+  geometry_msgs::Vector3 result;
+  result.x = vec.X();
+  result.y = vec.Y();
+  result.z = vec.Z();
+  return result;
+}
+
+template <typename T>
+geometry_msgs::Vector3 ignitionToGeometryPoint(const T& vec) {
   geometry_msgs::Vector3 result;
   result.x = vec.X();
   result.y = vec.Y();
