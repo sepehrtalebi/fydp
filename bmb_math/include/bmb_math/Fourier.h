@@ -20,8 +20,8 @@ class Fourier {
     // https://numericalrecipes.wordpress.com/2009/05/29/the-cooley-tukey-fft-algorithm-for-general-factorizations/
     const size_t N = end - begin;
     if (N <= 1) return;
-    FactorTree* factor_tree = planFFT(N);
-    std::vector<std::complex<T>> roots_of_unity = getRootsOfUnity(N);
+    const FactorTree* const factor_tree = planFFT(N);
+    const std::vector<std::complex<T>> roots_of_unity = getRootsOfUnity(N);
     cooleyTukeyFFT(begin, end, 1, factor_tree, roots_of_unity);
     delete factor_tree;
   }
@@ -107,7 +107,8 @@ class Fourier {
    * of elements in the array times incr
    */
   static void cooleyTukeyFFT(
-      iterator begin, iterator end, const size_t& incr, FactorTree* factor_tree,
+      iterator begin, iterator end, const size_t& incr,
+      const FactorTree* const factor_tree,
       const std::vector<std::complex<T>>& roots_of_unity) {
     const size_t& N = factor_tree->value;
 
