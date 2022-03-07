@@ -83,8 +83,8 @@ struct DubinsCurve {
       const Line& line = getLine();
       const Vector2 d = line.end_pos - line.start_pos;
       const T projection_fraction = (p - line.start_pos).dot(d) / d.dot(d);
-      if (projection_fraction < 0) return start_pos;
-      if (projection_fraction > 1) return end_pos;
+      if (projection_fraction < 0) return line.start_pos;
+      if (projection_fraction > 1) return line.end_pos;
       return line.start_pos + projection_fraction * d;
     }
 
@@ -122,7 +122,7 @@ struct DubinsCurve {
       if (relative_angle < circle.delta_angle) {
         // closest point on the circle to p is within the delta_angle range
         return circle.center + disp * (circle.radius / disp.magnitude());
-      } else if (relative_angle < delta_angle / 2 + M_PI) {
+      } else if (relative_angle < circle.delta_angle / 2 + M_PI) {
         // closest point is the end point
         return circle.center +
                getRotationMatrix(circle.start_angle + circle.delta_angle) *

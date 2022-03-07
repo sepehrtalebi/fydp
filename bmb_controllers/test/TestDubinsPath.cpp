@@ -13,8 +13,8 @@ TEST(TestDubinsPath, testDubinsPath) {
   PosVelState goal{Vector2{10, 0}, Vector2{0, -1}};
   static constexpr double radius = 1;
   DubinsPath<double> path = DubinsPath<double>::create(start, goal, radius);
-  ASSERT_TRUE(path[0].is_turning && path[0].isRightTurn() &&
-              !path[1].is_turning && path[2].is_turning &&
+  ASSERT_TRUE(path[0].isCircle() && path[0].isRightTurn() &&
+              path[1].isLine() && path[2].isCircle() &&
               path[2].isRightTurn());
   ASSERT_TRUE(std::fabs((path.closestPoint(Vector2{4.5, 1}) - Vector2{4.5, 1})
                             .magnitude()) < 0.001);
