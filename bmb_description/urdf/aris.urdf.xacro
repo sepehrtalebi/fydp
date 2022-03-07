@@ -39,7 +39,7 @@
     <joint name="body_to_propeller" type="continuous">
         <parent link="body"/>
         <child link="propeller"/>
-        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <origin xyz="0.4244 0 0.1638" rpy="0 0 0"/>
         <axis xyz="1 0 0"/>
     </joint>
 
@@ -57,7 +57,7 @@
     <joint name="body_to_left_aileron" type="revolute">
         <parent link="body"/>
         <child link="left_aileron"/>
-        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <origin xyz="-0.2649 0 0.1714" rpy="0 0 0"/>
         <axis xyz="0 1 0"/>
         <limit lower="${radians(-30)}" upper="${radians(30)}" velocity="${infty}" effort="${infty}"/>
     </joint>
@@ -75,7 +75,7 @@
     <joint name="body_to_right_aileron" type="revolute">
         <parent link="body"/>
         <child link="right_aileron"/>
-        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <origin xyz="-0.2649 0 0.1714" rpy="0 0 0"/>
         <axis xyz="0 1 0"/>
         <limit lower="${radians(-30)}" upper="${radians(30)}" velocity="${infty}" effort="${infty}"/>
     </joint>
@@ -93,7 +93,7 @@
     <joint name="body_to_elevator" type="revolute">
         <parent link="body"/>
         <child link="elevator"/>
-        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <origin xyz="-1.2927 0 0.1024" rpy="0 0 0"/>
         <axis xyz="0 1 0"/>
         <limit lower="${radians(-30)}" upper="${radians(30)}" velocity="${infty}" effort="${infty}"/>
     </joint>
