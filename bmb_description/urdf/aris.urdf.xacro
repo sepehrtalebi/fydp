@@ -5,7 +5,9 @@
     <link name="body">
         <visual>
             <geometry>
-                <mesh filename="package://bmb_description/meshes/body.stl"/>
+                <!-- All meshes are in mm -->
+                <mesh filename="package://bmb_description/meshes/body.stl"
+                      scale="0.001 0.001 0.001"/>
             </geometry>
         </visual>
         <inertial>
@@ -28,7 +30,8 @@
     <link name="propeller">
         <visual>
             <geometry>
-                <mesh filename="package://bmb_description/meshes/propeller.stl"/>
+                <mesh filename="package://bmb_description/meshes/propeller.stl"
+                      scale="0.001 0.001 0.001"/>
             </geometry>
         </visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -45,7 +48,8 @@
     <link name="left_aileron">
         <visual>
             <geometry>
-                <mesh filename="package://bmb_description/meshes/left_aileron.stl"/>
+                <mesh filename="package://bmb_description/meshes/left_aileron.stl"
+                      scale="0.001 0.001 0.001"/>
             </geometry>
         </visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -62,7 +66,8 @@
     <link name="right_aileron">
         <visual>
             <geometry>
-                <mesh filename="package://bmb_description/meshes/right_aileron.stl"/>
+                <mesh filename="package://bmb_description/meshes/right_aileron.stl"
+                      scale="0.001 0.001 0.001"/>
             </geometry>
         </visual>
         <origin xyz="-1.45 -3.7 1.5 " rpy="-0.05 0 0.12"/>
@@ -79,7 +84,8 @@
     <link name="elevator">
         <visual>
             <geometry>
-                <mesh filename="package://bmb_description/meshes/elevator.stl"/>
+                <mesh filename="package://bmb_description/meshes/elevator.stl"
+                      scale="0.001 0.001 0.001"/>
             </geometry>
         </visual>
         <origin xyz="-5.55 0 0.57" rpy="0 0 0"/>
