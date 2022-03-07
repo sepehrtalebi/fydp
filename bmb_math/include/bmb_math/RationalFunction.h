@@ -57,7 +57,7 @@ class RationalFunction {
     for (size_t i = 0; i < std::max(n, m); i++) {
       std::cout << "-----";
     }
-    std::cout << std::endl;
+    std::cout << '\n';
     denominator.print(independent_var);
   }
 
