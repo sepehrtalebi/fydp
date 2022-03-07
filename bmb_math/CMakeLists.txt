@@ -1,8 +1,10 @@
 cmake_minimum_required(VERSION 3.0.2)
 project(bmb_math)
 
+# TODO: add -O2 and --enable-lto compiler flags, and sanitizers (such as UBSan)
 ## Compile as C++11, supported in ROS Kinetic and newer
 add_compile_options(-std=c++17)
+set(CMAKE_CXX_FLAGS "-O2 --enable-lto ${CMAKE_CXX_FLAGS}")
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
