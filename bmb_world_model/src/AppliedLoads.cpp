@@ -15,9 +15,9 @@ using bmb_utilities::saturation;
 static Matrix<ExprPtr, 3, 4> getQuatToWeightJacExpr() {
   Matrix<ExprPtr, 3, 4> expr;
 
-  Quaternion<ExprPtr> quat{Variable::make("q0"), Variable::make("q1"),
-                           Variable::make("q2"), Variable::make("q3")};
-  Vector3<ExprPtr> weight =
+  const Quaternion<ExprPtr> quat{Variable::make("q0"), Variable::make("q1"),
+                                 Variable::make("q2"), Variable::make("q3")};
+  const Vector3<ExprPtr> weight =
       quat.rotate(WEIGHT.applyFunc<ExprPtr>(&Constant::make));
   for (size_t i = 0; i < 3; i++)
     for (size_t j = 0; j < 4; j++)
@@ -34,8 +34,8 @@ static const Matrix<ExprPtr, 3, 4> QUAT_TO_WEIGHT_JAC_EXPR =
     getQuatToWeightJacExpr();  // NOLINT(cert-err58-cpp)
 
 static Wrench<double> getPropellerLoads(const double& propeller_force) {
-  Vector3<double> thrust{propeller_force, 0, 0};
-  Vector3<double> torque{THRUST_TORQUE_RATIO_PROPELLER * propeller_force, 0, 0};
+  const Vector3<double> thrust{propeller_force};
+  const Vector3<double> torque{THRUST_TORQUE_RATIO_PROPELLER * propeller_force};
   return {thrust, L_FRONT_PROPELLER.cross(thrust) + torque};
 }
 

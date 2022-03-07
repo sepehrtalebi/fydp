@@ -148,7 +148,7 @@ class Matrix {
     if constexpr (m != n)
       throw std::invalid_argument(
           "Cannot find the inverse of a non-square matrix");
-    Matrix<T, m, n> L = cholesky();
+    const Matrix<T, m, n> L = cholesky();
     Matrix<T, m, n> u;
     Matrix<T, m, n> I = Matrix<T, m, n>::identity();
 

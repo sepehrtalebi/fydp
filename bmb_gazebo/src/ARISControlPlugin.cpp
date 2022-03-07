@@ -116,7 +116,8 @@ void ARISControlPlugin::update(const common::UpdateInfo& /** _info **/) {
   }
 
   // apply loads
-  Wrench<double> wrench = getAppliedLoads(getAircraftState(), control_inputs);
+  const Wrench<double> wrench =
+      getAppliedLoads(getAircraftState(), control_inputs);
   base_link->AddRelativeForce(bmbToIgnitionVector3(wrench.force));
   base_link->AddRelativeTorque(bmbToIgnitionVector3(wrench.torque));
 

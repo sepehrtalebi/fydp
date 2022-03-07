@@ -15,8 +15,8 @@ const Matrix<T, 2, 2> ROT_90_CCW{0, -1, 1, 0};
 
 template <typename T>
 Matrix<T, 2, 2> getRotationMatrix(const T& theta) {
-  T sin = std::sin(theta);
-  T cos = std::cos(theta);
+  const T sin = std::sin(theta);
+  const T cos = std::cos(theta);
   return {cos, -sin, sin, cos};
 }
 
@@ -26,9 +26,9 @@ Matrix<T, 2, 2> getRotationMatrix(const T& theta) {
  */
 template <typename T>
 Matrix<T, 2, 2> getRotationMatrix(const Vector<T, 2>& vec) {
-  T hypot = vec.magnitude();
-  T sin = vec[1] / hypot;
-  T cos = vec[0] / hypot;
+  const T hypot = vec.magnitude();
+  const T sin = vec[1] / hypot;
+  const T cos = vec[0] / hypot;
   return {cos, -sin, sin, cos};
 }
 
