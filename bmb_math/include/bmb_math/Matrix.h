@@ -150,12 +150,11 @@ class Matrix {
           "Cannot find the inverse of a non-square matrix");
     const Matrix<T, m, n> L = cholesky();
     Matrix<T, m, n> u;
-    Matrix<T, m, n> I = Matrix<T, m, n>::identity();
 
     // forward substitution
     for (size_t k = 0; k < n; k++) {
       for (size_t i = 0; i < m; i++) {
-        T alpha = I[i][k];
+        T alpha = (i == k) ? 1 : 0;
         for (size_t j = 0; j < i; j++) {
           alpha -= L[i][j] * u[i][j];
         }
