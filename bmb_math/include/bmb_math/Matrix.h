@@ -75,7 +75,7 @@ class Matrix {
                                       const Vector<T, m>& second) {
     Matrix<T, n, m> outerProduct;
     for (size_t i = 0; i < n; i++)
-      for (size_t j = 0; j < n; j++) outerProduct[i][j] = first[i] * second[j];
+      for (size_t j = 0; j < m; j++) outerProduct[i][j] = first[i] * second[j];
     return outerProduct;
   }
 
