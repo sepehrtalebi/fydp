@@ -52,12 +52,12 @@
                       scale="0.001 0.001 0.001"/>
             </geometry>
         </visual>
-        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <origin xyz="-1.45 3.7 1.5" rpy="0.05 0 -0.12"/>
     </link>
     <joint name="body_to_left_aileron" type="revolute">
         <parent link="body"/>
         <child link="left_aileron"/>
-        <origin xyz="-1.45 3.7 1.5" rpy="0.05 0 -0.12"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
         <axis xyz="0 1 0"/>
         <limit lower="${radians(-30)}" upper="${radians(30)}" velocity="${infty}" effort="${infty}"/>
     </joint>
