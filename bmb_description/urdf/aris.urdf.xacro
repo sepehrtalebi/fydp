@@ -43,9 +43,6 @@
         </joint>
     </xacro:macro>
 
-    <!-- Need to have a dummy link as the root since the root link should not have an inertia -->
-    <link name="dummy"/>
-
     <link name="body">
         <visual>
             <geometry>
@@ -70,10 +67,6 @@
             <gravity>0</gravity>
         </gazebo>
     </link>
-    <joint name="dummy_joint" type="fixed">
-        <parent link="dummy"/>
-        <child link="body"/>
-    </joint>
 
     <!-- Propeller -->
     <link name="propeller">
