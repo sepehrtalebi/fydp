@@ -68,7 +68,7 @@ void ARISControlPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf) {
   const std::string base_link_name = _sdf->Get<std::string>("base_link");
   base_link = _model->GetLink(base_link_name);
   if (!base_link) {
-    ROS_FATAL_STREAM("Failed to find joint [" << base_link_name
+    ROS_FATAL_STREAM("Failed to find link [" << base_link_name
                                               << "] aborting plugin load.");
     return;
   }
