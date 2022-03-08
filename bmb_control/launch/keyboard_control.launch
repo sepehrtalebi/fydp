@@ -1,4 +1,7 @@
 <launch>
+    <!-- level 1: Control state_command -->
+    <!-- level 2: Control reference_command -->
+    <!-- level 3: Fully autonomous -->
     <arg name="level" default="3"/>
 
     <node name="keyboard_state_commander_node" pkg="bmb_control"
