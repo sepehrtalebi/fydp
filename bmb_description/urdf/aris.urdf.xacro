@@ -3,12 +3,17 @@
     <xacro:property name="infty" value="${1e9}"/>
     <xacro:property name="epsilon" value="${1e-9}"/>
 
-    <xacro:macro name="tiny_inertia">
+    <xacro:macro name="tiny_inertia_collision">
         <inertial>
             <mass value="${epsilon}"/>
             <inertia ixx="${epsilon}" ixy="0" ixz="0"
                      iyy="${epsilon}" iyz="0" izz="${epsilon}"/>
         </inertial>
+        <collision>
+            <geometry>
+                <box size="${epsilon} ${epsilon} ${epsilon}"/>
+            </geometry>
+        </collision>
     </xacro:macro>
 
     <link name="body">
@@ -37,7 +42,7 @@
 
     <!-- Propeller -->
     <link name="propeller">
-        <xacro:tiny_inertia/>
+        <xacro:tiny_inertia_collision/>
         <visual>
             <geometry>
                 <mesh filename="package://bmb_description/meshes/propeller.stl"
@@ -56,7 +61,7 @@
     <!-- Left Aileron -->
     <!-- TODO: use xacro macro for left and right aileron -->
     <link name="left_aileron">
-        <xacro:tiny_inertia/>
+        <xacro:tiny_inertia_collision/>
         <visual>
             <geometry>
                 <mesh filename="package://bmb_description/meshes/left_aileron.stl"
@@ -75,7 +80,7 @@
 
     <!-- Right Aileron -->
     <link name="right_aileron">
-        <xacro:tiny_inertia/>
+        <xacro:tiny_inertia_collision/>
         <visual>
             <geometry>
                 <mesh filename="package://bmb_description/meshes/right_aileron.stl"
@@ -94,7 +99,7 @@
 
     <!-- Elevator -->
     <link name="elevator">
-        <xacro:tiny_inertia/>
+        <xacro:tiny_inertia_collision/>
         <visual>
             <geometry>
                 <mesh filename="package://bmb_description/meshes/elevator.stl"
