@@ -22,6 +22,29 @@
         </gazebo>
     </xacro:macro>
 
+    <xacro:macro name="aileron" params="prefix">
+        <!-- prefix parameter should be either "left" or "right" -->
+        <xacro:property name="reflect" value="${prefix == 'right' ? 1 : -1}"/>
+        <link name="${prefix}_aileron">
+            <xacro:tiny_inertia_collision/>
+            <visual>
+                <geometry>
+                    <mesh filename="package://bmb_description/meshes/${prefix}_aileron.stl"
+                          scale="0.001 0.001 0.001"/>
+                </geometry>
+            </visual>
+            <origin xyz="-1.45 ${-3.7 * reflect} 1.5"
+                    rpy="${-0.05 * reflect} 0 ${0.12 * reflect}"/>
+        </link>
+        <joint name="body_to_${prefix}_aileron" type="revolute">
+            <parent link="base_link"/>
+            <child link="${prefix}_aileron"/>
+            <origin xyz="-0.2649 0 0.1714" rpy="0 0 0"/>
+            <axis xyz="0 1 0"/>
+            <limit lower="${radians(-30)}" upper="${radians(30)}" velocity="${infty}" effort="${infty}"/>
+        </joint>
+    </xacro:macro>
+
     <link name="base_link">
         <visual>
             <geometry>
@@ -64,44 +87,9 @@
         <axis xyz="1 0 0"/>
     </joint>
 
-    <!-- Left Aileron -->
-    <!-- TODO: use xacro macro for left and right aileron -->
-    <link name="left_aileron">
-        <xacro:tiny_inertia_collision/>
-        <visual>
-            <geometry>
-                <mesh filename="package://bmb_description/meshes/left_aileron.stl"
-                      scale="0.001 0.001 0.001"/>
-            </geometry>
-        </visual>
-        <origin xyz="${-1.45 + 0.2649} 3.7 ${1.5 - 0.1714}" rpy="0.05 0 -0.12"/>
-    </link>
-    <joint name="body_to_left_aileron" type="revolute">
-        <parent link="base_link"/>
-        <child link="left_aileron"/>
-        <origin xyz="-0.2649 0 0.1714" rpy="0 0 0"/>
-        <axis xyz="0 1 0"/>
-        <limit lower="${radians(-30)}" upper="${radians(30)}" velocity="${infty}" effort="${infty}"/>
-    </joint>
-
-    <!-- Right Aileron -->
-    <link name="right_aileron">
-        <xacro:tiny_inertia_collision/>
-        <visual>
-            <geometry>
-                <mesh filename="package://bmb_description/meshes/right_aileron.stl"
-                      scale="0.001 0.001 0.001"/>
-            </geometry>
-        </visual>
-        <origin xyz="${-1.45 + 0.2649} -3.7 ${1.5 - 0.1714}" rpy="-0.05 0 0.12"/>
-    </link>
-    <joint name="body_to_right_aileron" type="revolute">
-        <parent link="base_link"/>
-        <child link="right_aileron"/>
-        <origin xyz="-0.2649 0 0.1714" rpy="0 0 0"/>
-        <axis xyz="0 1 0"/>
-        <limit lower="${radians(-30)}" upper="${radians(30)}" velocity="${infty}" effort="${infty}"/>
-    </joint>
+    <!-- Ailerons -->
+    <xacro:aileron prefix="right"/>
+    <xacro:aileron prefix="left"/>
 
     <!-- Elevator -->
     <link name="elevator">
