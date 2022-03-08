@@ -22,9 +22,8 @@
         </gazebo>
     </xacro:macro>
 
-    <xacro:macro name="aileron" params="prefix">
-        <!-- prefix parameter should be either "left" or "right" -->
-        <xacro:property name="reflect" value="${prefix == 'right' ? 1 : -1}"/>
+    <xacro:macro name="aileron" params="prefix reflect">
+        <!-- TODO: compute reflect based on prefix -->
         <link name="${prefix}_aileron">
             <xacro:tiny_inertia_collision/>
             <visual>
@@ -88,8 +87,8 @@
     </joint>
 
     <!-- Ailerons -->
-    <xacro:aileron prefix="right"/>
-    <xacro:aileron prefix="left"/>
+    <xacro:aileron prefix="right" reflect="1"/>
+    <xacro:aileron prefix="left" reflect="-1"/>
 
     <!-- Elevator -->
     <link name="elevator">
