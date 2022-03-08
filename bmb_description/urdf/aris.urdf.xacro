@@ -5,7 +5,7 @@
     <!-- Needs to be large enough so Gazebo doesn't ignore the links/joints -->
     <xacro:property name="epsilon" value="${1e-3}"/>
 
-    <xacro:macro name="tiny_inertia_collision" params="link_name">
+    <xacro:macro name="tiny_inertia_collision">
         <inertial>
             <mass value="${epsilon}"/>
             <inertia ixx="${epsilon}" ixy="0" ixz="0"
@@ -16,16 +16,12 @@
                 <box size="${epsilon} ${epsilon} ${epsilon}"/>
             </geometry>
         </collision>
-        <gazebo reference="${link_name}">
-            <!-- Turn off gravity since the aris_control plugin will apply it -->
-            <gravity>0</gravity>
-        </gazebo>
     </xacro:macro>
 
     <xacro:macro name="aileron" params="prefix reflect">
         <!-- TODO: compute reflect based on prefix -->
         <link name="${prefix}_aileron">
-            <xacro:tiny_inertia_collision link_name="${prefix}_aileron"/>
+            <xacro:tiny_inertia_collision/>
             <visual>
                 <geometry>
                     <mesh filename="package://bmb_description/meshes/${prefix}_aileron.stl"
@@ -62,15 +58,11 @@
             </geometry>
             <origin xyz="-0.65 0 0.15" rpy="0 0 0"/>
         </collision>
-        <gazebo reference="body">
-            <!-- Turn off gravity since the aris_control plugin will apply it -->
-            <gravity>0</gravity>
-        </gazebo>
     </link>
 
     <!-- Propeller -->
     <link name="propeller">
-        <xacro:tiny_inertia_collision link_name="propeller"/>
+        <xacro:tiny_inertia_collision/>
         <visual>
             <geometry>
                 <mesh filename="package://bmb_description/meshes/propeller.stl"
@@ -92,7 +84,7 @@
 
     <!-- Elevator -->
     <link name="elevator">
-        <xacro:tiny_inertia_collision link_name="elevator"/>
+        <xacro:tiny_inertia_collision/>
         <visual>
             <geometry>
                 <mesh filename="package://bmb_description/meshes/elevator.stl"
@@ -108,6 +100,20 @@
         <axis xyz="0 1 0"/>
         <limit lower="${radians(-30)}" upper="${radians(30)}" velocity="${infty}" effort="${infty}"/>
     </joint>
+
+    <!-- Turn off gravity for each link since the aris_control plugin will apply it -->
+    <gazebo reference="body">
+        <gravity>0</gravity>
+    </gazebo>
+    <gazebo reference="right_aileron">
+        <gravity>0</gravity>
+    </gazebo>
+    <gazebo reference="left_aileron">
+        <gravity>0</gravity>
+    </gazebo>
+    <gazebo reference="elevator">
+        <gravity>0</gravity>
+    </gazebo>
 
     <gazebo>
         <plugin name="aris_control" filename="libaris_control_plugin.so">
