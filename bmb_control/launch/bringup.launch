@@ -1,8 +1,8 @@
 <launch>
     <arg name="sim" default="true"/>
-    <arg name="level" default="3"/>
+    <arg name="level" default="1"/>
     <arg name="omniscient" default="true"/>
-    <arg name="paused" default="false"/>
+    <arg name="paused" default="true"/>
 
     <include file="$(find bmb_actuators)/launch/actuators.launch"/>
     <include file="$(find bmb_sensors)/launch/sensors.launch"/>
