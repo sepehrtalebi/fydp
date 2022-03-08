@@ -5,7 +5,7 @@
     <!-- Needs to be large enough so Gazebo doesn't ignore the links/joints -->
     <xacro:property name="epsilon" value="${1e-3}"/>
 
-    <xacro:macro name="tiny_inertia_collision">
+    <xacro:macro name="tiny_inertia_collision" params="link_name">
         <inertial>
             <mass value="${epsilon}"/>
             <inertia ixx="${epsilon}" ixy="0" ixz="0"
@@ -16,7 +16,7 @@
                 <box size="${epsilon} ${epsilon} ${epsilon}"/>
             </geometry>
         </collision>
-        <gazebo>
+        <gazebo reference="${link_name}">
             <!-- Turn off gravity since the aris_control plugin will apply it -->
             <gravity>0</gravity>
         </gazebo>
@@ -25,7 +25,7 @@
     <xacro:macro name="aileron" params="prefix reflect">
         <!-- TODO: compute reflect based on prefix -->
         <link name="${prefix}_aileron">
-            <xacro:tiny_inertia_collision/>
+            <xacro:tiny_inertia_collision link_name="${prefix}_aileron"/>
             <visual>
                 <geometry>
                     <mesh filename="package://bmb_description/meshes/${prefix}_aileron.stl"
@@ -62,7 +62,7 @@
             </geometry>
             <origin xyz="-0.65 0 0.15" rpy="0 0 0"/>
         </collision>
-        <gazebo>
+        <gazebo reference="body">
             <!-- Turn off gravity since the aris_control plugin will apply it -->
             <gravity>0</gravity>
         </gazebo>
@@ -70,7 +70,7 @@
 
     <!-- Propeller -->
     <link name="propeller">
-        <xacro:tiny_inertia_collision/>
+        <xacro:tiny_inertia_collision link_name="propeller"/>
         <visual>
             <geometry>
                 <mesh filename="package://bmb_description/meshes/propeller.stl"
@@ -92,7 +92,7 @@
 
     <!-- Elevator -->
     <link name="elevator">
-        <xacro:tiny_inertia_collision/>
+        <xacro:tiny_inertia_collision link_name="elevator"/>
         <visual>
             <geometry>
                 <mesh filename="package://bmb_description/meshes/elevator.stl"
