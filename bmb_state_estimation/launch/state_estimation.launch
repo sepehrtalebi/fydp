@@ -1,5 +1,6 @@
 <launch>
-    <arg name="omniscient" default="True"/>
+    <arg name="omniscient" default="true"/>
+
     <node name="state_estimation_node" pkg="bmb_state_estimation" type="state_estimation_node"
           output="screen" unless="$(arg omniscient)"/>
     <node name="omniscient_state_estimation_node" pkg="bmb_state_estimation"
