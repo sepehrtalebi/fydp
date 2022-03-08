@@ -1,6 +1,15 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="aris">
     <xacro:property name="infty" value="${1e9}"/>
+    <xacro:property name="epsilon" value="${1e-9}"/>
+
+    <xacro:macro name="tiny_inertia">
+        <inertial>
+            <mass value="${epsilon}"/>
+            <inertia ixx="${epsilon}" ixy="0" ixz="0"
+                     iyy="${epsilon}" iyz="0" izz="${epsilon}"/>
+        </inertial>
+    </xacro:macro>
 
     <link name="body">
         <visual>
@@ -28,6 +37,7 @@
 
     <!-- Propeller -->
     <link name="propeller">
+        <xacro:tiny_inertia/>
         <visual>
             <geometry>
                 <mesh filename="package://bmb_description/meshes/propeller.stl"
@@ -46,6 +56,7 @@
     <!-- Left Aileron -->
     <!-- TODO: use xacro macro for left and right aileron -->
     <link name="left_aileron">
+        <xacro:tiny_inertia/>
         <visual>
             <geometry>
                 <mesh filename="package://bmb_description/meshes/left_aileron.stl"
@@ -64,6 +75,7 @@
 
     <!-- Right Aileron -->
     <link name="right_aileron">
+        <xacro:tiny_inertia/>
         <visual>
             <geometry>
                 <mesh filename="package://bmb_description/meshes/right_aileron.stl"
@@ -82,6 +94,7 @@
 
     <!-- Elevator -->
     <link name="elevator">
+        <xacro:tiny_inertia/>
         <visual>
             <geometry>
                 <mesh filename="package://bmb_description/meshes/elevator.stl"
