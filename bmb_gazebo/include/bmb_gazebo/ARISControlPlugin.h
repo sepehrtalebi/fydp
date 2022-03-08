@@ -3,7 +3,6 @@
 #include <bmb_msgs/AircraftState.h>
 #include <bmb_msgs/ControlInputs.h>
 #include <gazebo/common/Plugin.hh>
-#include <gazebo/common/UpdateInfo.hh>
 #include <gazebo/physics/PhysicsTypes.hh>
 #include <ros/ros.h>
 #include <sdf/sdf.hh>
@@ -26,7 +25,7 @@ class ARISControlPlugin : public ModelPlugin {
 
   bmb_msgs::AircraftState getAircraftState() const;
 
-  void update(const common::UpdateInfo& _info);
+  void update();
 
   static constexpr size_t kPropeller = 0;
   static constexpr size_t kRightAileron = 1;

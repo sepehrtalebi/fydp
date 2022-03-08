@@ -13,7 +13,6 @@
 #include <array>
 #include <cmath>
 #include <cstddef>
-#include <functional>
 #include <mutex>
 #include <string>
 
@@ -77,7 +76,7 @@ void ARISControlPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf) {
   // Listen to the update event. This event is broadcast every simulation
   // iteration.
   this->update_connection = event::Events::ConnectWorldUpdateBegin(
-      std::bind(&ARISControlPlugin::update, this, std::placeholders::_1));
+      [&](const common::UpdateInfo& /** update_info **/) { this->update(); });
 
   // Initialize ROS subscriber
   this->control_inputs_sub = this->nh.subscribe(
@@ -103,7 +102,7 @@ bmb_msgs::AircraftState ARISControlPlugin::getAircraftState() const {
   return state;
 }
 
-void ARISControlPlugin::update(const common::UpdateInfo& /** _info **/) {
+void ARISControlPlugin::update() {
   // 9000RPM is max speed and 2.21kg is max force
   static constexpr double PROPELLER_FORCE_TO_VEL_RATIO =
       (9000 * 60 / (2 * M_PI)) / (2.21 * 9.81);
