@@ -1,7 +1,9 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="aris">
     <xacro:property name="infty" value="${1e9}"/>
-    <xacro:property name="epsilon" value="${1e-9}"/>
+
+    <!-- Needs to be large enough so Gazebo doesn't ignore the links/joints -->
+    <xacro:property name="epsilon" value="${1e-3}"/>
 
     <xacro:macro name="tiny_inertia_collision">
         <inertial>
