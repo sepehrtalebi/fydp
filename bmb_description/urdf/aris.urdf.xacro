@@ -16,6 +16,10 @@
                 <box size="${epsilon} ${epsilon} ${epsilon}"/>
             </geometry>
         </collision>
+        <gazebo>
+            <!-- Turn off gravity since the aris_control plugin will apply it -->
+            <gravity>0</gravity>
+        </gazebo>
     </xacro:macro>
 
     <link name="base_link">
