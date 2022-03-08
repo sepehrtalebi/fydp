@@ -31,9 +31,8 @@
                     <mesh filename="package://bmb_description/meshes/${prefix}_aileron.stl"
                           scale="0.001 0.001 0.001"/>
                 </geometry>
+            <origin xyz="0.2649 0 -0.1714" rpy="0 0 0"/>
             </visual>
-            <origin xyz="-1.45 ${-3.7 * reflect} 1.5"
-                    rpy="${-0.05 * reflect} 0 ${0.12 * reflect}"/>
         </link>
         <joint name="body_to_${prefix}_aileron" type="revolute">
             <parent link="base_link"/>
@@ -76,8 +75,8 @@
                 <mesh filename="package://bmb_description/meshes/propeller.stl"
                       scale="0.001 0.001 0.001"/>
             </geometry>
-        </visual>
         <origin xyz="-0.4244 0 -0.1638" rpy="0 0 0"/>
+        </visual>
     </link>
     <joint name="body_to_propeller" type="continuous">
         <parent link="base_link"/>
@@ -98,8 +97,8 @@
                 <mesh filename="package://bmb_description/meshes/elevator.stl"
                       scale="0.001 0.001 0.001"/>
             </geometry>
+            <origin xyz="1.2927 0 -0.1024" rpy="0 0 0"/>
         </visual>
-        <origin xyz="${-5.55 + 1.2927} 0 ${0.57 - 0.1024}" rpy="0 0 0"/>
     </link>
     <joint name="body_to_elevator" type="revolute">
         <parent link="base_link"/>
