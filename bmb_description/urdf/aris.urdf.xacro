@@ -16,7 +16,7 @@
         </collision>
     </xacro:macro>
 
-    <link name="body">
+    <link name="base_link">
         <visual>
             <geometry>
                 <!-- All meshes are in mm -->
@@ -52,7 +52,7 @@
         <origin xyz="-0.4244 0 -0.1638" rpy="0 0 0"/>
     </link>
     <joint name="body_to_propeller" type="continuous">
-        <parent link="body"/>
+        <parent link="base_link"/>
         <child link="propeller"/>
         <origin xyz="0.4244 0 0.1638" rpy="0 0 0"/>
         <axis xyz="1 0 0"/>
@@ -71,7 +71,7 @@
         <origin xyz="${-1.45 + 0.2649} 3.7 ${1.5 - 0.1714}" rpy="0.05 0 -0.12"/>
     </link>
     <joint name="body_to_left_aileron" type="revolute">
-        <parent link="body"/>
+        <parent link="base_link"/>
         <child link="left_aileron"/>
         <origin xyz="-0.2649 0 0.1714" rpy="0 0 0"/>
         <axis xyz="0 1 0"/>
@@ -90,7 +90,7 @@
         <origin xyz="${-1.45 + 0.2649} -3.7 ${1.5 - 0.1714}" rpy="-0.05 0 0.12"/>
     </link>
     <joint name="body_to_right_aileron" type="revolute">
-        <parent link="body"/>
+        <parent link="base_link"/>
         <child link="right_aileron"/>
         <origin xyz="-0.2649 0 0.1714" rpy="0 0 0"/>
         <axis xyz="0 1 0"/>
@@ -109,7 +109,7 @@
         <origin xyz="${-5.55 + 1.2927} 0 ${0.57 - 0.1024}" rpy="0 0 0"/>
     </link>
     <joint name="body_to_elevator" type="revolute">
-        <parent link="body"/>
+        <parent link="base_link"/>
         <child link="elevator"/>
         <origin xyz="-1.2927 0 0.1024" rpy="0 0 0"/>
         <axis xyz="0 1 0"/>
@@ -118,7 +118,7 @@
 
     <gazebo>
         <plugin name="aris_control" filename="libaris_control_plugin.so">
-            <base_link>body</base_link>
+            <base_link>base_link</base_link>
             <propeller>body_to_propeller</propeller>
             <left_aileron>body_to_left_aileron</left_aileron>
             <right_aileron>body_to_right_aileron</right_aileron>
