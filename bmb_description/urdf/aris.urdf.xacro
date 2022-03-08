@@ -31,7 +31,7 @@
             </geometry>
         </visual>
         <inertial>
-            <mass value="3.068"/>
+            <mass value="3.3"/>
             <inertia ixx="12.327" ixy="-3.07" ixz="0.739"
                      iyy="1.711" iyz="-2.789" izz="12.659"/>
         </inertial>
