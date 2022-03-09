@@ -1,6 +1,6 @@
 ![total lines](https://img.shields.io/tokei/lines/github/amaarquadri/fydp)
 
-#Autonomous Rail Inspection System's Fourth Year Design Project
+# Autonomous Rail Inspection System's Fourth Year Design Project
 An all-inclusive beach resort. Unscented and Extended Kalman Filters,
 Controllers, and control systems for a 25 state autonomous plane.
 
@@ -34,7 +34,7 @@ ROS Nodes:
 - elevator_node
 
 Reference Frames:
-- Flat earth reference frame (absolute): the x axis points north, the y axis points east, 
-the z axis points down, and the origin is at the startup location of the robot at an altitude of zero
-- Robot reference frame (moving): the x axis points forwards, the y axis points to the right (starboard), 
-the z axis points downwards, and the origin is at the center of mass of the aircraft
+- Flat earth reference frame (absolute): the x-axis points north, the y-axis points east, 
+the z-axis points down, and the origin is at the startup location of the robot at an altitude of zero
+- Robot reference frame (moving): the x-axis points forwards, the y-axis points to the right (starboard), 
+the z-axis points downwards, and the origin is at the center of mass of the aircraft
