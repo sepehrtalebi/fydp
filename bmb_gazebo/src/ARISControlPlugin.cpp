@@ -82,6 +82,9 @@ void ARISControlPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf) {
   this->control_inputs_sub = this->nh.subscribe(
       "/control_inputs", 1, &ARISControlPlugin::controlInputsCallback, this);
 
+  // initialize linear velocity to 10m/s
+  base_link->SetLinearVel(bmbToIgnitionVector3(Vector3<double>{10}));
+
   ROS_INFO("ARIS ready to fly. The force will be with you");
 }
 
