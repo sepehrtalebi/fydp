@@ -87,6 +87,7 @@ void ARISControlPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf) {
   base_link->SetLinearVel(bmbToIgnitionVector3(Vector3<double>{10}));
 
   // set camera to follow the model
+  // TODO: get this working
   gui::Events::follow(_model->GetName());
 
   ROS_INFO("ARIS ready to fly. The force will be with you");
