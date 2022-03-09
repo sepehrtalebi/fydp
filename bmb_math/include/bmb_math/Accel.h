@@ -34,6 +34,14 @@ struct Accel {
             Vector3<T>{angular - other.angular}};
   }
 
+  Accel<T> operator+(const T& scalar) const {
+    return {Vector3<T>{linear + scalar}, Vector3<T>{angular + scalar}};
+  }
+
+  Accel<T> operator-(const T& scalar) const {
+    return {Vector3<T>{linear - scalar}, Vector3<T>{angular - scalar}};
+  }
+
   Accel<T> operator*(const T& scalar) const {
     return {Vector3<T>{linear * scalar}, Vector3<T>{angular * scalar}};
   }
@@ -50,6 +58,16 @@ struct Accel {
   void operator-=(const Accel<T>& other) {
     linear -= other.linear;
     angular -= other.angular;
+  }
+
+  void operator+=(const T& scalar) {
+    linear += scalar;
+    angular += scalar;
+  }
+
+  void operator-=(const T& scalar) {
+    linear -= scalar;
+    angular -= scalar;
   }
 
   void operator*=(const T& scalar) {
