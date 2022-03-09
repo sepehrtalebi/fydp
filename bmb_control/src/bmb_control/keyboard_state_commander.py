@@ -122,7 +122,7 @@ class KeyboardStateCommander:
             print(self.MSG)
         self.status = (self.status + 1) % 15
 
-        print(f"currently:\tpitch {self.pitch}\troll {self.roll}\tspeed {self.speed} ")
+        print(f"Currently:\tpitch {self.pitch}\troll {self.roll}\tspeed {self.speed} ")
 
     def spin(self):
         try:
@@ -150,3 +150,5 @@ class KeyboardStateCommander:
         finally:
             self.pub_thread.stop()
             termios.tcsetattr(sys.stdin, termios.TCSADRAIN, self.settings)
+            # Program won't terminate if other nodes were also launched via roslaunch
+            print("Closing node. Press Ctrl+C again if the program doesn't terminate.")
