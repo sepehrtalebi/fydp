@@ -33,7 +33,7 @@ bmb_msgs::ControlInputs LowLevelControlLoopNode::getControlInputs() {
   const double roll = orientation.getRoll();
 
   bmb_msgs::ControlInputs control_inputs{};
-  control_inputs.propeller_voltage = speed_pid.update(
+  control_inputs.propeller_force = speed_pid.update(
       latest_aircraft_state.twist.linear.x, latest_state_command.speed);
   control_inputs.right_aileron_angle =
       roll_pid.update(roll, latest_state_command.roll);

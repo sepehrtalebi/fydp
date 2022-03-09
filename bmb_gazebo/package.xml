@@ -50,7 +50,7 @@
   <depend>roscpp</depend>
   <depend>gazebo_ros</depend>
   <depend>bmb_msgs</depend>
-
+  <depend>bmb_world_model</depend>
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>

@@ -8,7 +8,10 @@ struct Accel {
   Vector3<T> linear{};
   Vector3<T> angular{};
 
-  Accel() = default;
+  Accel(const T& lin_x = 0, const T& lin_y = 0, const T& lin_z = 0,
+        const T& ang_x = 0, const T& ang_y = 0, const T& ang_z = 0)
+      : linear(Vector3<T>{lin_x, lin_y, lin_z}),
+        angular(Vector3<T>{ang_x, ang_y, ang_z}) {}
 
   Accel(const Vector3<T>& linear, const Vector3<T>& angular)
       : linear(linear), angular(angular) {}
@@ -16,26 +19,26 @@ struct Accel {
   Accel(const geometry_msgs::Accel& msg)
       : linear(msg.linear), angular(msg.angular) {}
 
-  void copy_to(geometry_msgs::Accel& msg) {
+  void copy_to(geometry_msgs::Accel& msg) const {
     linear.copy_to(msg.linear);
     angular.copy_to(msg.angular);
   }
 
-  Accel<T> operator+(const Accel<T>& other) {
+  Accel<T> operator+(const Accel<T>& other) const {
     return {Vector3<T>{linear + other.linear},
             Vector3<T>{angular + other.angular}};
   }
 
-  Accel<T> operator-(const Accel<T>& other) {
+  Accel<T> operator-(const Accel<T>& other) const {
     return {Vector3<T>{linear - other.linear},
             Vector3<T>{angular - other.angular}};
   }
 
-  Accel<T> operator*(const T& scalar) {
+  Accel<T> operator*(const T& scalar) const {
     return {Vector3<T>{linear * scalar}, Vector3<T>{angular * scalar}};
   }
 
-  Accel<T> operator/(const double& scalar) {
+  Accel<T> operator/(const T& scalar) const {
     return {Vector3<T>{linear / scalar}, Vector3<T>{angular / scalar}};
   }
 
@@ -54,7 +57,7 @@ struct Accel {
     angular *= scalar;
   }
 
-  void operator/=(const double& scalar) {
+  void operator/=(const T& scalar) {
     linear /= scalar;
     angular /= scalar;
   }

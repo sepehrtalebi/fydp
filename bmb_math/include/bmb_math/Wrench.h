@@ -9,7 +9,9 @@ struct Wrench {
   Vector3<T> force;
   Vector3<T> torque;
 
-  Wrench() = default;
+  Wrench(const T& fx = 0, const T& fy = 0, const T& fz = 0, const T& tx = 0,
+         const T& ty = 0, const T& tz = 0)
+      : force(Vector3<T>{fx, fy, fz}), torque(Vector3<T>{tx, ty, tz}) {}
 
   Wrench(const Vector3<T>& force, const Vector3<T>& torque)
       : force(force), torque(torque) {}
@@ -17,24 +19,24 @@ struct Wrench {
   Wrench(const geometry_msgs::Wrench& msg)
       : force(msg.force), torque(msg.torque) {}
 
-  void copy_to(geometry_msgs::Wrench& msg) {
+  void copy_to(geometry_msgs::Wrench& msg) const {
     force.copy_to(msg.force);
     torque.copy_to(msg.torque);
   }
 
-  Wrench<T> operator+(const Wrench<T>& other) {
+  Wrench<T> operator+(const Wrench<T>& other) const {
     return {Vector3<T>{force + other.force}, Vector3<T>{torque + other.torque}};
   }
 
-  Wrench<T> operator-(const Wrench<T>& other) {
+  Wrench<T> operator-(const Wrench<T>& other) const {
     return {Vector3<T>{force - other.force}, Vector3<T>{torque - other.torque}};
   }
 
-  Wrench<T> operator*(const T& scalar) {
+  Wrench<T> operator*(const T& scalar) const {
     return {Vector3<T>{force * scalar}, Vector3<T>{torque * scalar}};
   }
 
-  Wrench<T> operator/(const double& scalar) {
+  Wrench<T> operator/(const T& scalar) const {
     return {Vector3<T>{force / scalar}, Vector3<T>{torque / scalar}};
   }
 
@@ -53,7 +55,7 @@ struct Wrench {
     torque *= scalar;
   }
 
-  void operator/=(const double& scalar) {
+  void operator/=(const T& scalar) {
     force /= scalar;
     torque /= scalar;
   }

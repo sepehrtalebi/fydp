@@ -3,6 +3,7 @@ project(bmb_gazebo)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 add_compile_options(-std=c++17)
+set(CMAKE_CXX_FLAGS "-O2 ${CMAKE_CXX_FLAGS}")
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -11,6 +12,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   gazebo_ros
   bmb_msgs
+  bmb_world_model
 )
 
 # Depend on system install of Gazebo
@@ -107,7 +109,7 @@ find_package(gazebo REQUIRED)
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES bmb_gazebo
-  CATKIN_DEPENDS roscpp gazebo_ros bmb_msgs
+  CATKIN_DEPENDS roscpp gazebo_ros bmb_msgs bmb_world_model
 #  DEPENDS system_lib
 )
 
@@ -130,8 +132,8 @@ include_directories(
 #   src/${PROJECT_NAME}/bmb_gazebo.cpp
 # )
 
-add_library(${PROJECT_NAME} src/ARISGazeboPlugin.cpp)
-target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES} ${GAZEBO_LIBRARIES})
+add_library(aris_control_plugin src/ARISControlPlugin.cpp)
+target_link_libraries(aris_control_plugin ${catkin_LIBRARIES} ${GAZEBO_LIBRARIES})
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries

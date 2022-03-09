@@ -1,4 +1,5 @@
 #include "bmb_controllers/LocalPathPlannerNode.h"
+#include <bmb_controllers/PosVelState.h>
 #include <bmb_controllers/DubinsPath.h>
 #include <bmb_controllers/PIDFFController.h>
 #include <bmb_controllers/PurePursuit.h>
@@ -38,9 +39,8 @@ void LocalPathPlannerNode::referenceCommandCallback(
 }
 
 bmb_msgs::StateCommand LocalPathPlannerNode::getStateCommand() {
-  using State = DubinsPath<double>::State;
-  State current_state{latest_aircraft_state};
-  State goal{latest_reference_command};
+  const PosVelState<double> current_state{latest_aircraft_state};
+  const PosVelState<double> goal{latest_reference_command};
 
   if (update_dubins_path) {
     path =
