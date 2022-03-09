@@ -2,12 +2,17 @@
 
 <sdf version="1.5">
 	<world name="default">
-		<!-- A global light source -->
+		<gui>
+			<!-- Initialize camera above and behind where aircraft spawns -->
+			<camera name="default_camera">
+				<pose>-1 0 11 0 0 0</pose>
+			</camera>
+		</gui>
+
 		<include>
 			<uri>model://sun</uri>
 		</include>
 
-		<!-- A ground plane -->
 		<include>
 			<uri>model://ground_plane</uri>
 		</include>
