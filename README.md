@@ -34,7 +34,9 @@ ROS Nodes:
 - elevator_node
 
 Reference Frames:
-- Flat earth reference frame (absolute): the x-axis points north, the y-axis points east, 
+- Gazebo reference frame (absolute): the x-axis points north, the y-axis points west, 
+the z-axis points upwards, and the origin is at the startup location of the robot at an altitude of zero
+- Flat earth (NED) reference frame (absolute): the x-axis points north, the y-axis points east, 
 the z-axis points down, and the origin is at the startup location of the robot at an altitude of zero
 - Robot reference frame (moving): the x-axis points forwards, the y-axis points to the right (starboard), 
 the z-axis points downwards, and the origin is at the center of mass of the aircraft
