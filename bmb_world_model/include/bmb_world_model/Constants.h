@@ -54,22 +54,11 @@ static const Matrix<double, 3, 3> INERTIA_TENSOR{
 static const Matrix<double, 3, 3> INERTIA_TENSOR_INV =
     INERTIA_TENSOR.inv();  // NOLINT(cert-err58-cpp)
 
-// aerodynamic constants
-static const Wrench<double> BODY_AERO_COEFFICIENTS{0, 0, 0, 0, 0, 0};
-static const Wrench<double> AILERON_AERO_COEFFICIENTS{0, 0, 0, 0, 0, 0};
-static const Wrench<double> ELEVATOR_AERO_COEFFICIENTS{0, 0, 0, 0, 0, 0};
-static const Wrench<double> RUDDER_AERO_COEFFICIENTS{0, 0, 0, 0, 0, 0};
-
 // aircraft body aerodynamic constants
 static constexpr double MIN_RADIUS_CURVATURE =
     30;  // calculated to be 23.5 m, at 50 km/h
 
 static constexpr double T_SAMPLE = 1E-3;  // sampling period
-
-// AppliedLoads propeller constants
-static constexpr double THRUST_TORQUE_RATIO_PROPELLER = 1;
-static const Vector3<double> L_FRONT_PROPELLER{0, 0,
-                                               0};  // NOLINT(cert-err58-cpp)
 
 // Kalman filter constants
 static constexpr size_t n = 25;  // number of states

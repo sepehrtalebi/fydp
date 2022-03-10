@@ -10,6 +10,22 @@
 #include <bmb_world_model/Constants.h>
 #include <cmath>
 
+// aerodynamic slope constants
+static const Wrench<double> BODY_M_WRENCH{0, 0, 0, 0, 0, 0};
+static const Wrench<double> AILERON_M_WRENCH{0, 0, 0, 0, 0, 0};
+static const Wrench<double> ELEVATOR_M_WRENCH{0, 0, 0, 0, 0, 0};
+static const Wrench<double> RUDDER_M_WRENCH{0, 0, 0, 0, 0, 0};
+
+// aerodynamic offset constants
+static const Wrench<double> BODY_B_WRENCH{0, 0, 0, 0, 0, 0};
+static const Wrench<double> AILERON_B_WRENCH{0, 0, 0, 0, 0, 0};
+static const Wrench<double> ELEVATOR_B_WRENCH{0, 0, 0, 0, 0, 0};
+static const Wrench<double> RUDDER_B_WRENCH{0, 0, 0, 0, 0, 0};
+
+// propeller constants
+static constexpr double THRUST_TORQUE_RATIO_PROPELLER = 1;
+static const Vector3<double> L_FRONT_PROPELLER{0, 0, 0};
+
 using bmb_utilities::saturation;
 
 static Matrix<ExprPtr, 3, 4> getQuatToWeightJacExpr() {
@@ -51,14 +67,23 @@ Wrench<double> getAppliedLoads(const bmb_msgs::AircraftState& state,
   const double vx_squared = b_vel.x * b_vel.x;
   const double speed_xz_squared = vx_squared + b_vel.z + b_vel.z;
   const double speed_xy_squared = vx_squared + b_vel.y + b_vel.y;
-  const double sin_aoa_xz = -b_vel.z / b_vel.x;
-  const double sin_aoa_xy = b_vel.y / b_vel.x;
+  const double sin_aoa_xz = b_vel.z / std::sqrt(speed_xz_squared);
+  const double sin_aoa_xy = -b_vel.y / std::sqrt(speed_xy_squared);
 
-  return getPropellerLoads(control_inputs.propeller_force) +
-         BODY_AERO_COEFFICIENTS * sin_aoa_xz * speed_xz_squared +
-         AILERON_AERO_COEFFICIENTS * sin_aoa_xz * speed_xz_squared +
-         ELEVATOR_AERO_COEFFICIENTS * sin_aoa_xz * speed_xz_squared +
-         RUDDER_AERO_COEFFICIENTS * sin_aoa_xy * speed_xy_squared +
+  const Wrench<double> body_loads =
+      (BODY_M_WRENCH * sin_aoa_xz + BODY_B_WRENCH) * speed_xz_squared;
+  const Wrench<double> aileron_loads =
+      (AILERON_M_WRENCH * control_inputs.right_aileron_angle +
+       AILERON_B_WRENCH) *
+      speed_xz_squared;
+  const Wrench<double> elevator_loads =
+      (ELEVATOR_M_WRENCH * control_inputs.elevator_angle + ELEVATOR_B_WRENCH) *
+      speed_xz_squared;
+  const Wrench<double> rudder_loads =
+      (RUDDER_M_WRENCH * sin_aoa_xy + RUDDER_B_WRENCH) * speed_xy_squared;
+
+  return body_loads + aileron_loads + elevator_loads + rudder_loads +
+         getPropellerLoads(control_inputs.propeller_force) +
          getGravitationalLoads(quat);
 }
 
