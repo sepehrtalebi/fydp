@@ -13,7 +13,7 @@ struct Wrench {
          const T& ty = 0, const T& tz = 0)
       : force(Vector3<T>{fx, fy, fz}), torque(Vector3<T>{tx, ty, tz}) {}
 
-  Wrench(const Vector3<T>& force, const Vector3<T>& torque)
+  Wrench(const Vector3<T>& force, const Vector3<T>& torque = Vector3<T>{})
       : force(force), torque(torque) {}
 
   Wrench(const geometry_msgs::Wrench& msg)

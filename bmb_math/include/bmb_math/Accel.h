@@ -13,7 +13,7 @@ struct Accel {
       : linear(Vector3<T>{lin_x, lin_y, lin_z}),
         angular(Vector3<T>{ang_x, ang_y, ang_z}) {}
 
-  Accel(const Vector3<T>& linear, const Vector3<T>& angular)
+  Accel(const Vector3<T>& linear, const Vector3<T>& angular = Vector3<T>{})
       : linear(linear), angular(angular) {}
 
   Accel(const geometry_msgs::Accel& msg)
