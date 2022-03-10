@@ -13,6 +13,7 @@ find_package(catkin REQUIRED COMPONENTS
   gazebo_ros
   bmb_msgs
   bmb_world_model
+  bmb_utilities
 )
 
 # Depend on system install of Gazebo
@@ -109,7 +110,7 @@ find_package(gazebo REQUIRED)
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES bmb_gazebo
-  CATKIN_DEPENDS roscpp gazebo_ros bmb_msgs bmb_world_model
+  CATKIN_DEPENDS roscpp gazebo_ros bmb_msgs bmb_world_model bmb_utilities
 #  DEPENDS system_lib
 )
 

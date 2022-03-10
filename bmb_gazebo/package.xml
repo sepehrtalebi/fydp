@@ -51,6 +51,7 @@
   <depend>gazebo_ros</depend>
   <depend>bmb_msgs</depend>
   <depend>bmb_world_model</depend>
+  <depend>bmb_utilities</depend>
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>

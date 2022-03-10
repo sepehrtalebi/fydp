@@ -2,13 +2,14 @@
 #include <bmb_gazebo/Utils.h>
 #include <bmb_msgs/AircraftState.h>
 #include <bmb_msgs/ControlInputs.h>
+#include <bmb_utilities/CoordinateSystems.h>
 #include <bmb_world_model/AppliedLoads.h>
 #include <gazebo/common/Plugin.hh>
 #include <gazebo/common/UpdateInfo.hh>
 #include <gazebo/common/common.hh>
+#include <gazebo/gui/GuiEvents.hh>
 #include <gazebo/physics/PhysicsTypes.hh>
 #include <gazebo/physics/physics.hh>
-#include <gazebo/gui/GuiEvents.hh>
 #include <ros/ros.h>
 #include <sdf/sdf.hh>
 #include <array>
@@ -70,7 +71,7 @@ void ARISControlPlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf) {
   base_link = _model->GetLink(base_link_name);
   if (!base_link) {
     ROS_FATAL_STREAM("Failed to find link [" << base_link_name
-                                              << "] aborting plugin load.");
+                                             << "] aborting plugin load.");
     return;
   }
 
@@ -102,6 +103,7 @@ void ARISControlPlugin::controlInputsCallback(
 bmb_msgs::AircraftState ARISControlPlugin::getAircraftState() const {
   bmb_msgs::AircraftState state;
   const auto pose = base_link->WorldCoGPose();
+  // TODO: check coordinate system transformation
   ignitionToGeometryVector3(pose.Pos(), state.pose.position);
   ignitionToGeometryQuaternion(pose.Rot(), state.pose.orientation);
   ignitionToGeometryVector3(base_link->RelativeLinearVel(), state.twist.linear);
@@ -123,8 +125,8 @@ void ARISControlPlugin::update() {
   }
 
   // apply loads
-  const Wrench<double> wrench =
-      getAppliedLoads(getAircraftState(), control_inputs);
+  const Wrench<double> wrench = bmb_utilities::NEDToNWU(
+      getAppliedLoads(getAircraftState(), control_inputs));
   base_link->AddRelativeForce(bmbToIgnitionVector3(wrench.force));
   base_link->AddRelativeTorque(bmbToIgnitionVector3(wrench.torque));
 
