@@ -21,10 +21,7 @@ class OpticalFlow:
 
         if self.prvs is not None:
             flow = cv2.calcOpticalFlowFarneback(self.prvs, next, None, 0.5, 3, 15, 3, 5, 1.2, 0)
-            if False:  # np.var(flow) > ? ---- TODO: still determining best way to do variance formula. Will update.
-                velocity = (0, 0)
-            else:
-                velocity = np.mean(flow, axis=(0, 1))
+            velocity = np.mean(flow, axis=(0, 1))
         else:
             velocity = (0, 0)
 
